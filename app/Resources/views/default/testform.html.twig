@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="wrapper">
+        <div id="container">
+            <div id="welcome">
+                <h1><span>Welcome to</span> Symfony {{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }}</h1>
+            </div>
+
+            <div id="status">
+                <p>
+                    Your application is ready to start working on it at cuong nguyen macbook pro:
+                    <code>{{ base_dir }}/</code>
+                </p>
+								<p> Sample form by form builder
+								</p>
+								<h3> Markup </h3>
+								 {{ form }}
+								<h4>script</h4>
+								{{ script }}
+								<p>
+								<h3> Result </h3>
+								</p>
+								<div class="col-md-12">
+								{{ form|raw}}
+								</div>
+            </div>
+{% endblock %}
+{% block javascripts %}
+
+{% endblock %}
