@@ -32,7 +32,7 @@ class FormController extends Controller
 		$statement = $connection->prepare("SELECT * FROM ddfields WHERE 1");
 		// $statement->bindValue('id', 123);
 		$statement->execute();
-		$results = $statement->fetchAll();		
+		$results = $statement->fetchAll();
 		$array = array(
 			array(1, 'name 1'),
 			array(2, 'name 3')
@@ -42,7 +42,7 @@ class FormController extends Controller
 			Response::HTTP_OK,
 			array('content-type' => 'application/json')
 	   	);
-		
+
 
 		return $response;
 	}
@@ -64,7 +64,7 @@ class FormController extends Controller
 			Response::HTTP_OK,
 			array('content-type' => 'text/html')
 			);
-		
+
 
 		return $response;
 	}
@@ -73,13 +73,13 @@ class FormController extends Controller
     */
     public function newformAction(){
 		$formbuilder = $this->get('app.formbuilder');
-		$tmp = $formbuilder->GenerateLayout('obj1');
+		$tmp = $formbuilder->GenerateLayout('person');
 
         return $this->render('default/testform.html.twig', [
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
 			'form' => $tmp,
 			'script' => $formbuilder->mscript
-			
+
         ]);
     }
 

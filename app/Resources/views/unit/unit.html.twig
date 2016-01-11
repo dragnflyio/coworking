@@ -1,0 +1,52 @@
+{# app/Resources/views/lucky/number.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Toong - Đơn vị{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+  <script src="{{ asset('js/unit.js') }}" type = "text/javascript"></script>
+{% endblock %}
+
+{% macro _units_entry_widget(formData) %}
+  <td>{{ form_widget(formData.id) }}</td>
+  <td>{{ form_widget(formData.nameen) }}</td>
+  <td>{{ form_widget(formData.namevi) }}</td>
+  <td>{{ form_widget(formData.value) }}</td>
+  <td>{{ form_widget(formData.base_unit, {'required': false}) }}</td>
+{% endmacro %}
+
+{% block body %}
+  <div class = "container">
+    <h1 class = "page-title">Đơn vị</h1>
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+      <div class="alert alert-success">
+          {{ flashMessage }}
+      </div>
+    {% endfor %}
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+      <table class = "table">
+        <thead>
+          <th>Mã</th>
+          <th>Tên(VN)</th>
+          <th>Tên(EN)</th>
+          <th>Giá trị</th>
+          <th>Base unit id</th>
+        </thead>
+        <tbody class = "units" data-prototype="{{ _self._units_entry_widget(form.units.vars.prototype)|e }}">
+          {% for unit in form.units %}
+          <tr class = "unit-item">
+            <td>{{ form_widget(unit.id) }}</td>
+            <td>{{ form_widget(unit.nameen) }}</td>
+            <td>{{ form_widget(unit.namevi) }}</td>
+            <td>{{ form_widget(unit.value) }}</td>
+            <td>{{ form_widget(unit.base_unit, {'required': false}) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {{ form_end(form) }}
+  </div>
+{% endblock %}
