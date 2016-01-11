@@ -180,6 +180,118 @@ class Formbuilder {
 		$this->_lklkData[$colname] = null;
 		return null;
 	}
+	
+	/** Prepare data for insert/update, return array of array table data, key is table, value is array of table's columns data
+     * @param Array $postData array of posting data, it the almost cases it should be $_POST
+     * @param String $obj_name object_name in table_conf
+     * @return Array
+     * */
+    public function PrepareInsert($postData, $obj_name) {
+        $retVal = array();
+        if (null == $this->_mConfigList) {
+            $this->_mConfigList = $this->getTableConfig($obj_name, null, false, '', 1);
+        }
+        foreach ($this->_mConfigList as $config) {
+			if(empty($config['column']) || empty($config['table'])) continue;
+            if (false == isset($retVal[$config['table']]))
+                $retVal[$config['table']] = array();
+            $type = $config['inputType'];
+            $isNumeric = 0;$isMobi = 0;
+            if (isset($config['options']['isNumeric']))
+                $isNumeric = $config['options']['isNumeric'];
+			if (isset($config['options']['class']))
+                $isMobi = 'mobif' == $config['options']['class'];
+            switch ($type) {
+				case Self::BIRTHDAY:
+					// date
+					if(isset($postData['d'.$config['id']]))
+					$retVal[$config['table']][$config['column'] . '_date'] = $postData['d'.$config['id']];
+					// month
+					if(isset($postData['m'.$config['id']]))
+						$retVal[$config['table']][$config['column'] . '_month'] = $postData['m'.$config['id']];
+					// year
+					if(isset($postData['y'.$config['id']]))
+						$retVal[$config['table']][$config['column'] . '_year'] = $postData['y'.$config['id']];
+					break;
+                case Self::CURR_DATE:
+                    $retVal[$config['table']][strtolower($config['column'])] = date('Y-m-d H:i:s', $this->getCurrentTimestamp());
+                    break;
+                case Self::CURR_DATE_CREATE:
+                    //Ignore this column in update
+                    if (false == $this->_mupdateMode) {
+                        $retVal[$config['table']][strtolower($config['column'])] = date('Y-m-d H:i:s', $this->getCurrentTimestamp());
+                    } else {
+                        //remove from update list
+                        unset($retVal[$config['table']][strtolower($config['column'])]);
+                    }
+                    break;
+                case Self::CURR_USER_CREATE:
+                    //Ignore this column in update
+                    if (false == $this->_mupdateMode) {
+                        $retVal[$config['table']][strtolower($config['column'])] = $this->getCurUid();
+                    } else {
+                        //remove from update list
+                        unset($retVal[$config['table']][strtolower($config['column'])]);
+                    }
+                    break;
+                case Self::CURR_USER:
+                    $retVal[$config['table']][strtolower($config['column'])] = $this->getCurUid();
+                    break;
+                case Self::DATETIME:
+                    if (isset($postData[$config['id']])) {
+                        if ($config['options']['showTime']) {
+                            $retVal[$config['table']][strtolower($config['column'])] = $postData[$config['id']] ? date('Y-m-d H:i:s', (int) $postData[$config['id']]) : null;
+                        }
+                        else
+                            $retVal[$config['table']][strtolower($config['column'])] = $postData[$config['id']] ? date('Y-m-d', (int) $postData[$config['id']]) : null;
+                    }
+                    break;
+                case Self::SELECT:
+                    if (false == isset($postData[$config['id']]))
+                        break;
+                    $isMultiple = 0;
+                    $v = $postData[$config['id']];
+
+                    if (isset($config['options']['multiple']))
+                        $isMultiple = $config['options']['multiple'];
+                    if ($isMultiple) {
+                        //array
+                        $v = implode(',', $v);
+                    } else {
+                        if ($v == $this->_noval)
+                            $v = null;
+                    }
+                    $retVal[$config['table']][strtolower($config['column'])] = $v;
+                    break;
+                case Self::CHECK:
+                    if (isset($postData[$config['id']])) {
+                        $v = $postData[$config['id']];
+                        $retVal[$config['table']][strtolower($config['column'])] = $v;
+                    }
+                    else
+                        $retVal[$config['table']][strtolower($config['column'])] = 0;
+                    break;
+				case Self::TEXT_MULTI:
+						if(!array_key_exists($config['id'], $postData)) break;
+						$v = $postData[$config['id']];
+						if($v && $isMobi) $v = Gen_Library_Helper_Number::getPhone($v);
+						$retVal[$config['table']][strtolower($config['column'])] = $v ? $v : null;
+					break;
+                default:
+                    if (isset($postData[$config['id']])) {
+                        $v = $postData[$config['id']];
+                        if ($isNumeric){
+                            $v = $this->getNum($v);
+						}
+                        $retVal[$config['table']][strtolower($config['column'])] = $v;
+                    }
+                    break;
+            }
+        }
+
+        return $retVal;
+    }
+    
     /** get data source option for select, radio, checkbox
      * */
     private function getOptionDatasource($datasource, &$options = null, &$default = null,&$arrtmp = null){
@@ -339,7 +451,7 @@ class Formbuilder {
 
     /* Get current date without dst */
     private function getCurrentTimestamp($strYMD = null) {
-		return Geek_helper_number::DateToTimestamp($strYMD);
+		return AppBundle\Utils\number::DateToTimestamp($strYMD);
     }
 	
 	/** Tim kiem trong bang voi dieu kien build tu refine */
@@ -582,12 +694,11 @@ class Formbuilder {
     }
 
     private function formatNum($v) {
-		return Geek_helper_number::formatNum($v);
+		if(null === $v || ''===$v) return '';		
+        return number_format($v, 0, '.', ',');		
     }
 	private function getNum($tmp) {
-		$tmp = Geek_helper_number::getNum($tmp);        
-        if ('' == $tmp)
-            return null; //FORCE INSERT NULL FOR NUMERIC FIELDS
+		$tmp = str_replace(',', '', $tmp);
         return $tmp;
     }
 
@@ -1253,7 +1364,7 @@ class Formbuilder {
      * @param Integer $forview generate layout for view or not (for update on default)
      * @return String
      */
-    public function LoadDatarowToConfig($row, $obj_name, $arrGrpName, $forview = 0) {
+    public function LoadDatarowToConfig($row, $obj_name, $arrGrpName = null, $forview = 0) {
         $this->_mforview = $forview;
         $this->_mupdateMode = true;
 		$this->_mainID = $row['id'];

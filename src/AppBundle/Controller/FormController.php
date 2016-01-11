@@ -50,15 +50,17 @@ class FormController extends Controller
 	 * @Route("/form/formapi")
 	 */
 	public function formapiAction(Request $request){
-		var_dump($_POST);
+		// var_dump($_POST);
 		// $request = Request::createFromGlobals();
-		echo $request->getMethod();
-		echo "<br>";
-		echo $request->request->get('bar', 'default value');
-		echo "<br>";
-		echo $request->getPathInfo();
-		echo "<br>";
-		// var_dump($request->server->get('HTTP_HOST'));
+		// echo $request->getMethod();
+		// echo "<br>";
+		// echo $request->request->get('bar', 'default value');
+		// echo "<br>";
+		// echo $request->getPathInfo();
+		// echo "<br>";
+		$formbuilder = $this->get('app.formbuilder');
+		$dataObj = $formbuilder->PrepareInsert($_POST, 'obj2');
+		var_dump($dataObj);
 		$response = new Response(
 			'',
 			Response::HTTP_OK,
@@ -73,7 +75,20 @@ class FormController extends Controller
     */
     public function newformAction(){
 		$formbuilder = $this->get('app.formbuilder');
-		$tmp = $formbuilder->GenerateLayout('obj1');
+		
+		$request = Request::createFromGlobals();
+		$id = $request->query->get('id', 0);
+		$id = (int)$id;
+		if ($id){
+			$em = $this->getDoctrine()->getEntityManager();
+			$connection = $em->getConnection();
+			$statement = $connection->prepare("SELECT * FROM newtable WHERE id = $id");
+			$statement->execute();
+			$row = $statement->fetchAll();
+			$tmp = $formbuilder->LoadDatarowToConfig($row[0], 'obj2');
+		}else {
+			$tmp = $formbuilder->GenerateLayout('obj2');
+		}
 
         return $this->render('default/testform.html.twig', [
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
