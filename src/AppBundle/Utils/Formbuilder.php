@@ -897,8 +897,9 @@ class Formbuilder {
         $nameM = '';
         if ($multiple)
             $nameM = '[]';
+		$retVal = '<div class="col-md-10">';
         if (is_array($labelArr)) {
-            $retVal = '<select class="span10" name="' . $id . $nameM . '" id="' . $id . '"';
+            $retVal .= '<select class="form-control" name="' . $id . $nameM . '" id="' . $id . '"';
             if ($multiple)
                 $retVal .= ' multiple';
             $retVal .= ' ' . $this->buildAttributeForControl() . '>';
@@ -918,7 +919,7 @@ class Formbuilder {
             $retVal .= '</select>';
             if ($required)
                 $retVal .='<span class="redtext help-inline">*</span>';
-            return $retVal;
+            return $retVal.'</div>';
         }
         if ($url) {
             if ($defaultValue) {
@@ -928,19 +929,19 @@ class Formbuilder {
             }
             else
                 $this->mscript .= 'loadAndFillSelect("' . $id . '","' . $url . '","",' . $zero . ');';
-            $retVal = '<select class="span10" name="' . $id . '" id="' . $id . '"';
+            $retVal = '<select class="form-control" name="' . $id . '" id="' . $id . '"';
             if ($multiple)
                 $retVal .= ' multiple="multiple"';
             $retVal .= ' ' . $this->buildAttributeForControl() . '>';
             $retVal .= '</select>';
             if ($required)
                 $retVal .='<span class="redtext help-inline">*</span>';
-            return $retVal;
+            return $retVal.'</div>';
         }
 
         if ($required)
-            return '<select ' . $this->buildAttributeForControl() . ' class="span10" name="' . $id . '" id="' . $id . '"></select> <span class="redtext">*</span>';
-        return '<select ' . $this->buildAttributeForControl() . ' class="span10" name="' . $id . '" id="' . $id . '"></select>';
+            return '<select ' . $this->buildAttributeForControl() . ' class="form-control" name="' . $id . '" id="' . $id . '"></select> <span class="redtext">*</span></div>';
+        return '<select ' . $this->buildAttributeForControl() . ' class="form-control" name="' . $id . '" id="' . $id . '"></select></div>';
     }
     /** Build single control
      */
