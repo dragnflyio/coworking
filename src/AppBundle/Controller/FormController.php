@@ -32,7 +32,7 @@ class FormController extends Controller
 		$statement = $connection->prepare("SELECT * FROM ddfields WHERE 1");
 		// $statement->bindValue('id', 123);
 		$statement->execute();
-		$results = $statement->fetchAll();		
+		$results = $statement->fetchAll();
 		$array = array(
 			array(1, 'name 1'),
 			array(2, 'name 3')
@@ -42,7 +42,7 @@ class FormController extends Controller
 			Response::HTTP_OK,
 			array('content-type' => 'application/json')
 	   	);
-		
+
 
 		return $response;
 	}
@@ -66,7 +66,7 @@ class FormController extends Controller
 			Response::HTTP_OK,
 			array('content-type' => 'text/html')
 			);
-		
+
 
 		return $response;
 	}
@@ -74,8 +74,7 @@ class FormController extends Controller
     * @Route("/form/newform")
     */
     public function newformAction(){
-		$formbuilder = $this->get('app.formbuilder');
-		
+		$formbuilder = $this->get('app.formbuilder');		
 		$request = Request::createFromGlobals();
 		$id = $request->query->get('id', 0);
 		$id = (int)$id;
@@ -94,7 +93,7 @@ class FormController extends Controller
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
 			'form' => $tmp,
 			'script' => $formbuilder->mscript
-			
+
         ]);
     }
 
