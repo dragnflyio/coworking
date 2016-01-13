@@ -1,0 +1,30 @@
+{% macro recursiveCategory(categories, pid) %}
+    {% set tmp = [] %}
+    {% for category in categories %}
+        {% set parent = category.parent_id %}
+        {% set category_pid = parent ? parent : null %}
+        {% if category_pid == pid %}
+            {% set tmp = tmp|merge([category]) %}
+        {% endif %}
+    {% endfor %}
+
+    {% if tmp|length %}
+        <ul class = "">
+            {% for category in tmp %}
+                {% set parent = category.parent_id %}
+                {% set category_pid = parent ? parent : null %}
+                {% if category_pid == pid %}
+                    <li class = "item"><a href = "{{path('category_update')}}?id={{category.id}}">{{ category.name }}</a>
+                    {{ _self.recursiveCategory(categories, category.id) }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% if categories %}
+    <div id="categories">
+        {{ _self.recursiveCategory(categories, null) }}
+    </div>
+{% endif %}

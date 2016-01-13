@@ -1,0 +1,26 @@
+<table class = "table">
+  <thead>
+    <th>Mã sản phẩm</th>
+    <th>Tên(VN)</th>
+    <th>Tên(ENG)</th>
+    <th>ĐVT</th>
+    <th>Loại</th>
+    <th>Danh mục</th>
+    <th>Giá</th>
+  </thead>
+  <tbody>
+    {% for index,product in products %}
+      {% if index != 0 %}
+      <tr>
+        <td>{{product.A}}</td>
+        <td>{{product.B}}</td>
+        <td>{{product.C}}</td>
+        <td>{{product.D}}</td>
+        <td>{{product.E}}</td>
+        <td>{{product.F}}</td>
+        <td>{{product.G}}</td>
+      </tr>
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>

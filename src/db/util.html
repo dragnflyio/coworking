@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<script>
+console.log(self.opener);
+self.opener.postMessage('test xem nao','*');
+function convertBinary(){
+   var binaryNumber = document.getElementById('bin').value.replace(/ /g,'');
+	 document.getElementById('tmp').value = binaryNumber;
+   binaryNumber = parseInt(binaryNumber,2);
+   var decimalNumber = binaryNumber.toString();
+   
+	 document.getElementById('dec').value = decimalNumber;
+ }
+ function convert(){
+	var grp = parseInt(document.getElementById('group').value.replace(/[^0-9]/g,''));
+	var row = parseInt(document.getElementById('row').value.replace(/[^0-9]/g,''));
+	var col = parseInt(document.getElementById('col').value.replace(/[^0-9]/g,''));
+	
+	document.getElementById('dec').value = grp * 4096 + row * 4 + col;
+	
+ }
+ 
+</script>
+
+<body>
+	
+		<div>
+			Group  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			Row &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			column
+		</div>
+		<div id ="app">
+    <!-- <input type = 'text' value='0000 0000000000 00' id='bin' name = 'bin' onkeyup = 'convertBinary()' /> -->
+		<input type ='text' value = '0' id='group' onkeyup = 'convert()'> &nbsp;&nbsp;
+		<input type ='text' value = '0' id='row' onkeyup = 'convert()'> &nbsp;&nbsp;
+		<input type ='text' value = '0' id='col' onkeyup = 'convert()'> &nbsp;&nbsp;
+    </div>
+		<div>
+		POS: <input type='text' value = '0' id = 'dec' name = 'dec' />
+		</div>    
+		
+    </body>
+</html>

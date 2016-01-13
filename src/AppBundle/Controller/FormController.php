@@ -74,7 +74,7 @@ class FormController extends Controller
     * @Route("/form/newform")
     */
     public function newformAction(){
-		$formbuilder = $this->get('app.formbuilder');		
+		$formbuilder = $this->get('app.formbuilder');
 		$request = Request::createFromGlobals();
 		$id = $request->query->get('id', 0);
 		$id = (int)$id;

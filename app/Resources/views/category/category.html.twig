@@ -1,0 +1,13 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Toong - Danh mục{% endblock %}
+
+{% block body %}
+  <div class = "container">
+    <h1>Danh mục</h1>
+    <div class="action">
+      <a class = "btn btn-primary" href = "{{ path('category_add') }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Thêm</a>
+    </div>
+    {% include 'category/viewcategory.html.twig' with {'categories': categories} %}
+  </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+{% block title %}Toong - Thêm danh mục{% endblock %}
+{% block body %}
+  <div class = "container">
+      <h1 class = "page-title">Thêm</h1>
+        <div class="col-md-12">
+          {{ form|raw}}
+          <a href = "{{ path('category') }}" class = "btn btn-info">Quay lại</a>
+          <a href = "#" class = "btn btn-primary btn-save">Ghi lại</a>
+        </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+  <script src="{{ asset('js/category.js') }}" type = "text/javascript"></script>
+  <script>
+  {{script|raw}}
+  </script>
+{% endblock %}
