@@ -494,14 +494,7 @@ class Formbuilder {
 
         $retVal['label'] = defined($row['col_label']) ? constant($row['col_label']) : $row['col_label'];
 		$nguon = null;
-		if(stripos($row['data_source'],'datalookup')){
-			if(stripos($row['data_source'],'getkhachhangForLK') ) $nguon = 'kh';
-			if(stripos($row['data_source'],'getcohoiForLK')) $nguon = 'ch';
-			if(stripos($row['data_source'],'getchiendichForLK')) $nguon = 'mk';
-			if(stripos($row['data_source'],'gethopdongForLK')) $nguon = 'hd';
-			if(stripos($row['data_source'],'get_sanphamForLK')) $nguon = 'sp';
-			if(stripos($row['data_source'],'getnguoidungForLK')) $nguon = 'nd';
-		}
+		
 		$dmtype = preg_replace("/[^0-9]/","",$row['data_source']); 
 		if($dmtype) $nguon = 'dm';
 		$retVal['nguon'] = $nguon;
@@ -713,10 +706,12 @@ class Formbuilder {
         }
         return '';
     }
-
+	/**
+	 * Check element arg in array arr, loose comparsion
+	 */
     private function inarr_intstr($arg, $arr) {
         for ($i = 0; $i < count($arr); $i++) {
-            if (strtolower((string) $arg) == strtolower((string) $arr[$i]))
+            if (strtolower((string) $arg) === strtolower((string) $arr[$i]))
                 return true;
         }
         return false;
@@ -737,11 +732,11 @@ class Formbuilder {
 		if($whereCond){
 			$whereTbl .= ' AND ('.$whereCond.')';
 		}
-		if($getsysfield) $whereTbl .= ' OR (tf.object_name = "' . $objName . '" AND col_name IN ("ngay_tao","nguoi_tao","ngay_sua","nguoi_sua"))';
-        $query = 'SELECT * FROM ddfields AS tf'
-                . ' WHERE tf.col_active = 1 AND tf.object_name = "' . $objName . '"'
+
+        $query = 'SELECT * FROM ddfields'
+                . ' WHERE col_active = 1 AND object_name = "' . $objName . '"'
                 . $whereTbl
-                . ' ORDER BY tf.col_position,tf.id';
+                . ' ORDER BY col_position,id';
         $result = $this->fetchQuery($query);
         $objList = array();
 		$this->_activeFieldIds = array();
@@ -1018,9 +1013,10 @@ class Formbuilder {
                 $retVal .= '<option value="' . $this->_noval . '">' . (defined('_DDL_LC') ? constant('_DDL_LC') : '...Select...') . '</option>';
             for ($i = 0; $i < count($labelArr); $i++) {
                 $retVal .= '<option value="' . $valueArr[$i] . '"';
-                if (is_array($defaultValue) && $this->inarr_intstr($valueArr[$i], $defaultValue)) {
-                    $retVal .= ' selected';
-                    //} elseif($defaultValue && $defaultValue == $valueArr[$i]){
+                if (is_array($defaultValue)) {
+					if ($this->inarr_intstr($valueArr[$i], $defaultValue))
+                    	$retVal .= ' selected';
+
                 } elseif (false !== stripos(',' . $defaultValue . ',', ','.$valueArr[$i].',')) {
                     $retVal .= ' selected';
                 }
@@ -1328,7 +1324,7 @@ class Formbuilder {
             }
             if ($pos['col'] == 1) {
                 if (false === $inrow) {
-                    $retVal .= '<div class="row">';
+                    $retVal .= '<div class="row"> ';
                     $inrow = true;
                 } else if ($currentRow < $pos['row']) {
                     //New row for sure.
@@ -1378,7 +1374,7 @@ class Formbuilder {
             if (Self::BIRTHDAY != $type && isset($row[$config['column']])){
                 $config['options']['defaultValue'] = $row[$config['column']];				
                 if (Self::DATETIME == $type){
-                        $config['options']['defaultValue'] = '0000-00-00 00:00:00' === ($row[$config['column']]) ? '' : $row[$config['column']];                        
+                    $config['options']['defaultValue'] = '0000-00-00 00:00:00' === ($row[$config['column']]) ? '' : $row[$config['column']];                        
                 }
             }
 			if (Self::BIRTHDAY == $type){
@@ -2015,9 +2011,7 @@ class Formbuilder {
     /* remove comments, special characters before using in query
      * */
     private function getSQLText($text) {
-        $arr = array('\\','\'');
-        $arrR = array('\\\\','\'\'');
-        return str_replace($arr, $arrR, $text);
+        return  addcslashes( $text, '_%\\\'' );
     }
 
     private function BuildTextLikeCondition($colname, $text) {

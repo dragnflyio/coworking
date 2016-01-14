@@ -1,10 +1,10 @@
 <?php
-namespace AppBundle\Utils; 
+namespace AppBundle\Utils;
 /**
  * helpers for get/format number against configuration
  * @author Nguyen Viet Cuong <vietcuonghn3@gmail.com>
  */
-class  helper_number{    
+class  helper_number{
 
 	public static function equalNum($num1, $num2){
 		$esp = 0.00001;

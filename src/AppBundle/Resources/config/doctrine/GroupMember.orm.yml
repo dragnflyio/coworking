@@ -1,0 +1,29 @@
+AppBundle\Entity\GroupMember:
+    type: entity
+    table: group_member
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        groupid:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        memberid:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        isdeleted:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+    lifecycleCallbacks: {  }
