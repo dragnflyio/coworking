@@ -153,40 +153,42 @@ input[type="text"].numeric{
 .text-error, .redtext{
 	color:red;
 }
-.col2 li{
-  float: left;
-  width: 50%;
-  white-space:nowrap;
-  list-style:none;
-}
-ul.col2{
-	margin: 0;
-}
-ul.col2 li label{
-	padding-left:0;
-}
-.col2 li input{
-	margin-top:3px;
-}
-/*.form-horizontal .form-group .control-label{
-	width:120px;
-}*/
 
-
-ul.errors {
-    margin-left: 0px;
+.msginfo{
+    z-index: 2000;
+	background-color: #f5fdf5;
+  border: 2px solid #b3d59c;
+  color: #005F00;
+  font-size: 19px;
+  left: 50%;
+  margin-left: -400px;
+  padding: 5px;
+  text-align: center;
+  top: 15px;
+  width: 800px;                    
 }
-ul.errors li {
-    list-style: none;
-    color:red;
-    font-size:10px;
-    
+.msginfo.err{
+	border-color: #cc6666;
+	color: #B94A48;
+	background-color: #F2DEDE;       
+}
+.affix{
+	position:fixed
 }
 .ui-datepicker {
     width: 20em !important;
 }
 .btncak{
 	height:32px;
+}
+.width100{
+	width: 100px;
+}
+.width200{
+	width: 200px;
+}
+.width300{
+	width: 300px;
 }
 @media (min-width: 992px){
 	.col-md-10.form-control {

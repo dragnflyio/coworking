@@ -7,19 +7,17 @@
     <th>Loại</th>
     <th>Danh mục</th>
     <th>Giá</th>
-    <th>Ghi chú</th>
   </thead>
   <tbody>
     {% for index,product in products %}
       <tr>
-        <td>{{product.A}}</td>
-        <td>{{product.B}}</td>
-        <td>{{product.C}}</td>
-        <td>{{product.D}}</td>
-        <td>{{product.E}}</td>
-        <td>{{product.F}}</td>
-        <td>{{product.G}}</td>
-        <td>{{product.notes}}</td>
+        <td>{{product.code}}</td>
+        <td>{{product.name_vi}}</td>
+        <td>{{product.name_en}}</td>
+        <td>{{product.unit}}</td>
+        <td>{{product.type}}</td>
+        <td>{{product.category}}</td>
+        <td>{{product.price}}</td>
       </tr>
     {% endfor %}
   </tbody>

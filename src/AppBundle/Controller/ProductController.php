@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Utils;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class ProductController extends Controller
 {
@@ -24,9 +25,14 @@ class ProductController extends Controller
     foreach ($rows as $row) {
       $products[] = (object) $row;
     }
-    return $this->render('product/index.html.twig', array(
-      'products' => $products
-    ));
+    $formbuilder = $this->get('app.formbuilder');
+    $tmp = $formbuilder->GenerateLayout('tk_product');
+    return $this->render('product/index.html.twig', [
+        'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
+        'form' => $tmp,
+        'script' => $formbuilder->mscript,
+        'products' => $products,
+    ]);
   }
 
   /**
@@ -39,15 +45,39 @@ class ProductController extends Controller
     ));
   }
 
+  /**
+   * Preview products.
+   */
   public function previewAction(Request $request){
     $products = $request->request->get('products');
+    array_shift($products);
+    foreach ($products as  $product) {
+      $notes = array();
+      $catname = $product->F;
+      $unitname = $product->D;
+      $catid = $this->getCidByName($catname);
+      if ($catid == null) {
+        $notes[] = 'Danh mục không tồn tại';
+      } else {
+        $product->catid = $catid;
+      }
+      $unitid = $this->getUnitIdByName($unitname);
+      if ($unitid == null) {
+        $notes[] = 'Đơn vị không tồn tại';
+      } else {
+        $product->unitid = $unitid;
+      }
+      $product->notes = implode('/', $notes);
+    }
+    $session = $request->getSession();
+    $session->set('products', $products);
     return $this->render('product/preview.html.twig', array(
       'products' => $products
     ));
   }
 
   /**
-   * @Route("/product/import-ajax", name = "product_import_ajax")
+   * @Route("/product/import-preview", name = "product_import_ajax")
    */
   public function ajaxAction(Request $request){
     $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject('product_price_export_11-45-13-01-16.xls');
@@ -62,5 +92,112 @@ class ProductController extends Controller
     $response = new Response($json, 200);
     $response->headers->set('Content-Type', 'application/json');
     return $response;
+  }
+
+  /**
+   * @Route("/product/import-save", name = "product_import_save")
+   */
+  public function saveAction(Request $request) {
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $session = $request->getSession();
+    $products = $session->get('products');
+    foreach ($products as $product) {
+      if (empty($product->notes)) {
+        if ($this->checkProduct($product->A) == false) {
+          $statement = $connection->prepare("INSERT INTO product (code, name_en, name_vi, unit, type, price, category, status)
+          VALUES (:code, :name_en, :name_vi, :unit, :type, :price, :category, 1)");
+          $statement->bindParam(':code', $product->A);
+          $statement->bindParam(':name_vi', $product->B);
+          $statement->bindParam(':name_en', $product->C);
+          $statement->bindParam(':unit', $product->unitid);
+          $statement->bindParam(':type', $product->E);
+          $statement->bindParam(':price', $product->G);
+          $statement->bindParam(':category', $product->catid);
+          // $statement->bindParam(':status', 1);
+          $statement->execute();
+        }
+        else {
+          $statement = $connection->prepare("UPDATE product SET name_en = :name_en, name_vi = :name_vi, unit = :unit, type = :type, price = :price, category = :category, status = 1
+          WHERE code = :code");
+          $statement->bindParam(':code', $product->A);
+          $statement->bindParam(':name_vi', $product->B);
+          $statement->bindParam(':name_en', $product->C);
+          $statement->bindParam(':unit', $product->unitid);
+          $statement->bindParam(':type', $product->E);
+          $statement->bindParam(':price', $product->G);
+          $statement->bindParam(':category', $product->catid);
+          $statement->execute();
+        }
+      }
+    }
+    $response = new Response($json, 200);
+    $response->headers->set('Content-Type', 'application/json');
+    return $response;
+  }
+
+  /**
+   * Check product by code.
+   *
+   * @param string $code
+   *
+   * @return array $products
+   */
+  public function checkProduct($code){
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT * FROM product WHERE code = '$code'");
+    $statement->execute();
+    $rows = $statement->fetchAll();
+    if (empty($rows)) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
+  /**
+   * Get category id by name
+   *
+   * @param string $name
+   *
+   * @return int $int
+   */
+  public function getCidByName($name){
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT * FROM product_category WHERE name = :name");
+    $statement->bindParam(':name', $name);
+    $statement->execute();
+    $row = $statement->fetchAll();
+    if (!empty($row)){
+      return $row[0]['id'];
+    }
+    else {
+      return NULL;
+    }
+  }
+
+  /**
+   * Get unit id by name
+   *
+   * @param $name
+   *
+   * @return $int
+   */
+  public function getUnitIdByName($name){
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT * FROM unit WHERE namevi = :name OR nameen = :name");
+    $statement->bindParam(':name', $name);
+    $statement->execute();
+    $row = $statement->fetchAll();
+    if (!empty($row)){
+      return $row[0]['id'];
+    }
+    else {
+      return NULL;
+    }
   }
 }

@@ -415,7 +415,6 @@ wd.msgInfo = function(m, e, t){
 	$x.mouseenter(function(){clearTimeout(to);$x.show()}).mouseleave(function(){$x.remove()});
 	if(!t) t = 3;
 	var to = setTimeout(function(){$x.remove()},1000*t);
-	// !t && $x.fadeOut(5000,'linear', function(){$x.remove()})
 }
 
 var xdone = [];
