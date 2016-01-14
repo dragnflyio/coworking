@@ -131,6 +131,9 @@ class ProductController extends Controller
         }
       }
     }
+    $response = new Response($json, 200);
+    $response->headers->set('Content-Type', 'application/json');
+    return $response;
   }
 
   /**
