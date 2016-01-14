@@ -44,7 +44,7 @@ class Formbuilder {
     const HIDDEN = 15;
 	/* So dien thoai */
 	const MOBI = 16;
-	
+
     /**
      * scripts code must be insert at the end of body
      * @return String
@@ -73,13 +73,13 @@ class Formbuilder {
 	private $_lklkData = null;// lookup lookup array by col_name
 	private $_keydecode = null;
 	private $em;// doctrine entity manager
-	
+
     function __construct($em) {
         // parent::__construct();
 		$this->em = $em;
     }
 
-    
+
 	private function getClassIns($className){
 		if(null == $this->_mClassIns) $this->_mClassIns = array();
 		$x = $this->_mClassIns;
@@ -124,12 +124,12 @@ class Formbuilder {
 			$res = $this->db->queryF($query);
 			while($row = $this->fetchBoth($res)){
 				if(empty($row[1])) continue;
-				if((false !== stripos('SELECT',$row[2])) || (0 == strcasecmp('TEXT_MULTI_NEW',$row[2])) || (0 == strcasecmp('TEXT_MULTI',$row[2])) || (false !== stripos('RADIO',$row[2]))){   
-					if(empty($dtsource[$row[0]])) $dtsource[$row[0]] = $row[1];					
+				if((false !== stripos('SELECT',$row[2])) || (0 == strcasecmp('TEXT_MULTI_NEW',$row[2])) || (0 == strcasecmp('TEXT_MULTI',$row[2])) || (false !== stripos('RADIO',$row[2]))){
+					if(empty($dtsource[$row[0]])) $dtsource[$row[0]] = $row[1];
 				}
 			}
-			$this->_lkDatasource = $dtsource;	
-			$this->_lklkData = array();			
+			$this->_lkDatasource = $dtsource;
+			$this->_lklkData = array();
 		}
 		$inlist = false;
 		// ten cot nguoi dung them tu sinh
@@ -180,7 +180,7 @@ class Formbuilder {
 		$this->_lklkData[$colname] = null;
 		return null;
 	}
-	
+
 	/** Prepare data for insert/update, return array of array table data, key is table, value is array of table's columns data
      * @param Array $postData array of posting data, it the almost cases it should be $_POST
      * @param String $obj_name object_name in table_conf
@@ -291,7 +291,7 @@ class Formbuilder {
 
         return $retVal;
     }
-    
+
     /** get data source option for select, radio, checkbox
      * */
     private function getOptionDatasource($datasource, &$options = null, &$default = null,&$arrtmp = null){
@@ -408,19 +408,19 @@ class Formbuilder {
                 break;
             case 'SELECT':
                 $retVal['inputType'] = Self::SELECT;
-                $this->getOptionDatasource($retVal['data_source'], $options);                
+                $this->getOptionDatasource($retVal['data_source'], $options);
                 $options['multiple'] = isset($retVal['multiple']) ? $retVal['multiple'] : 0;
                 break;
             case 'RADIO':
                 $retVal['inputType'] = Self::RADIO;
-                $this->getOptionDatasource($retVal['data_source'], $options);                
+                $this->getOptionDatasource($retVal['data_source'], $options);
                 break;
             case 'TEXT_MULTI':
                 $retVal['inputType'] = Self::TEXT_MULTI;
                 $options['enterNew'] = false;
                 $options['url'] = $this->getOptionDatasource($retVal['data_source']);
                 break;
-            case 'TEXT_MULTI_NEW':	
+            case 'TEXT_MULTI_NEW':
 			case 'MOBI':
                 $retVal['inputType'] = Self::TEXT_MULTI;
 				if($upperINP == 'MOBI') $options['class'] = 'mobif';
@@ -453,7 +453,7 @@ class Formbuilder {
     private function getCurrentTimestamp($strYMD = null) {
 		return AppBundle\Utils\number::DateToTimestamp($strYMD);
     }
-	
+
 	/** Tim kiem trong bang voi dieu kien build tu refine */
 	function SearchInTable($tbl, $arrWhere, $colget = 'id'){
 		$limit = 500;
@@ -478,7 +478,7 @@ class Formbuilder {
 		while ($row = $this->fetchBoth($res)) $ret[] = $row[0];
 		return $ret;
 	}
-    
+
 	/**
      * Get object config from data row to build form layout
      * @param $row single fetch data row from DB
@@ -502,7 +502,7 @@ class Formbuilder {
 			if(stripos($row['data_source'],'get_sanphamForLK')) $nguon = 'sp';
 			if(stripos($row['data_source'],'getnguoidungForLK')) $nguon = 'nd';
 		}
-		$dmtype = preg_replace("/[^0-9]/","",$row['data_source']); 
+		$dmtype = preg_replace("/[^0-9]/","",$row['data_source']);
 		if($dmtype) $nguon = 'dm';
 		$retVal['nguon'] = $nguon;
 		if(false == empty($row['col_label_cus']))
@@ -514,7 +514,7 @@ class Formbuilder {
 		$options['table'] = $row['table_name'];
 		$options['nguon'] = $nguon;
 		if(-1 == $row['hidden']) $options['hiddenGrp'] = 1;
-		
+
         if (isset($row['search_opt']))
             $options['pop'] = $row['search_opt']; //instant popup search?
 		$upperINP = strtoupper($row['data_type']);
@@ -544,7 +544,7 @@ class Formbuilder {
                 $retVal['inputType'] = Self::CHECK;
                 if (false == $getRefData)
                     break;
-                $this->getOptionDatasource($row['data_source'], $options, $default_listtype);                
+                $this->getOptionDatasource($row['data_source'], $options, $default_listtype);
                 break;
             case 'SELECT':
             case 'SELECT_MULTI':
@@ -552,7 +552,7 @@ class Formbuilder {
                 $options['multiple'] = $upperINP == 'SELECT_MULTI';
                 if (false == $getRefData)
                     break;
-                $this->getOptionDatasource($row['data_source'], $options, $default_listtype);                
+                $this->getOptionDatasource($row['data_source'], $options, $default_listtype);
                 break;
             case 'RADIO':
                 $retVal['inputType'] = Self::RADIO;
@@ -579,7 +579,7 @@ class Formbuilder {
                 $options['enterNew'] = true;
 				if (false == $getRefData)
                     break;
-				$tmp = null;				
+				$tmp = null;
                 $options['url'] = $this->getOptionDatasource($row['data_source'], $tmp, $default_listtype);
                 break;
             case 'TEXTAREA':
@@ -694,8 +694,8 @@ class Formbuilder {
     }
 
     private function formatNum($v) {
-		if(null === $v || ''===$v) return '';		
-        return number_format($v, 0, '.', ',');		
+		if(null === $v || ''===$v) return '';
+        return number_format($v, 0, '.', ',');
     }
 	private function getNum($tmp) {
 		$tmp = str_replace(',', '', $tmp);
@@ -721,7 +721,7 @@ class Formbuilder {
         }
         return false;
     }
-	
+
 	public function fetchQuery($query) {
 		$conn = $this->em->getConnection();
 		$statement = $conn->prepare($query);
@@ -758,7 +758,7 @@ class Formbuilder {
         $this->_mtextboxlib = true;
         $instantPopSearch = null;
         $noSearch = false;
-		
+
         if ($searchOpt) {
             //{"pop":0, "ins":"S"|"M"}
             if (property_exists($searchOpt, 'pop') && $searchOpt->pop < 1) {
@@ -811,8 +811,8 @@ class Formbuilder {
         $urljs = '"' . $url . '"';
         if(is_array($url)) $urljs = json_encode($url);
         $this->mscript .= 'tk' . $id . '=new Geekutil.TM("' . $id . '",' . $allEnterNew . ',' . $urljs . ',' . $value . ',' . $maxstr . ',' . $istPopSearchStr . ');';
-		
-												
+
+
         if ($trigger_target) {
             $targetArr = explode(',', $trigger_target);
             $selTarget = '';
@@ -844,7 +844,7 @@ class Formbuilder {
         }
 		if(!$timestamp) $timestamp = '0';
 		$retVal = '<div class="col-md-10">';
-        if ($showTime) {			
+        if ($showTime) {
             $retVal .= '<input type="text" placeholder="' . $plh . '" autocomplete="off" id="' . $id . '_d" name="' . $id . '_d" maxlength="10"';
             $retVal .= 'class="col-md-4 form-control ' . $class2 . '"';
             if ($readonly) {
@@ -969,7 +969,7 @@ class Formbuilder {
                 	$retVal .= '/>' . $labelArr[$i] . '</label></div>';
             	}
 			}
-            
+
             return $retVal.'</div>';
         }
         throw new Exception('Wrong RADIO data. Missing data source.');
@@ -979,7 +979,7 @@ class Formbuilder {
     private function getDefaultValue($id) {
         if ('' != $this->_prefixID)
             $id = substr($id, strlen($this->_prefixID));
-        
+
         if (!$this->_mConfigList)
             throw new Exception('Wrong call - must have config list.');
         foreach ($this->_mConfigList as $config) {
@@ -992,7 +992,7 @@ class Formbuilder {
         return '';
     }
 	function BuildInputSelect($id, $labelArr, $valueArr, $required = null, $defaultValue = null, $multiple = false, $url = null, $trigger_target = null, $trigger_url = null, $zero = 1) {
-        
+
         if ($trigger_target) {
             $targetArr = explode(',', $trigger_target);
             $selTarget = '';
@@ -1132,7 +1132,7 @@ class Formbuilder {
 					// if($options['url']) $this->_gen_req[] = $url;
 				}
             }
-                
+
             if (isset($options['validator']))
                 $validatorObj = $options['validator'];
             if (isset($options['suffix']))
@@ -1153,14 +1153,14 @@ class Formbuilder {
             }
             if (isset($options['trigger_url'])) {
                 $triggerURLArr = explode(',', $options['trigger_url']);
-                foreach ($triggerURLArr as $idx => &$trigURL){					
+                foreach ($triggerURLArr as $idx => &$trigURL){
 					$b = trim($trigURL);
 					$trigURL = $trigURL;
 					// if($b && $defaultValue && false !== stripos($inLstConfig, ','.$idx.',')) $this->_gen_req[] = $trigURL;//
 				}
                 $trigger_url = implode(',', $triggerURLArr);
             }
-            
+
         }
 		$arrInfos['fullname'] = 'full name';
 		// TODO: optimize - load users info only once
@@ -1237,7 +1237,7 @@ class Formbuilder {
                 throw new Exception('INPUT TYPE Not implemented.');
         }
 
-        
+
         return $retVal . '</div>';
     }
 
@@ -1250,11 +1250,11 @@ class Formbuilder {
         if (!$this->_mConfigList)
             $this->_mConfigList = $this->getTableConfig($obj_name);
 		// if(null === $arrGrpName) $arrGrpName = $this->getGroupName($obj_name);
-		$retVal = $this->BuildLayout($this->_mConfigList, $obj_name, $arrGrpName);        
-		
+		$retVal = $this->BuildLayout($this->_mConfigList, $obj_name, $arrGrpName);
+
         return $retVal;
     }
-	
+
     /** Build layout from table config values
      * @param $objconfigList - collection of row config data
      */
@@ -1376,9 +1376,9 @@ class Formbuilder {
             $config['options']['defaultValue'] = null;
 			$type = $config['inputType'];
             if (Self::BIRTHDAY != $type && isset($row[$config['column']])){
-                $config['options']['defaultValue'] = $row[$config['column']];				
+                $config['options']['defaultValue'] = $row[$config['column']];
                 if (Self::DATETIME == $type){
-                        $config['options']['defaultValue'] = '0000-00-00 00:00:00' === ($row[$config['column']]) ? '' : $row[$config['column']];                        
+                        $config['options']['defaultValue'] = '0000-00-00 00:00:00' === ($row[$config['column']]) ? '' : $row[$config['column']];
                 }
             }
 			if (Self::BIRTHDAY == $type){
@@ -1421,7 +1421,7 @@ class Formbuilder {
                     }
                     if (isset($postdata['t' . $v['id']]) && $postdata['t' . $v['id']] != '') {
                         $tmp['to'] = $this->getNum($postdata['t' . $v['id']]);
-                    } 
+                    }
                     break;
                 case 'SELECT':
                     if (isset($postdata[$v['id']]) && $postdata[$v['id']] != '-1') {
@@ -1472,17 +1472,17 @@ class Formbuilder {
 				foreach ($row as $vl) {
 					if($vl['id'] == $v['id']){
 						if(isset($vl['v']))
-							$v['defaultValue'] = $vl['v']; 
+							$v['defaultValue'] = $vl['v'];
 						if(isset($vl['from']))
-							$v['from'] = $vl['from']; 
+							$v['from'] = $vl['from'];
 						if(isset($vl['to']))
-							$v['to'] = $vl['to']; 
+							$v['to'] = $vl['to'];
 						if(isset($vl['day']))
-							$v['day'] = $vl['day']; 
+							$v['day'] = $vl['day'];
 						if(isset($vl['month']))
-							$v['month'] = $vl['month']; 
+							$v['month'] = $vl['month'];
 						if(isset($vl['year']))
-							$v['year'] = $vl['year']; 
+							$v['year'] = $vl['year'];
 					}
 				}
 			}
@@ -1644,7 +1644,7 @@ class Formbuilder {
             if (isset($options['url'])){
                 if(is_array($options['url'])) {
                     $url = $options['url'];
-                }else        
+                }else
                     $url = APP_URL . $options['url'];
             }
             if (isset($options['suffix']))
@@ -1698,7 +1698,7 @@ class Formbuilder {
 		if ($defaultValue)
             $retVal .= ' value="' . htmlspecialchars($defaultValue) . '"';
         $retVal .= '/>';
-		
+
         if ($suffix)
             $retVal .= '<span class="midsearch">' . $suffix . '</span>';
         return $retVal . '</div></div>';
@@ -1752,7 +1752,7 @@ class Formbuilder {
         return $retVal . '</div></div>';
     }
 
-    private function BuildDateSearch($id, $label, $attr = null,$from=0,$to=0,$defaultValue=null) { 
+    private function BuildDateSearch($id, $label, $attr = null,$from=0,$to=0,$defaultValue=null) {
 
 		if(!$from) $from = '0';
 		if(!$to) $to = '0';
@@ -1763,27 +1763,27 @@ class Formbuilder {
         $retVal .= '<option value="currD"';
 		if ($defaultValue == 'currD')  $retVal .= ' selected';
 		$retVal .='>' . _S_CR_D . '</option>';
-		
+
 		$retVal .= '<option value="currD7"';
 		if ($defaultValue == 'currD7')  $retVal .= ' selected';
-		$retVal .='>' . _S_CR_D7 . '</option>';                 
-		
+		$retVal .='>' . _S_CR_D7 . '</option>';
+
 		$retVal .= '<option value="currD30"';
 		if ($defaultValue == 'currD30')  $retVal .= ' selected';
 		$retVal .='>' . _S_CR_D30 . '</option>';
-		
+
 		$retVal .= '<option value="currW"';
 		if ($defaultValue == 'currW')  $retVal .= ' selected';
 		$retVal .='>' . _S_CR_W . '</option>';
-		
+
 		$retVal .= '<option value="currM"';
 		if ($defaultValue == 'currM')  $retVal .= ' selected';
 		$retVal .='>' . _S_CR_M . '</option>';
-		
+
 		$retVal .= '<option value="currQ"';
 		if ($defaultValue == 'currQ')  $retVal .= ' selected';
 		$retVal .='>' . _S_CR_Q . '</option>';
-		
+
 		$retVal .= '<option value="currY"';
 		if ($defaultValue == 'currY')  $retVal .= ' selected';
 		$retVal .='>' . _S_CR_Y . '</option>';
@@ -1801,7 +1801,7 @@ class Formbuilder {
 		if (false == in_array($defaultValue,array('currD', 'currM', 'currQ', 'currY', 'currW', 'currD7', 'currD30'), true)) {
 			$this->mscript .= 'window["cakf'.$id.'"].set('.$from.');';
 			$this->mscript .= 'window["cakt'.$id.'"].set('.$to.');';
-		}		
+		}
         $retVal .= '<input t="d" type="hidden" id="t' . $id . '" name="t' . $id . '"/>';
         $retVal .= '<span class="help-inline">';
         $retVal .= '<i class="glyphicon glyphicon-calendar" id="t' . $id . '_i"></i></span>';
@@ -1893,7 +1893,7 @@ class Formbuilder {
             $arr = explode(',', $defaultValue);
             $defaultValue = '"' . implode('","', $arr) . '"';
         }
-        
+
         $retVal .= '<input t="tm" type="text" id="' . $id . '" name="' . $id . '" class="form-control tm" value="'.$defaultValue.'"/>';
         $retVal .= '<span class="help-inline">';
         $retVal .= '<i id="_s' . $id . '" class="icon-search click"></i>';
@@ -1916,11 +1916,11 @@ class Formbuilder {
         $this->mscript .= 'tk' . $id . '=new Geekutil.TM("' . $id . '",' . $allEnterNew . ',' . $urljs . ',' . $value . ',' . $maxstr . ',' . $istPopSearchStr . ');';
 		$multi = 1;
 		if($maxlength == 1) $multi = 0;
-		
+
         return $retVal . '</div></div>';
     }
-    
-    
+
+
     /************************************************* SEARCH HELPER ****************************** */
     /* Get time with zeros hour minute second
      * */
@@ -2030,7 +2030,7 @@ class Formbuilder {
     function BuildSingleCondition($data) {
         $retVal = ' AND'; //$data['op'];
         $type = strtoupper($data['type']);
-		
+
         //date
         if ('DATE' == $type) {
             $retVal .= ' (1';
@@ -2088,7 +2088,7 @@ class Formbuilder {
                     $retVal .= ' AND (1';
                     $arrColCond = array();
                     foreach ($arrColname as $colname) {
-						
+
                         $arrColCond[] = $this->BuildTextLikeCondition(($colname), $vsearch);
                     }
                     $retVal .= ' AND (' . implode(' OR ', $arrColCond) . ')';
@@ -2097,7 +2097,7 @@ class Formbuilder {
             } else {
                 //single data
                 foreach ($arrColname as $colname) {
-					
+
                     $arrColCond[] = $this->BuildTextLikeCondition(($colname), $data['v']);
                 }
                 $retVal .= ' (' . implode(' OR ', $arrColCond) . ')';
@@ -2107,7 +2107,7 @@ class Formbuilder {
         if ('NUMERIC' == $type) {
             $retVal .= ' (1';
             $colname = ($data['colname']);
-			
+
             if (isset($data['from'])) {
                 $retVal .= ' AND ' . $data['from'] . '<=' . $colname;
             }
@@ -2134,5 +2134,5 @@ class Formbuilder {
     }
 
     /************************************************* END OF SEARCH HELPER *******************************/
-	
+
 }

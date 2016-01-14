@@ -10,5 +10,18 @@
       <a class = "btn btn-primary" href = "{{ path('product_import') }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nhập DL từ file excel</a>
       <a class = "btn btn-primary" href = "{{ path('category_add') }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Export to excel</a>
     </div>
+    <div class = "search-form">
+      {{ form|raw}}
+      <button class = "btn btn-primary">Tìm kiếm</button>
+    </div>
+    <div class = "list-product">
+      {{ include('product/list.html.twig', { 'products': products }) }}
+    </div>
   </div>
+{% endblock %}
+
+{% block javascripts %}
+  <script>
+  {{script|raw}}
+  </script>
 {% endblock %}

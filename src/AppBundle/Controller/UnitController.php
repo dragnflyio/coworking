@@ -73,8 +73,7 @@ class UnitController extends Controller
    * Function update unit by id.
    * @param: $id, $data
    */
-  private function updateUnit($em, $id, $data)
-  {
+  private function updateUnit($em, $id, $data){
     $unit = $em->getRepository('AppBundle:Unit')->find($id);
     $unit->setNameen($data->nameen);
     $unit->setNamevi($data->namevi);
@@ -86,8 +85,7 @@ class UnitController extends Controller
   /**
    * Function add unit.
    */
-  private function addUnit($em, $data)
-  {
+  private function addUnit(&$em, $data){
     $unit = new Unit();
     $unit->setId($data->id);
     $unit->setNameen($data->nameen);
@@ -100,8 +98,7 @@ class UnitController extends Controller
   /**
    * Function delete unit.
    */
-  private function deleteUnit($em, Unit $unit)
-  {
+  private function deleteUnit($em, Unit $unit){
     $em->remove($unit);
     $em->flush();
   }
@@ -109,8 +106,7 @@ class UnitController extends Controller
   /**
    * Function check unit existing.
    */
-  private function checkUnitExisting($id)
-  {
+  private function checkUnitExisting($id){
     $unit = $this->getDoctrine()
       ->getRepository('AppBundle:Unit')
       ->find($id);
