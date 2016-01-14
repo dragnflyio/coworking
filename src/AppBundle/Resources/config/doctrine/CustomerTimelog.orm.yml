@@ -1,0 +1,67 @@
+AppBundle\Entity\CustomerTimelog:
+    type: entity
+    table: customer_timelog
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        memberid:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        visitorname:
+            type: string
+            nullable: true
+            length: 50
+            options:
+                fixed: false
+        visitoremail:
+            type: string
+            nullable: true
+            length: 50
+            options:
+                fixed: false
+        visitorphone:
+            type: string
+            nullable: true
+            length: 32
+            options:
+                fixed: false
+        checkin:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+        checkout:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+        checkinby:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        checkoutby:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        isvisitor:
+            type: boolean
+            nullable: false
+            options:
+                default: '0'
+        sysdate:
+            type: datetime
+            nullable: false
+            options:
+                default: CURRENT_TIMESTAMP
+    lifecycleCallbacks: {  }

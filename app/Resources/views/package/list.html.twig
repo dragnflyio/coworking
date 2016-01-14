@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+Cập nhật thông tin gói dịch vụ
+{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+   <div class="container">
+			<div class="row">
+        	<div class="col-md-12">
+            <h1>Danh sách gói dịch vụ</h1>
+        	</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<table class="table table-bordered">
+						<thead>
+						 	<tr>
+								<th>#</th>
+								<th>Tên</th>
+								<th>Giá</th>
+								<th>Thông tin</th>
+								<th>Người tạo</th>
+							</tr> 
+						</thead>
+						<tbody>
+						 	<tr>
+						 		<th scope="row">1</th>
+								<td>Mark</td>
+						 		<td>Otto</td>
+								<td>@mdo</td>
+								<td>Admin</td>
+							</tr> 
+							<tr>
+								<th scope="row">2</th> 
+								<td>Jacob</td>
+								<td>Thornton</td>
+								<td>@fat</td>
+								<td>Admin</td>
+							</tr> 
+							<tr>
+								<th scope="row">3</th> 
+								<td>Larry</td> 
+								<td>the Bird</td>
+								<td>@twitter</td>
+								<td>Admin</td>
+							</tr> 
+						</tbody>
+					</table>
+				</div>
+		  </div>
+		  <div class="row">
+				<div class="col-md-12">
+					<div class="center-block width200">
+						<a class="btn btn-primary" href="{{ path('add_package')}}" id="btnback"> Add new </a>
+					</div>
+				</div>
+			</div>
+		
+	 </div> <!-- /container --!>
+
+</div><!-- /wrapper --!>
+
+{% endblock %}
+{% block javascripts %}
+<script>
+jQuery(function(){
+
+	$('#btnsave').click(function(e){
+		e.preventDefault();
+		
+	})
+})
+
+
+</script>
+{% endblock %}

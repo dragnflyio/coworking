@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="wrapper">
+        <div id="container">
+            <div id="welcome">
+                <h1>Thêm gói</h1>
+            </div>
+						<div class="col-md-12">
+							{{ form|raw}}
+              <a href = "#" class = "btn btn-default">Submit</a>
+						</div>
+        </div>    
+		</div>
+
+{% endblock %}
+{% block javascripts %}
+<script>
+{{script}}
+</script>
+{% endblock %}

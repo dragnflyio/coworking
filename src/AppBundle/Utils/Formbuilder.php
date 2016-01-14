@@ -214,12 +214,12 @@ class Formbuilder {
 						$retVal[$config['table']][$config['column'] . '_year'] = $postData['y'.$config['id']];
 					break;
                 case Self::CURR_DATE:
-                    $retVal[$config['table']][strtolower($config['column'])] = date('Y-m-d H:i:s', $this->getCurrentTimestamp());
+                    $retVal[$config['table']][strtolower($config['column'])] = $this->getCurrentTimestamp();
                     break;
                 case Self::CURR_DATE_CREATE:
                     //Ignore this column in update
                     if (false == $this->_mupdateMode) {
-                        $retVal[$config['table']][strtolower($config['column'])] = date('Y-m-d H:i:s', $this->getCurrentTimestamp());
+                        $retVal[$config['table']][strtolower($config['column'])] = $this->getCurrentTimestamp();
                     } else {
                         //remove from update list
                         unset($retVal[$config['table']][strtolower($config['column'])]);
@@ -228,22 +228,22 @@ class Formbuilder {
                 case Self::CURR_USER_CREATE:
                     //Ignore this column in update
                     if (false == $this->_mupdateMode) {
-                        $retVal[$config['table']][strtolower($config['column'])] = $this->getCurUid();
+                        $retVal[$config['table']][strtolower($config['column'])] = 1;
                     } else {
                         //remove from update list
                         unset($retVal[$config['table']][strtolower($config['column'])]);
                     }
                     break;
                 case Self::CURR_USER:
-                    $retVal[$config['table']][strtolower($config['column'])] = $this->getCurUid();
+                    $retVal[$config['table']][strtolower($config['column'])] = 1;
                     break;
                 case Self::DATETIME:
                     if (isset($postData[$config['id']])) {
                         if ($config['options']['showTime']) {
-                            $retVal[$config['table']][strtolower($config['column'])] = $postData[$config['id']] ? date('Y-m-d H:i:s', (int) $postData[$config['id']]) : null;
+                            $retVal[$config['table']][strtolower($config['column'])] = $postData[$config['id']] ? (int) $postData[$config['id']] : null;
                         }
                         else
-                            $retVal[$config['table']][strtolower($config['column'])] = $postData[$config['id']] ? date('Y-m-d', (int) $postData[$config['id']]) : null;
+                            $retVal[$config['table']][strtolower($config['column'])] = $postData[$config['id']] ? (int) $postData[$config['id']] : null;
                     }
                     break;
                 case Self::SELECT:
@@ -274,7 +274,7 @@ class Formbuilder {
 				case Self::TEXT_MULTI:
 						if(!array_key_exists($config['id'], $postData)) break;
 						$v = $postData[$config['id']];
-						if($v && $isMobi) $v = Gen_Library_Helper_Number::getPhone($v);
+						if($v && $isMobi) $v = $this->getPhone($v);
 						$retVal[$config['table']][strtolower($config['column'])] = $v ? $v : null;
 					break;
                 default:
@@ -290,6 +290,9 @@ class Formbuilder {
         }
 
         return $retVal;
+    }
+	private function getPhone($tmp){
+		return preg_replace('/[^0-9,]/', '', strip_tags($tmp));
     }
 
     /** get data source option for select, radio, checkbox
@@ -451,7 +454,15 @@ class Formbuilder {
 
     /* Get current date without dst */
     private function getCurrentTimestamp($strYMD = null) {
-		return AppBundle\Utils\number::DateToTimestamp($strYMD);
+		$m = -1*date('I');
+		if(is_numeric($strYMD)){
+			return ($strYMD - 3600*$m);
+		}
+		if(null == $strYMD){
+			return mktime();
+		} else 
+        	$a = strtotime($strYMD);
+        return ($a - 3600*$m);
     }
 
 	/** Tim kiem trong bang voi dieu kien build tu refine */
@@ -494,15 +505,9 @@ class Formbuilder {
 
         $retVal['label'] = defined($row['col_label']) ? constant($row['col_label']) : $row['col_label'];
 		$nguon = null;
-		if(stripos($row['data_source'],'datalookup')){
-			if(stripos($row['data_source'],'getkhachhangForLK') ) $nguon = 'kh';
-			if(stripos($row['data_source'],'getcohoiForLK')) $nguon = 'ch';
-			if(stripos($row['data_source'],'getchiendichForLK')) $nguon = 'mk';
-			if(stripos($row['data_source'],'gethopdongForLK')) $nguon = 'hd';
-			if(stripos($row['data_source'],'get_sanphamForLK')) $nguon = 'sp';
-			if(stripos($row['data_source'],'getnguoidungForLK')) $nguon = 'nd';
-		}
-		$dmtype = preg_replace("/[^0-9]/","",$row['data_source']);
+		
+		$dmtype = preg_replace("/[^0-9]/","",$row['data_source']); 
+
 		if($dmtype) $nguon = 'dm';
 		$retVal['nguon'] = $nguon;
 		if(false == empty($row['col_label_cus']))
@@ -713,10 +718,12 @@ class Formbuilder {
         }
         return '';
     }
-
+	/**
+	 * Check element arg in array arr, loose comparsion
+	 */
     private function inarr_intstr($arg, $arr) {
         for ($i = 0; $i < count($arr); $i++) {
-            if (strtolower((string) $arg) == strtolower((string) $arr[$i]))
+            if (strtolower((string) $arg) === strtolower((string) $arr[$i]))
                 return true;
         }
         return false;
@@ -737,11 +744,11 @@ class Formbuilder {
 		if($whereCond){
 			$whereTbl .= ' AND ('.$whereCond.')';
 		}
-		if($getsysfield) $whereTbl .= ' OR (tf.object_name = "' . $objName . '" AND col_name IN ("ngay_tao","nguoi_tao","ngay_sua","nguoi_sua"))';
-        $query = 'SELECT * FROM ddfields AS tf'
-                . ' WHERE tf.col_active = 1 AND tf.object_name = "' . $objName . '"'
+
+        $query = 'SELECT * FROM ddfields'
+                . ' WHERE col_active = 1 AND object_name = "' . $objName . '"'
                 . $whereTbl
-                . ' ORDER BY tf.col_position,tf.id';
+                . ' ORDER BY col_position,id';
         $result = $this->fetchQuery($query);
         $objList = array();
 		$this->_activeFieldIds = array();
@@ -1018,9 +1025,10 @@ class Formbuilder {
                 $retVal .= '<option value="' . $this->_noval . '">' . (defined('_DDL_LC') ? constant('_DDL_LC') : '...Select...') . '</option>';
             for ($i = 0; $i < count($labelArr); $i++) {
                 $retVal .= '<option value="' . $valueArr[$i] . '"';
-                if (is_array($defaultValue) && $this->inarr_intstr($valueArr[$i], $defaultValue)) {
-                    $retVal .= ' selected';
-                    //} elseif($defaultValue && $defaultValue == $valueArr[$i]){
+                if (is_array($defaultValue)) {
+					if ($this->inarr_intstr($valueArr[$i], $defaultValue))
+                    	$retVal .= ' selected';
+
                 } elseif (false !== stripos(',' . $defaultValue . ',', ','.$valueArr[$i].',')) {
                     $retVal .= ' selected';
                 }
@@ -1328,7 +1336,7 @@ class Formbuilder {
             }
             if ($pos['col'] == 1) {
                 if (false === $inrow) {
-                    $retVal .= '<div class="row">';
+                    $retVal .= '<div class="row"> ';
                     $inrow = true;
                 } else if ($currentRow < $pos['row']) {
                     //New row for sure.
@@ -1378,7 +1386,7 @@ class Formbuilder {
             if (Self::BIRTHDAY != $type && isset($row[$config['column']])){
                 $config['options']['defaultValue'] = $row[$config['column']];
                 if (Self::DATETIME == $type){
-                        $config['options']['defaultValue'] = '0000-00-00 00:00:00' === ($row[$config['column']]) ? '' : $row[$config['column']];
+                    $config['options']['defaultValue'] = '0000-00-00 00:00:00' === ($row[$config['column']]) ? '' : $row[$config['column']];
                 }
             }
 			if (Self::BIRTHDAY == $type){
@@ -2015,9 +2023,7 @@ class Formbuilder {
     /* remove comments, special characters before using in query
      * */
     private function getSQLText($text) {
-        $arr = array('\\','\'');
-        $arrR = array('\\\\','\'\'');
-        return str_replace($arr, $arrR, $text);
+        return  addcslashes( $text, '_%\\\'' );
     }
 
     private function BuildTextLikeCondition($colname, $text) {

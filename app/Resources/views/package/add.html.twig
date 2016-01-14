@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+Thêm gói dịch vụ
+{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+
+   <div class="container">
+			<div class="row">
+        	<div class="col-md-12">
+            <h1>Thêm gói dịch vụ</h1>
+        	</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					{{ form|raw}}
+				</div>
+		  </div>
+		  <div class="row">
+				<div class="col-md-12">
+					<div class="center-block width200">
+						<a class="btn btn-primary" href="#" id="btnsave"> Save </a> <a class="btn btn-default" href="{{ path('list_package')}}" id="btnback"> Back </a>
+					</div>
+				</div>
+			</div>
+		
+	 </div> <!-- /container --!>
+
+</div><!-- /wrapper --!>
+
+{% endblock %}
+{% block javascripts %}
+<script>
+jQuery(function(){
+	{{script}}
+	$('#btnsave').click(function(e){
+		e.preventDefault();
+		
+	})
+})
+
+
+</script>
+{% endblock %}
