@@ -23,6 +23,8 @@ class ProductController extends Controller
     $rows = $statement->fetchAll();
     $products = array();
     foreach ($rows as $row) {
+      $row['unitname'] = $this->getUnitNameById($row['unit']);
+      $row['catname'] = $this->getCatNameById($row['category']);
       $products[] = (object) $row;
     }
     $formbuilder = $this->get('app.formbuilder');
@@ -32,6 +34,19 @@ class ProductController extends Controller
         'form' => $tmp,
         'script' => $formbuilder->mscript,
         'products' => $products,
+    ]);
+  }
+
+  /**
+   * @Route("product/add", name = "product_add")
+   */
+  public function addAction(){
+    $formbuilder = $this->get('app.formbuilder');
+    $tmp = $formbuilder->GenerateLayout('category');
+    return $this->render('product/form.html.twig', [
+        'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
+        'form' => $tmp,
+        'script' => $formbuilder->mscript
     ]);
   }
 
@@ -56,13 +71,13 @@ class ProductController extends Controller
       $catname = $product->F;
       $unitname = $product->D;
       $catid = $this->getCidByName($catname);
-      if ($catid == null) {
+      if (null == $catid) {
         $notes[] = 'Danh mục không tồn tại';
       } else {
         $product->catid = $catid;
       }
       $unitid = $this->getUnitIdByName($unitname);
-      if ($unitid == null) {
+      if (null == $unitid) {
         $notes[] = 'Đơn vị không tồn tại';
       } else {
         $product->unitid = $unitid;
@@ -195,6 +210,50 @@ class ProductController extends Controller
     $row = $statement->fetchAll();
     if (!empty($row)){
       return $row[0]['id'];
+    }
+    else {
+      return NULL;
+    }
+  }
+
+  /**
+   * Get unit name by id
+   *
+   * @param int $id
+   *
+   * @return string $name_vi
+   */
+  public function getUnitNameById($id){
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT * FROM unit WHERE id = :id");
+    $statement->bindParam(':id', $id);
+    $statement->execute();
+    $row = $statement->fetchAll();
+    if (!empty($row)){
+      return $row[0]['namevi'];
+    }
+    else {
+      return NULL;
+    }
+  }
+
+  /**
+   * Get category name by id
+   *
+   * @param int $id
+   *
+   * @return string $name_vi
+   */
+  public function getCatNameById($id){
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT * FROM product_category WHERE id = :id");
+    $statement->bindParam(':id', $id);
+    $statement->execute();
+    $row = $statement->fetchAll();
+    if (!empty($row)){
+      return $row[0]['name'];
     }
     else {
       return NULL;

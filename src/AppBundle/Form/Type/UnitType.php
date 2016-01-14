@@ -13,8 +13,8 @@ class UnitType extends AbstractType
   public function buildForm(FormBuilderInterface $builder, array $options)
   {
     $builder->add('id');
-    $builder->add('nameen');
     $builder->add('namevi');
+    $builder->add('nameen');
     $builder->add('value');
     $builder->add('base_unit');
   }

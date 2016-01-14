@@ -9,8 +9,8 @@
 
 {% macro _units_entry_widget(formData) %}
   <td>{{ form_widget(formData.id) }}</td>
-  <td>{{ form_widget(formData.nameen) }}</td>
   <td>{{ form_widget(formData.namevi) }}</td>
+  <td>{{ form_widget(formData.nameen) }}</td>
   <td>{{ form_widget(formData.value) }}</td>
   <td>{{ form_widget(formData.base_unit, {'required': false}) }}</td>
 {% endmacro %}
@@ -38,8 +38,8 @@
           {% for unit in form.units %}
           <tr class = "unit-item">
             <td>{{ form_widget(unit.id) }}</td>
-            <td>{{ form_widget(unit.nameen) }}</td>
             <td>{{ form_widget(unit.namevi) }}</td>
+            <td>{{ form_widget(unit.nameen) }}</td>
             <td>{{ form_widget(unit.value) }}</td>
             <td>{{ form_widget(unit.base_unit, {'required': false}) }}</td>
           </tr>

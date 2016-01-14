@@ -14,10 +14,10 @@
         <td>{{product.code}}</td>
         <td>{{product.name_vi}}</td>
         <td>{{product.name_en}}</td>
-        <td>{{product.unit}}</td>
+        <td>{{product.unitname}}</td>
         <td>{{product.type}}</td>
-        <td>{{product.category}}</td>
-        <td>{{product.price}}</td>
+        <td>{{product.catname}}</td>
+        <td>{{product.price|number_format(3, ',')}}</td>
       </tr>
     {% endfor %}
   </tbody>
