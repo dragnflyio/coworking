@@ -78,7 +78,7 @@ class UnitController extends Controller
     $unit->setNameen($data->nameen);
     $unit->setNamevi($data->namevi);
     $unit->setValue($data->value);
-    $unit->setBaseUnit($data->base_unit);
+    $unit->setBaseUnit($data->baseUnit);
     $em->flush();
   }
 
@@ -91,7 +91,7 @@ class UnitController extends Controller
     $unit->setNameen($data->nameen);
     $unit->setNamevi($data->namevi);
     $unit->setValue($data->value);
-    $unit->setBaseUnit($data->base_unit);
+    $unit->setBaseUnit($data->baseUnit);
     $em->persist($unit);
   }
 
