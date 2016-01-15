@@ -761,7 +761,7 @@ class Formbuilder {
     }
 	/** Text multi input
      **/
-    function BuildTextMultiInput($id, $label, $url, $allowNew = false, $maxlength = null, $required = false, $defaultValue = null, $readonly = false, $popcode, $trigger_target = null, $trigger_url = null, $searchOpt = null, $class = null,$nguon = null) {
+    function BuildInputTextMulti($id, $label, $url, $allowNew = false, $maxlength = null, $required = false, $defaultValue = null, $readonly = false, $popcode, $trigger_target = null, $trigger_url = null, $searchOpt = null, $class = null,$nguon = null) {
         $this->_mtextboxlib = true;
         $instantPopSearch = null;
         $noSearch = false;
@@ -835,8 +835,8 @@ class Formbuilder {
         return $retVal.'</div>';
     }
 
-    function BuildDateTimePicker($id, $label, $showTime = false, $required = false, $defaultValue = null, $readonly = false) {
-        $plh = 'year/month/day';
+    function BuildInputDateTimePicker($id, $label, $showTime = false, $required = false, $defaultValue = null, $readonly = false) {
+        $plh = 'day/month/year';
         $timestamp = 0;
         $class2 = '';
         if ($readonly)
@@ -1048,7 +1048,7 @@ class Formbuilder {
             }
             else
                 $this->mscript .= 'loadAndFillSelect("' . $id . '","' . $url . '","",' . $zero . ');';
-            $retVal = '<select class="form-control" name="' . $id . '" id="' . $id . '"';
+            $retVal .= '<select class="form-control" name="' . $id . '" id="' . $id . '"';
             if ($multiple)
                 $retVal .= ' multiple="multiple"';
             $retVal .= ' ' . $this->buildAttributeForControl() . '>';
@@ -1212,28 +1212,28 @@ class Formbuilder {
                 $retVal .= $this->BuildInputSelect($id, $labelArr, $valueArr, $required, $defaultValue, $multiple, $url, $trigger_target, $trigger_url, $zero);
                 break;
             case Self::DATETIME:
-                $retVal .= $this->BuildDateTimePicker($id, $label, $showTime, $required, $defaultValue, $readonly);
+                $retVal .= $this->BuildInputDateTimePicker($id, $label, $showTime, $required, $defaultValue, $readonly);
                 break;
             case Self::CURR_DATE:
 				if ($this->_mupdateMode) {
-					$retVal .= $this->BuildDateTimePicker($id, $label, false, false, $defaultValue, true);
+					$retVal .= $this->BuildInputDateTimePicker($id, $label, false, false, $defaultValue, true);
 				} else
-                	$retVal .= $this->BuildDateTimePicker($id, $label, false, false, $this->getCurrentTimestamp(), true);
+                	$retVal .= $this->BuildInputDateTimePicker($id, $label, false, false, $this->getCurrentTimestamp(), true);
                 break;
             case Self::CURR_DATETIME:
 				if ($this->_mupdateMode) {
-                    $retVal .= $this->BuildDateTimePicker($id, $label, true, false, $defaultValue, true);
+                    $retVal .= $this->BuildInputDateTimePicker($id, $label, true, false, $defaultValue, true);
                 }else
-                	$retVal .= $this->BuildDateTimePicker($id, $label, true, false, $this->getCurrentTimestamp(), true);
+                	$retVal .= $this->BuildInputDateTimePicker($id, $label, true, false, $this->getCurrentTimestamp(), true);
                 break;
             case Self::CURR_DATE_CREATE:
                 if ($this->_mupdateMode) {
-                    $retVal .= $this->BuildDateTimePicker($id, $label, false, false, $defaultValue, true);
+                    $retVal .= $this->BuildInputDateTimePicker($id, $label, false, false, $defaultValue, true);
                 }else
-                    $retVal .= $this->BuildDateTimePicker($id, $label, false, false, $this->getCurrentTimestamp(), true);
+                    $retVal .= $this->BuildInputDateTimePicker($id, $label, false, false, $this->getCurrentTimestamp(), true);
                 break;
             case Self::TEXT_MULTI:
-                $retVal .= $this->BuildTextMultiInput($id, $label, $url, $textMultiEnterNew, $maxlength, $required, $defaultValue, $readonly, null, $trigger_target, $trigger_url, $searchOpt, $class,$nguon);
+                $retVal .= $this->BuildInputTextMulti($id, $label, $url, $textMultiEnterNew, $maxlength, $required, $defaultValue, $readonly, null, $trigger_target, $trigger_url, $searchOpt, $class,$nguon);
                 break;
             case Self::BIRTHDAY:
                 $retVal .= $this->BuildInputBirthday($id, $label, $defaultValue);
@@ -1687,7 +1687,7 @@ class Formbuilder {
                 $retVal .= $this->BuildDateSearch($id, $label,$defaultValue,$from,$to,$defaultValue);
                 break;
             case Self::TEXT_MULTI:
-                $retVal .= $this->BuildTextMultiInputSearch($id, $label, $url, $textMultiEnterNew, $maxlength, $instantPopSearch,$defaultValue);
+                $retVal .= $this->BuildInputTextMultiSearch($id, $label, $url, $textMultiEnterNew, $maxlength, $instantPopSearch,$defaultValue);
                 break;
             case Self::BIRTHDAY:
                 $retVal .= $this->BuildBirthdaySearch($id, $label,$day,$month,$year);
@@ -1888,7 +1888,7 @@ class Formbuilder {
 
     /** Text multi input
      * */
-    private function BuildTextMultiInputSearch($id, $label, $url, $allowNew = false, $maxlength = null, $instantPopSearch = null,$defaultValue = null) {
+    private function BuildInputTextMultiSearch($id, $label, $url, $allowNew = false, $maxlength = null, $instantPopSearch = null,$defaultValue = null) {
         $this->_mtextboxlib = true;
         $retVal = '<div class="form-group"><label for="' . $id . '" class="col-sm-2 control-label">' . $label . '</label><div class="col-sm-8">';
         $max = 0;
