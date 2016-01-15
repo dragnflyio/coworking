@@ -7,6 +7,7 @@
     <th>Loại</th>
     <th>Danh mục</th>
     <th>Giá</th>
+    <th></th>
   </thead>
   <tbody>
     {% for index,product in products %}
@@ -18,6 +19,7 @@
         <td>{{product.type}}</td>
         <td>{{product.catname}}</td>
         <td>{{product.price|number_format(3, ',')}}</td>
+        <td><a href = "{{path('product_update')}}?id={{product.id}}"><span class = "glyphicon glyphicon-pencil"></span></a></td>
       </tr>
     {% endfor %}
   </tbody>

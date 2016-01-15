@@ -14,8 +14,7 @@ class UnitController extends Controller
   /**
    * @Route("/unit", name="unit")
    */
-  public function unitAction(Request $request)
-  {
+  public function unitAction(Request $request){
     // this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Unable to access this page!');
     $pageUnit = new PageUnit();
     $pageUnitOld = new PageUnit();
@@ -116,5 +115,27 @@ class UnitController extends Controller
     else {
       return true;
     }
+  }
+
+  /**
+   * Get unit from database and return json data
+   *
+   * @Route("/unit/json", name = "unit_json")
+   */
+  public function jsonAction(){
+    $em = $this->getDoctrine()->getManager();
+    $repository = $this->getDoctrine()
+    ->getRepository('AppBundle:Unit');
+    $units = $repository->findAll();
+    $tmp = array();
+    foreach ($units as $unit) {
+      $tmp[] = array($unit->id, $unit->namevi);
+    }
+    $response = new Response(
+      json_encode($tmp),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
   }
 }

@@ -97,7 +97,7 @@ class CategoryController extends Controller
     $parent_id = $_POST['parent_id'] != -1 ? $_POST['parent_id'] : null;
     $name = $_POST['name'];
     $code = $_POST['code'];
-    if ($_POST['parent_id'] == -1) {
+    if (-1 == $_POST['parent_id']) {
       $depth = 0;
     } else {
       $depth = $this->getDepth($_POST['parent_id']) + 1;

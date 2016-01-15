@@ -42,7 +42,7 @@ class ProductController extends Controller
    */
   public function addAction(){
     $formbuilder = $this->get('app.formbuilder');
-    $tmp = $formbuilder->GenerateLayout('category');
+    $tmp = $formbuilder->GenerateLayout('product');
     return $this->render('product/form.html.twig', [
         'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
         'form' => $tmp,
@@ -51,9 +51,90 @@ class ProductController extends Controller
   }
 
   /**
-   * @Route("/product/import", name = "product_import")
+   * @Route("product/update", name = "product_update")
    */
-  public function importAction(){
+  public function updateAction(){
+    $formbuilder = $this->get('app.formbuilder');
+    $request = Request::createFromGlobals();
+    $id = $request->query->get('id', 0);
+    $id = (int)$id;
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT * FROM product WHERE id = $id");
+    $statement->execute();
+    $row = $statement->fetchAll();
+    $tmp = $formbuilder->LoadDatarowToConfig($row[0], 'product');
+    return $this->render('product/form.html.twig', [
+        'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
+        'form' => $tmp,
+        'script' => $formbuilder->mscript
+    ]);
+  }
+
+  /**
+   * @Route("product/ajax-action", name = "product_ajax_action")
+   *
+   * Control add/update product.
+   */
+  public function ajaxAction(){
+    $code = $_POST['code'];
+    $name_vi = $_POST['name_vi'];
+    $name_en = $_POST['name_en'];
+    $unit = $_POST['unit'];
+    $category = $_POST['category'];
+    $type = $_POST['type'];
+    $price = $_POST['price'];
+    $start_date = $_POST['start_date'];
+    $end_date = $_POST['end_date'];
+    $showinbar = $_POST['showinbar'];
+
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    if (!empty($_POST['id'])) {
+      $statement = $connection->prepare("UPDATE product
+        SET code = :code,
+        name_en = :name_en,
+        name_vi = :name_vi,
+        unit = :unit,
+        type = :type,
+        price = :price,
+        category = :category,
+        showinbar = :showinbar,
+        start_date = :start_date,
+        end_date = :end_date where id =:id");
+      $statement->bindParam(':id', $_POST['id']);
+      $message = "Bạn đã cập nhật sản phẩm thành công";
+    }
+    else {
+      $statement = $connection->prepare("INSERT INTO product (code, name_en, name_vi, unit, type, price, category, showinbar, start_date, end_date, status)
+      VALUES (:code, :name_en, :name_vi, :unit, :type, :price, :category, :showinbar, :start_date, :end_date, 1)");
+      $message = "Bạn đã thêm mới sản phẩm thành công";
+    }
+    $statement->bindParam(':code', $code);
+    $statement->bindParam(':name_en', $name_en);
+    $statement->bindParam(':name_vi', $name_vi);
+    $statement->bindParam(':unit', $unit);
+    $statement->bindParam(':type', $type);
+    $statement->bindParam(':price', $price);
+    $statement->bindParam(':category', $category);
+    $statement->bindParam(':showinbar', $showinbar);
+    $statement->bindParam(':start_date', $start_date);
+    $statement->bindParam(':end_date', $end_date);
+    $statement->execute();
+    $response = new Response(
+      json_encode(array('message' => $message)),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
+
+  /**
+   * @Route("/product/import", name = "product_import")
+   *
+   * Render import product page.
+   */
+  public function importIndexAction(){
     $products = array();
     return $this->render('product/import.html.twig', array(
       'products' => $products
@@ -94,7 +175,7 @@ class ProductController extends Controller
   /**
    * @Route("/product/import-preview", name = "product_import_ajax")
    */
-  public function ajaxAction(Request $request){
+  public function ajaxpreviewAction(Request $request){
     $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject('product_price_export_11-45-13-01-16.xls');
     $data = $phpExcelObject->getActiveSheet()->toArray(null,true,true,true);
     $products = array();
@@ -111,8 +192,10 @@ class ProductController extends Controller
 
   /**
    * @Route("/product/import-save", name = "product_import_save")
+   *
+   * Import data into database.
    */
-  public function saveAction(Request $request) {
+  public function importAction(Request $request) {
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
     $session = $request->getSession();
