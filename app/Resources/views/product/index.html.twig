@@ -4,18 +4,38 @@
 
 {% block body %}
   <div class = "container">
-    <h1 class = "page-title">Danh sách giá sản phẩm</h1>
-    <div class="btn-group">
-      <a class = "btn btn-primary" href = "{{ path('product_add') }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nhập mới</a>
-      <a class = "btn btn-primary" href = "{{ path('product_import') }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nhập DL từ file excel</a>
-      <a class = "btn btn-primary" href = "{{ path('category_add') }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Export to excel</a>
+    <div class = "row">
+      <div class = "col-md-12">
+        <h1 class = "page-title">Danh sách sản phẩm</h1>
+      </div>
     </div>
-    <div class = "search-form">
-      {{ form|raw}}
-      <button class = "btn btn-primary">Tìm kiếm</button>
+    <div class = "row">
+      <div class = "col-md-12">
+        <div class="btn-group pull-right">
+          <a class = "btn btn-primary" href = "{{ path('product_add') }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nhập mới</a>
+          <a class = "btn btn-primary" href = "{{ path('product_import') }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nhập DL từ file excel</a>
+          <a class = "btn btn-primary" href = "{{ path('category_add') }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Export to excel</a>
+        </div>
+      </div>
     </div>
-    <div class = "list-product">
-      {{ include('product/list.html.twig', { 'products': products }) }}
+    <div class = "row">
+      <div class = "col-md-12">
+        {{ form|raw}}
+      </div>
+    </div>
+    <div class = "row">
+      <div class = "col-md-12">
+        <div class = "search-form pull-right">
+          <button class = "btn btn-primary">Tìm kiếm</button>
+        </div>
+      </div>
+    </div>
+    <div class = "row">
+      <div class = "col-md-12">
+        <div class = "list-product">
+          {{ include('product/list.html.twig', { 'products': products }) }}
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}
