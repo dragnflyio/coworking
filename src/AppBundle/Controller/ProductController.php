@@ -235,6 +235,25 @@ class ProductController extends Controller
   }
 
   /**
+   * @Route("/product/validate-code", name = "product_validate_code")
+   */
+  public function validateCodeAction(){
+    $code = $_POST['code'];
+    if (false == $this->checkProduct($code)) {
+      $status = 1;
+    }
+    else {
+      $status = 0;
+    }
+    $response = new Response(
+      json_encode(array('status' => $status)),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
+
+  /**
    * Check product by code.
    *
    * @param string $code

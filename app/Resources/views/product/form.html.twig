@@ -2,12 +2,24 @@
 {% block title %}Toong - Thêm sản phẩm{% endblock %}
 {% block body %}
   <div class = "container">
-      <h1 class = "page-title">Thêm</h1>
-        <div class="col-md-12 update-action">
-          {{ form|raw}}
-          <a href = "{{ path('product') }}" class = "btn btn-info">Quay lại</a>
-          <a href = "#" class = "btn btn-primary btn-submit">Ghi lại</a>
+    <div class="row">
+      <div class="col-md-12">
+        <h1 class = "page-title">Thêm</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {{ form|raw}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="center-block width200">
+          <a href = "#" class = "btn btn-primary btn-submit">Save</a>
+          <a href = "{{ path('product') }}" class = "btn btn-default">Back</a>
         </div>
+      </div>
+    </div>
   </div>
 {% endblock %}
 {% block javascripts %}

@@ -4,10 +4,22 @@
 
 {% block body %}
   <div class = "container">
-    <h1>Danh mục</h1>
-    <div class="action">
-      <a class = "btn btn-primary" href = "{{ path('category_add') }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Thêm</a>
+    <div class = "row">
+      <div class = "col-md-12">
+        <h1>Danh mục</h1>
+      </div>
     </div>
-    {% include 'category/viewcategory.html.twig' with {'categories': categories} %}
+    <div class = "row">
+      <div class="col-md-12">
+        <div class="center-block width200">
+          <a class = "btn btn-primary" href = "{{ path('category_add') }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Thêm</a>
+        </div>
+      </div>
+    </div>
+    <div class = "row">
+      <div class = "col-md-12">
+        {% include 'category/viewcategory.html.twig' with {'categories': categories} %}
+      </div>
+    </div>
   </div>
 {% endblock %}

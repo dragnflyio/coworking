@@ -1,5 +1,6 @@
-<table class = "table">
+<table class = "table table-bordered">
   <thead>
+    <th>#</th>
     <th>Mã sản phẩm</th>
     <th>Tên(VN)</th>
     <th>Tên(ENG)</th>
@@ -12,6 +13,7 @@
   <tbody>
     {% for index,product in products %}
       <tr>
+        <th scope="row">{{index}}</th>
         <td>{{product.code}}</td>
         <td>{{product.name_vi}}</td>
         <td>{{product.name_en}}</td>

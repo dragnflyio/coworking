@@ -26,16 +26,55 @@ $('.import-action .btn-import').click(function(){
   return false;
 });
 
-// Save new product
-$('.btn-submit').click(function(){
+// Validation product form.
+validation['code'] = {minlength:1, message: 'Nhập mã sản phẩm!'};
+validation['name_vi'] = {minlength:1, message: 'Nhập tên sản phẩm!'};
+validation['name_en'] = {minlength:1, message: 'Nhập tên sản phẩm!'};
+validation['unit'] = {jsfunction: function(){
+  if ($('#unit').val() == -1) return "Chọn đơn vị cho sản phẩm!";
+  return '';
+}};
+validation['category'] = {jsfunction: function(){
+  if ($('#category').val() == -1) return "Chọn danh mục cho sản phẩm!";
+  return '';
+}};
+validation['type'] = {jsfunction:function(){
+  if($('#type').val() == -1) return "Chọn loại sản phẩm!";
+  return '';
+}};
+validation['price'] = {minvalue:1, message: 'Nhập giá sản phẩm, lớn hơn 0 (zero)'};
+/*validation['code'] = {jsfunction:function(){
+  var code = $('#code').val();
+  var status = 1;
   $.ajax({
     type: 'POST',
-    url: '/product/ajax-action',
-    data: $('#f_product').serialize()
+    url: '/product/validate-code',
+    data: {'code': code,}
   })
-  .done(function (data) {
-    alert(data['message']);
-    $('#f_product').trigger("reset");
-  })
-  return false;
+  .success(function(data){
+    status = data['status'];
+  });
+  if (status == 0) {
+    return 'Mã sản phẩm này đã tồn tại!';
+  }
+  else {
+    return '';
+  }
+}};*/
+
+// Add/Update product.
+$('.btn-submit').click(function(e){
+  e.preventDefault();
+  if (beforePost() == true) {
+    $.ajax({
+      type: 'POST',
+      url: '/product/ajax-action',
+      data: $('#f_product').serialize()
+    })
+    .done(function (data) {
+      alert(data['message']);
+      $('#f_product').trigger("reset");
+    })
+    return false;
+  }
 });
