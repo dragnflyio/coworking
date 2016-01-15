@@ -153,6 +153,19 @@ input[type="text"].numeric{
 .text-error, .redtext{
 	color:red;
 }
+.error{
+	border:1px solid red;
+	padding: 2px;
+}
+.col2 li{
+	list-style:none;
+}
+ul.col2{
+	padding-left:0;
+}
+.height20{
+	height:20px;
+}
 
 .msginfo{
     z-index: 2000;

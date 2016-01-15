@@ -12,22 +12,35 @@ Cập nhật thông tin gói dịch vụ
         	</div>
 			</div>
 			<div class="row">
+
+					<div class="col-md-12">
+						<form class="form-horizontal" method="post" id="f_packagesearch">
+						{{form|raw}}
+					  </form>
+					</div>
+					<div class="col-md-12">
+						<div class="center-block width200">
+							<a class="btn btn-primary" href="#" id="btnsearch"> Tìm kiếm </a>
+						</div>
+					</div>
+			</div>
+			<div class="row"><div class="height20"></div></div>
+			<div class="row">
 				<div class="col-md-12">
 					<table class="table table-bordered">
 						<thead>
 						 	<tr>
 								<th>#</th>
 								<th>Tên</th>
-								<th>Giá</th>
+								<th>Giá (VND)</th>
 								<th>Thông tin</th>
 								<th>Người tạo</th>
 							</tr> 
 						</thead>
-						<tbody>
+						<tbody id="listpackage">
 						 	<tr>
 						 		<th colspan="5" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
-							</tr> 
-							
+							</tr>							
 						</tbody>
 					</table>
 				</div>
@@ -47,17 +60,34 @@ Cập nhật thông tin gói dịch vụ
 {% endblock %}
 {% block javascripts %}
 <script id="template_table" type="text/x-handlebars-template">
-  
-
+  <%#list%>
+	<tr>
+	<td><%idx%></td>
+	<td><%name%></td>
+	<td><%price%></td>
+	<td><%description%></td>
+	<td><%createdname%></td>
+	</tr>
+	<%/list%>
 </script>
 
 <script src="{{asset ('js/handlebars.min.js')}}"></script>
 <script>
 jQuery(function(){
-
-	$('#btnsave').click(function(e){
-		e.preventDefault();
+	{{script|raw}}
+	ajaxPost('/package/formapi?op=search', {}, function(data){
+		if (!data.empty){
+			$('#listpackage').html(mr( $('#template_table').html(), {list:data}))
+		} else {
+			$('#listpackage').html('<tr><th colspan="5" scope="row" class="text-center">'+ data.empty + '</th></tr>');
+		}
 		
+	});
+	$('#btnsearch').click(function(e){
+		e.preventDefault();
+		ajaxPost('/package/formapi?op=testsearch', $('#f_packagesearch').serialize(), function(d){
+			console.log(d)
+		});
 	})
 })
 
