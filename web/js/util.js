@@ -35,9 +35,11 @@ g += Math.floor(Math.random() * 0xF).toString(0xF)
 return g; 
 }
 
-wd.mr=function (tpl, h){
-  if(h==null || h==undefined) return Mustache.render(tpl, {})
-  return Mustache.render(tpl, h)
+wd.mr=function (tpl, d, delim){
+	if (!delim) tpl = tpl.replace(/<%%/g, '{{}{').replace(/%%>/g, '}}}').replace(/<%/g, '{{').replace(/%>/g, '}}');
+	var template = Handlebars.compile(tpl);	
+  if(!d) return template({});
+	return template(d);
 }
 wd.arrParseInt=function (v, prefixFilter){
 	if(!v || v.pop) return v;
@@ -529,7 +531,7 @@ wd.ajaxPostBlock=function (url, data, callBack, block, msgblock, sync){
 }
 
 Geekutil.pager = function(id, t, p, callback){
-  var perPage = 10, ohtml='{{&opt}}', prehtml = '{{start}} to {{end}} of {{total}}';
+  var perPage = 10, ohtml='{{{opt}}}', prehtml = '{{start}} to {{end}} of {{total}}';
   if(wd.C_D_PT) perPage = 1*C_D_PT;
   var that = this,idlist = id.split(',');
   that.id = idlist[0];
@@ -538,13 +540,13 @@ Geekutil.pager = function(id, t, p, callback){
   that.total = 1*t;
   that.page = 1*p;
   var html = "<div class='mpager' id='_p{{id}}'><span></span> "
-  +"<i class='icon-fast-backward'></i> <i class='icon-backward'></i> "
+  +"<i class='glyphicon glyphicon-fast-backward'></i> <i class='glyphicon glyphicon-backward'></i> "
   +"<select class='page'></select> "
-  +"<i class='icon-forward'></i> <i class='icon-fast-forward'></i></div>";
+  +"<i class='glyphicon glyphicon-forward'></i> <i class='glyphicon glyphicon-fast-forward'></i></div>";
   var html2 = "<div class='mpager' id='_p{{id2}}'><span></span> "
-  +"<i class='icon-fast-backward'></i> <i class='icon-backward'></i> "
+  +"<i class='glyphicon glyphicon-fast-backward'></i> <i class='glyphicon glyphicon-backward'></i> "
   +"<select class='page'></select> "
-  +"<i class='icon-forward'></i> <i class='icon-fast-forward'></i></div>";
+  +"<i class='glyphicon glyphicon-forward'></i> <i class='glyphicon glyphicon-fast-forward'></i></div>";
 
   var getInfo = function(total, page){
     if(arguments.length == 2){
@@ -625,7 +627,7 @@ Geekutil.pager = function(id, t, p, callback){
     id2sel = ',#_p'+that.id2;
   }
   var datapage = that.page;
-  $('#_p'+id + id2sel).find('.icon-fast-forward').click(function(e){
+  $('#_p'+id + id2sel).find('.glyphicon glyphicon-fast-forward').click(function(e){
     
     if(datapage < that.pages){
       datapage = that.pages;
@@ -636,7 +638,7 @@ Geekutil.pager = function(id, t, p, callback){
     }
   });
 
-  $('#_p'+id + id2sel).find('.icon-fast-backward').click(function(e){
+  $('#_p'+id + id2sel).find('.glyphicon glyphicon-fast-backward').click(function(e){
     
     if(1 < datapage){
       datapage = 1;
@@ -656,7 +658,7 @@ Geekutil.pager = function(id, t, p, callback){
       refresh()
     }
   });
-  $('#_p'+id + id2sel).find('.icon-forward').click(function(e){
+  $('#_p'+id + id2sel).find('.glyphicon glyphicon-forward').click(function(e){
     
     if(datapage< that.pages){
       datapage = datapage+1;
@@ -666,7 +668,7 @@ Geekutil.pager = function(id, t, p, callback){
       refresh()
     }
   });
-  $('#_p'+id + id2sel).find('.icon-backward').click(function(e){
+  $('#_p'+id + id2sel).find('.glyphicon glyphicon-backward').click(function(e){
     
     if(1 < datapage){
       datapage = datapage-1;
@@ -1596,7 +1598,7 @@ var createInstLK = function(d, callback, selector, options, popcode, isMulti){
 		})
 		$('#N'+popcode).click(function(){that.hide()})
 		//search
-		$pel.find('.icon-refresh').click(function(){
+		$pel.find('.glyphicon-refresh').click(function(){
 			$pel.find('.searchenter').val('')
 			that.fillD(d)
 		})
