@@ -681,8 +681,7 @@ Geekutil.pager = function(id, t, p, callback){
 }
 function hideAllErr(){
   //Hide all;
-  $('form .form-group').removeClass('error');
-  // $('.status-bar').hide();
+  $('form .error').removeClass('error');
   $('form .text-error').remove()
 }
 wd.beforePost=function (){
@@ -694,9 +693,10 @@ wd.beforePost=function (){
     for (var key in result) {
       valid = false;
       var controlGroup = $('#' + key).parent();
-      // if(!controlGroup.hasClass('form-group')) controlGroup = controlGroup.parent();
-      // controlGroup.addClass('error');
-      controlGroup.append(' <div class="text-error">'+result[key]+'</div>');
+			if (controlGroup.hasClass('input-group')) controlGroup = controlGroup.parent(); 
+			
+      controlGroup.addClass('error').append(' <div class="text-error">'+result[key]+'</div>');
+
       strErr += result[key] + '<br/>';
     }
   }
@@ -716,8 +716,7 @@ wd.showErr = function (id, valobj){
   for (var key in result) {
     valid = false;
     var controlGroup = $('#' + key).parent();
-    // if(!controlGroup.hasClass('form-group')) controlGroup = controlGroup.parent();
-    // controlGroup.addClass('error');
+
     controlGroup.append(' <div class="text-error">'+result[key]+'</div>')
   }
   return valid

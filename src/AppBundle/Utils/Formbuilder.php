@@ -1,16 +1,26 @@
 <?php
 namespace AppBundle\Utils;
 use Symfony\Component\Config\Definition\Exception\Exception;
-// require 'Number.php';
-// require 'Cleanstring.php';
-define('APP_URL','/');
 
+
+define('_S_CR_D','Trong ngày');
+define('_S_CR_D7','Trong 7 ngày');
+define('_S_CR_D30','Trong 30 ngày');
+define('_S_CR_W','Trong tuần');
+define('_S_CR_M','Trong tháng');
+define('_S_CR_Q','Trong quý');
+define('_S_CR_Y','Trong năm');
+define('_S_FT','Từ - đến');
+define('_S_C_NGAY','Ngày');
+define('_S_C_THANG','Tháng');
+define('_S_C_NAM','Năm');
 
 /**
  * helper for generate template
  * @author Nguyen Viet Cuong <vietcuonghn3@gmail.com>
  */
 class Formbuilder {
+	
 	/** Original Textbox */
     const TEXT = 1;
     /** Original Textarea */
@@ -698,7 +708,7 @@ class Formbuilder {
         return $retVal;
     }
 
-    private function formatNum($v) {
+    function formatNum($v) {
 		if(null === $v || ''===$v) return '';
         return number_format($v, 0, '.', ',');
     }
@@ -1530,8 +1540,8 @@ class Formbuilder {
                 //Begin new group - first, close current group
                 if (true === $inrow) {
                     if ($col1 || $col2) {
-                        $retVal .= '<div class="col-sm-6">' . $col1 . '</div>';
-                        $retVal .= '<div class="col-sm-6">' . $col2 . '</div>';
+                        $retVal .= '<div class="col-md-6">' . $col1 . '</div>';
+                        $retVal .= '<div class="col-md-6">' . $col2 . '</div>';
                         $retVal .= '</div>';
                         $inrow = false;
                         $col1 = '';
@@ -1546,8 +1556,8 @@ class Formbuilder {
                 if (true === $inrow) {
                     //close current row
                     if ($col1 || $col2) {
-                        $retVal .= '<div class="col-sm-6">' . $col1 . '</div>';
-                        $retVal .= '<div class="col-sm-6">' . $col2 . '</div>';
+                        $retVal .= '<div class="col-md-6">' . $col1 . '</div>';
+                        $retVal .= '<div class="col-md-6">' . $col2 . '</div>';
                         $retVal .= '</div>';
                         $inrow = false;
                         $col1 = '';
@@ -1555,7 +1565,7 @@ class Formbuilder {
                     }
                 }
                 //A whole new rows span this control.
-                $retVal .= '<div class="row"><div class="col-sm-12"> ';
+                $retVal .= '<div class="row"><div class="col-md-12"> ';
                 $retVal .= $this->BuildSearchControls($objConfig['id'], $objConfig['label'], $objConfig['inputType'], $objConfig['options'],$nguon);
                 $retVal .= '</div></div>';
                 $inrow = false;
@@ -1584,8 +1594,8 @@ class Formbuilder {
             $loop++;
         }
         if (true === $inrow) {
-            $retVal .= '<div class="col-sm-6">' . $col1 . '</div> ';
-            $retVal .= '<div class="col-sm-6">' . $col2 . '</div> ';
+            $retVal .= '<div class="col-md-6">' . $col1 . '</div> ';
+            $retVal .= '<div class="col-md-6">' . $col2 . '</div> ';
             $retVal .= '</div>';
         }
 
@@ -1653,7 +1663,7 @@ class Formbuilder {
                 if(is_array($options['url'])) {
                     $url = $options['url'];
                 }else
-                    $url = APP_URL . $options['url'];
+                    $url = $options['url'];
             }
             if (isset($options['suffix']))
                 $suffix = $options['suffix'];
@@ -1701,7 +1711,7 @@ class Formbuilder {
     //**************** Search form helper *******************/
 
     private function BuildInputTextSearch($id, $label, $suffix, $attr = null,$defaultValue = '') {
-        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-sm-2 control-label">' . $label . '</label><div class="col-sm-8">';
+        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-md-2 control-label">' . $label . '</label><div class="col-md-8">';
         $retVal .= '<input type="text" id="' . $id . '" name="' . $id . '" class="form-control" maxlength="1000"';
 		if ($defaultValue)
             $retVal .= ' value="' . htmlspecialchars($defaultValue) . '"';
@@ -1715,17 +1725,17 @@ class Formbuilder {
     private function BuildRangeTextSearch($id, $label1, $label2, $suffix = null, $attr = null,$from = null,$to = null) {
 		if ($from)  $from = $this->formatNum($from);
 		if ($to)  $to = $this->formatNum($to);
-        $retVal = '<div class="form-group"><label for="f' . $id . '" class="col-sm-2 control-label">' . $label1 . '</label><div class="col-sm-8">';
-        $retVal .= '<div class="col-sm-4 nopaddingleft"><input type="text" id="f' . $id . '" name="f' . $id . '" class="rangesearch numeric form-control" maxlength="1000" value= "'.$from.'" /></div>';
+        $retVal = '<div class="form-group"><label for="f' . $id . '" class="col-md-2 control-label text-nowrap">' . $label1 . '</label><div class="col-md-8">';
+        $retVal .= '<div class="col-md-4 nopaddingleft"><input type="text" id="f' . $id . '" name="f' . $id . '" class="rangesearch numeric form-control" maxlength="1000" value= "'.$from.'" /></div>';
         $retVal .= '<span class="midsearch">' . $label2 . '</span>';
-        $retVal .= '<div class="col-sm-4 nopaddingright"><input type="text" id="t' . $id . '" name="t' . $id . '" class="rangesearch numeric form-control" maxlength="1000" value= "'.$to.'" /></div>';
+        $retVal .= '<div class="col-md-4 nopaddingright"><input type="text" id="t' . $id . '" name="t' . $id . '" class="rangesearch numeric form-control" maxlength="1000" value= "'.$to.'" /></div>';
         if ($suffix)
             $retVal .= '<span class="midsearch">' . $suffix . '</span>';
         return $retVal . '</div></div>';
     }
 
     private function BuildBirthdaySearch($id, $label,$day,$month,$year) {
-        $retVal = '<div class="form-group"><label for="d' . $id . '" class="col-sm-2 control-label">' . $label . '</label><div class="controls">';
+        $retVal = '<div class="form-group"><label for="d' . $id . '" class="col-md-2 control-label">' . $label . '</label><div class="controls">';
         //select ngay
         $retVal .= '<select class="span s2s" id="d' . $id . '" name="d' . $id . '">';
         $retVal .= '<option value="0">' . (defined('_S_C_NGAY') ? constant('_S_C_NGAY') : '_S_C_NGAY') . '</option>';
@@ -1764,9 +1774,9 @@ class Formbuilder {
 
 		if(!$from) $from = '0';
 		if(!$to) $to = '0';
-        $retVal = '<div class="form-group"><label for="f' . $id . '_d" class="col-sm-2 control-label">' . $label . '</label><div class="daterange">';
+        $retVal = '<div class="form-group"><label for="f' . $id . '_d" class="col-md-2 control-label">' . $label . '</label><div class="daterange col-md-10">';
         //select
-        $retVal .= '<select class="form-control col-sm-3 s1s" id="' . $id . '" name="' . $id . '">';
+        $retVal .= '<select class="form-control col-md-3 s1s" id="' . $id . '" name="' . $id . '">';
         $retVal .= '<option value="0">' . (defined('_S_FT') ? constant('_S_FT') : '_S_FT') . '</option>';
         $retVal .= '<option value="currD"';
 		if ($defaultValue == 'currD')  $retVal .= ' selected';
@@ -1797,13 +1807,13 @@ class Formbuilder {
 		$retVal .='>' . _S_CR_Y . '</option>';
         $retVal .= '</select>';
         //from
-        $retVal .= '<input type="text" id="f' . $id . '_d" name="f' . $id . '_d" class="col-sm-2 dtsearch" maxlength="10"/>';
+        $retVal .= '<input type="text" id="f' . $id . '_d" name="f' . $id . '_d" class="col-md-4 dtsearch" maxlength="10"/>';
         $this->mscript .= 'cakf' . $id . '=new Geekutil.Cal("f' . $id . '",true,' . $from . ',0);';
         $retVal .= '<input t="d" type="hidden" id="f' . $id . '" name="f' . $id . '"/>';
         $retVal .= '<span class="help-inline">';
-        $retVal .= '<i class="glyphicon glyphicon-calendar click" id="f' . $id . '_i"></i></span><span class="midsearch"><i class="icon-minus"></i></span>';
+        $retVal .= '<i class="glyphicon glyphicon-calendar click invisible" id="f' . $id . '_i"></i></span><span class="midsearch"><i class="icon-minus"></i></span>';
         //to
-        $retVal .= '<input type="text" id="t' . $id . '_d" name="t' . $id . '_d" class="col-sm-2 dtsearch" maxlength="10"/>';
+        $retVal .= '<input type="text" id="t' . $id . '_d" name="t' . $id . '_d" class="col-md-4 dtsearch" maxlength="10"/>';
         $this->mscript .= 'cakt' . $id . '=new Geekutil.Cal("t' . $id . '",true,'. $to.',0);';
         $this->mscript .= 'sCak("' . $id . '");';
 		if (false == in_array($defaultValue,array('currD', 'currM', 'currQ', 'currY', 'currW', 'currD7', 'currD30'), true)) {
@@ -1812,13 +1822,13 @@ class Formbuilder {
 		}
         $retVal .= '<input t="d" type="hidden" id="t' . $id . '" name="t' . $id . '"/>';
         $retVal .= '<span class="help-inline">';
-        $retVal .= '<i class="glyphicon glyphicon-calendar" id="t' . $id . '_i"></i></span>';
+        $retVal .= '<i class="glyphicon glyphicon-calendar click invisible" id="t' . $id . '_i"></i></span>';
         $this->_mcallib = true;
         return $retVal . '</div></div>';
     }
 
     private function BuildInputSelectSearch($id, $label, $labelArr, $valueArr, $multiple = false, $url = null, $zero = 1,$defaultValue=null) {
-        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-sm-2 control-label">' . $label . '</label><div class="col-sm-8">';
+        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-md-2 control-label">' . $label . '</label><div class="col-md-8">';
         if (is_array($labelArr)) {
             $retVal .= '<select class="form-control" name="' . $id . '" id="' . $id . '"';
             if ($multiple)
@@ -1854,7 +1864,7 @@ class Formbuilder {
 
     private function BuildInputCheckSearch($id, $label, $labelArr, $valueArr, $inline = false,$defaultValue = null) {
         if (is_array($labelArr)) {
-            $retVal = '<div class="form-group"><label for="' . $id . '" class="col-sm-2 control-label">' . $label . '</label><div class="col-sm-8"><div class="checkbox"><ul class="col2">';
+            $retVal = '<div class="form-group"><label for="' . $id . '" class="col-md-2 control-label">' . $label . '</label><div class="col-md-8"><div class="checkbox"><ul class="col2">';
             for ($i = 0; $i < count($labelArr); $i++) {
                 $retVal .= '<li><label class="' . ($inline ? 'checkbox-inline' : '') . '">';
                 $retVal .= '<input type="checkbox" name="' . $id . '[]" id="' . $id . '_' . $i . '" value="' . $valueArr[$i] . '"';
@@ -1864,7 +1874,7 @@ class Formbuilder {
             }
             return $retVal . '</ul></div></div></div>';
         }
-        $retVal = '<div class="form-group"><div class="col-sm-offset-2 col-sm-8"><div class="checkbox">';
+        $retVal = '<div class="form-group"><div class="col-md-offset-2 col-md-8"><div class="checkbox">';
         $retVal .= '<label><input value="1" type="checkbox" id="' . $id . '" name="' . $id.'"';
 		if (null !== $defaultValue && strtolower($defaultValue) != 'n')
 				$retVal .= 'checked';
@@ -1873,7 +1883,7 @@ class Formbuilder {
 
     private function BuildInputRadioSearch($id, $label, $labelArr, $valueArr, $inline = false,$defaultValue=null) {
         if (is_array($labelArr)) {
-            $retVal = '<div class="form-group"><div class="col-sm-offset-2 col-sm-8"><div class="radio">';
+            $retVal = '<div class="form-group"><div class="col-md-offset-2 col-md-8"><div class="radio">';
             for ($i = 0; $i < count($labelArr); $i++) {
                 $retVal .= '<label class="' . ($inline ? 'radio-inline' : '') . '">';
                 $retVal .= '<input type="radio" name="' . $id . '" id="' . $id . '_' . $i . '" value="' . $valueArr[$i] . '"';
@@ -1890,7 +1900,7 @@ class Formbuilder {
      * */
     private function BuildInputTextMultiSearch($id, $label, $url, $allowNew = false, $maxlength = null, $instantPopSearch = null,$defaultValue = null) {
         $this->_mtextboxlib = true;
-        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-sm-2 control-label">' . $label . '</label><div class="col-sm-8">';
+        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-md-2 control-label">' . $label . '</label><div class="col-md-8">';
         $max = 0;
         if ($maxlength)
             $max = $maxlength;
