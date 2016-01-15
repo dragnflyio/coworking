@@ -25,26 +25,9 @@ Cập nhật thông tin gói dịch vụ
 						</thead>
 						<tbody>
 						 	<tr>
-						 		<th scope="row">1</th>
-								<td>Mark</td>
-						 		<td>Otto</td>
-								<td>@mdo</td>
-								<td>Admin</td>
+						 		<th colspan="5" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
 							</tr> 
-							<tr>
-								<th scope="row">2</th> 
-								<td>Jacob</td>
-								<td>Thornton</td>
-								<td>@fat</td>
-								<td>Admin</td>
-							</tr> 
-							<tr>
-								<th scope="row">3</th> 
-								<td>Larry</td> 
-								<td>the Bird</td>
-								<td>@twitter</td>
-								<td>Admin</td>
-							</tr> 
+							
 						</tbody>
 					</table>
 				</div>
@@ -63,6 +46,12 @@ Cập nhật thông tin gói dịch vụ
 
 {% endblock %}
 {% block javascripts %}
+<script id="template_table" type="text/x-handlebars-template">
+  
+
+</script>
+
+<script src="{{asset ('js/handlebars.min.js')}}"></script>
 <script>
 jQuery(function(){
 

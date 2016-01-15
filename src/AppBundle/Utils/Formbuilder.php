@@ -958,7 +958,7 @@ class Formbuilder {
         if (is_array($labelArr)) {
 			$retVal = '<div class="col-md-10">';
 			if($inline){
-				$retVal .= '<div class="radio">';
+				$retVal .= '<div>';
 				for ($i = 0; $i < count($labelArr); $i++) {
 	                $retVal .= '<label class="radio-inline">';
 	                $retVal .= '<input type="radio" name="' . $id . '" id="' . $id . '_' . $i . '" value="' . $valueArr[$i] . '"';
@@ -1072,12 +1072,12 @@ class Formbuilder {
 		if(isset($options['hiddenGrp']) && $options['hiddenGrp']) $hiddenClass = 'hidden';
         $id = $this->_prefixID . $id;
         if ($inputType == Self::DATETIME || $inputType == Self::CURR_DATE || $inputType == Self::CURR_DATE_CREATE || $inputType == Self::CURR_DATETIME) {
-            $retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '_d" class="control-label col-md-2">' . $label . '</label>';
+            $retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '_d" class="control-label text-nowrap col-md-2">' . $label . '</label>';
         } else {
 			if($inputType == Self::RADIO){
-				$retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '_1" class="control-label col-md-2">' . $label . '</label>';
+				$retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '_1" class="control-label text-nowrap col-md-2">' . $label . '</label>';
 			}else
-            	$retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '" class="control-label col-md-2">' . $label . '</label>';
+            	$retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '" class="control-label text-nowrap col-md-2">' . $label . '</label>';
         }
 
         $required = false;
