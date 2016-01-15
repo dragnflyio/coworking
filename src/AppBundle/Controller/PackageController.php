@@ -5,7 +5,8 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-// use AppBundle\Utils\helper_number;
+use Symfony\Component\HttpFoundation\Response;
+
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
@@ -50,6 +51,7 @@ class PackageController extends Controller
 		if ($id){
 			$em = $this->getDoctrine()->getEntityManager();
 			$connection = $em->getConnection();
+			// Get current package by id
 			$statement = $connection->prepare("SELECT * FROM package WHERE id = $id");
 			$statement->execute();
 			$row = $statement->fetchAll();
@@ -62,6 +64,7 @@ class PackageController extends Controller
 
         return $this->render('package/edit.html.twig', [
 			'form' => $tmp,
+			'id' => $id,
 			'script' => $formbuilder->mscript
         ]);
 
@@ -70,24 +73,49 @@ class PackageController extends Controller
 	 * @Route("/formapi")
 	 */
 	public function formapiAction(Request $request){
-		
 		$request = Request::createFromGlobals();
 		// Only process ajax request
 		if (false == $request->isXmlHttpRequest()){
 			// throw $this->createAccessDeniedException('Request forbidden');
 			throw new HTTPException(403, 'Request forbidden');
 		}
-		// echo $request->getMethod();
-		// echo "<br>";
-		// echo $request->request->get('bar', 'default value');
-		// echo "<br>";
-		// echo $request->getPathInfo();
-		// echo "<br>";
-		$op = $request->query->get('op', 'insert');
+
+		$op = $request->query->get('op', 'create');
 		
 		$formbuilder = $this->get('app.formbuilder');
-		$dataObj = $formbuilder->PrepareInsert($_POST, 'packageform');
+		
 		$data = array();
+		$em = $this->getDoctrine()->getEntityManager();
+		$connection = $em->getConnection();
+		
+		switch($op){
+			case 'create':
+				$dataObj = $formbuilder->PrepareInsert($_POST, 'packageform');
+				foreach ($dataObj as $table => $postdata){
+					if ($postdata){
+						$data['v'] = $connection->insert($table, $postdata);
+					}
+				}
+				$data['m'] = 'Thêm thành công';
+				break;
+			case 'update':
+				$id = $request->request->get('id', 0);
+				$id = (int)$id;// force to int to prevent sql injection
+				if ($id){
+					$formbuilder->setUpdateMode(true);
+					$dataObj = $formbuilder->PrepareInsert($_POST, 'packageform');
+					foreach ($dataObj as $table => $postdata){
+						if ($postdata){
+							$data['v'] = $connection->update($table, $postdata, array('id' => $id));
+						}
+					}
+					$data['m'] = 'Cập nhật thành công';
+				}
+				break;
+			default:
+				throw $this->createAccessDeniedException('Invalid operator');
+		}
+		
 		$response = new Response(
 			json_encode($data),
 			Response::HTTP_OK,

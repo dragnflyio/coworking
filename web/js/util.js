@@ -399,11 +399,11 @@ wd.loadAndFillSelect=function (id, url, selValue, no, lbl){
 wd.getAppUrl=function (){  
   return ''
 }
-function addtok(u){
+function addtok(u){	
   var tk = 'tk';
   if(typeof token == 'string') tk = encodeURIComponent(token);
-  if(u.indexOf('?')<0) return u+'?tok='+tk+'&_axurl_='+encodeURIComponent(location.href);
-  return u+'&tok='+tk+'&_axurl_='+encodeURIComponent(location.href);
+  if(u.indexOf('?')<0) return u+'?_axurl_='+encodeURIComponent(location.href);
+  return u+'&_axurl_='+encodeURIComponent(location.href);
 }
 wd.msgInfo = function(m, e, t){
 	$('#msginfo_').remove();
@@ -679,8 +679,8 @@ Geekutil.pager = function(id, t, p, callback){
 }
 function hideAllErr(){
   //Hide all;
-  $('.control-group').removeClass('error');
-  $('.status-bar').hide();
+  $('form .form-group').removeClass('error');
+  // $('.status-bar').hide();
   $('form .text-error').remove()
 }
 wd.beforePost=function (){
@@ -692,7 +692,7 @@ wd.beforePost=function (){
     for (var key in result) {
       valid = false;
       var controlGroup = $('#' + key).parent();
-      // if(!controlGroup.hasClass('control-group')) controlGroup = controlGroup.parent();
+      // if(!controlGroup.hasClass('form-group')) controlGroup = controlGroup.parent();
       // controlGroup.addClass('error');
       controlGroup.append(' <div class="text-error">'+result[key]+'</div>');
       strErr += result[key] + '<br/>';
@@ -709,12 +709,12 @@ wd.beforePost=function (){
 wd.showErr = function (id, valobj){
   var result = validateObj(valobj);
   var valid = true;
-  $('#' + id +' .control-group').removeClass('error');
+  $('#' + id +' .form-group').removeClass('error');
   $('#' + id +' .text-error').remove();
   for (var key in result) {
     valid = false;
     var controlGroup = $('#' + key).parent();
-    // if(!controlGroup.hasClass('control-group')) controlGroup = controlGroup.parent();
+    // if(!controlGroup.hasClass('form-group')) controlGroup = controlGroup.parent();
     // controlGroup.addClass('error');
     controlGroup.append(' <div class="text-error">'+result[key]+'</div>')
   }
@@ -1553,8 +1553,8 @@ var _tpl_pop_CM = '';
 var createInstLK = function(d, callback, selector, options, popcode, isMulti){
 	var xmodal = null, $pel = null;
 	var that = this;
-	var tpl = '{{#r}}<div class="control-group"><div class="controls"><label class="checkbox"><input type="checkbox" value="{{k}}">{{v}}</label></div></div>{{/r}}';
-	if(!isMulti) tpl = '{{#r}}<div class="control-group"><div class="controls"><label class="radio"><input type="radio" name="opt" value="{{k}}">{{v}}</label></div></div>{{/r}}';
+	var tpl = '{{#r}}<div class="form-group"><div class="controls"><label class="checkbox"><input type="checkbox" value="{{k}}">{{v}}</label></div></div>{{/r}}';
+	if(!isMulti) tpl = '{{#r}}<div class="form-group"><div class="controls"><label class="radio"><input type="radio" name="opt" value="{{k}}">{{v}}</label></div></div>{{/r}}';
 	if(!popcode) popcode = genGUID();
 	that.show = function(){
 		xmodal.show()

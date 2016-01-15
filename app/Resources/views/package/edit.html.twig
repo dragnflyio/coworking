@@ -31,11 +31,19 @@ Cập nhật thông tin gói dịch vụ
 {% endblock %}
 {% block javascripts %}
 <script>
+validation['name'] = {minlength:1, message: 'Nhập tên gói dịch vụ'};
+validation['price'] = {minvalue:1, message: 'Nhập giá dịch vụ, lớn hơn 0 (zero)'};
+validation['discountbar'] = {maxvalue:99, message: 'Giảm giá không quá 99%'};
+validation['maxhours'] = {jsfunction: function(){
+	// phai nhap it nhat gio/ngay
+	if ($('#maxhours').val() < 1 && $('#maxdays').val() < 1) return 'Bạn phải nhập ít nhất số giờ hoặc số ngày trong gói';
+	return '';
+}};
 jQuery(function(){
 	{{script}}
 	$('#btnsave').click(function(e){
 		e.preventDefault();
-		
+		beforePost() && ajaxPost('/package/formapi?op=update', $('#f_packageform').serialize()+'&id={{id}}', function(d){});
 	})
 })
 
