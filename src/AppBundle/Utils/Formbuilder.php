@@ -215,13 +215,13 @@ class Formbuilder {
 				case Self::BIRTHDAY:
 					// date
 					if(isset($postData['d'.$config['id']]))
-					$retVal[$config['table']][$config['column'] . '_day'] = $postData['d'.$config['id']];
+					$retVal[$config['table']][$config['column'] . 'day'] = $postData['d'.$config['id']];
 					// month
 					if(isset($postData['m'.$config['id']]))
-						$retVal[$config['table']][$config['column'] . '_month'] = $postData['m'.$config['id']];
+						$retVal[$config['table']][$config['column'] . 'month'] = $postData['m'.$config['id']];
 					// year
 					if(isset($postData['y'.$config['id']]))
-						$retVal[$config['table']][$config['column'] . '_year'] = $postData['y'.$config['id']];
+						$retVal[$config['table']][$config['column'] . 'year'] = $postData['y'.$config['id']];
 					break;
                 case Self::CURR_DATE:
                     $retVal[$config['table']][strtolower($config['column'])] = $this->getCurrentTimestamp();
@@ -800,7 +800,7 @@ class Formbuilder {
         if ($required)
             $retVal .='<span class="redtext">*</span>';
         if (false == $noSearch)
-            $retVal .= '<i id="_s' . $id . '" class="glyphicon glyphicon-search click"></i>';
+            $retVal .= '<i id="_s' . $id . '" class="glyphicon glyphicon-search invisible click"></i>';
         $retVal .= '<i id="_r' . $id . '" class="glyphicon glyphicon-erase click"></i></span>';
 
         $value = 'null';
@@ -827,7 +827,9 @@ class Formbuilder {
 		if($maxlength == 1) $multi = 0;
         $urljs = '"' . $url . '"';
         if(is_array($url)) $urljs = json_encode($url);
-        $this->mscript .= 'tk' . $id . '=new Geekutil.TM("' . $id . '",' . $allEnterNew . ',' . $urljs . ',' . $value . ',' . $maxstr . ',' . $istPopSearchStr . ');';
+		$prompt = '';
+		if ($allEnterNew) $prompt = ',"type to enter value"';
+        $this->mscript .= 'tk' . $id . '=new Geekutil.TM("' . $id . '",' . $allEnterNew . ',' . $urljs . ',' . $value . ',' . $maxstr . ',' . $istPopSearchStr . $prompt. ');';
 
 
         if ($trigger_target) {
@@ -908,8 +910,8 @@ class Formbuilder {
             $month = $defaultValue['month'];
         if ($defaultValue && $defaultValue['year'])
             $year = $defaultValue['year'];
-		$retVal = '';
-        $retVal .= '<select class="span s2s" id="d' . $id . '" name="d' . $id . '">';
+		$retVal = '<div class="col-md-10">';
+        $retVal .= '<div class="col-md-3 pad-right0 pad-left0"><select class="form-control" id="d' . $id . '" name="d' . $id . '">';
         $retVal .= '<option value="0">' . _S_C_NGAY. '</option>';
         for ($ii = 1; $ii < 32; $ii++) {
             $select = '';
@@ -917,9 +919,9 @@ class Formbuilder {
                 $select = ' selected';
             $retVal .= '<option value="' . $ii . '"' . $select . '>' . $ii . '</option>';
         }
-        $retVal .= '</select>';
+        $retVal .= '</select></div> ';
         //select thang
-        $retVal .= '<select class="span s2s" id="m' . $id . '" name="m' . $id . '">';
+        $retVal .= '<div class="col-md-3 pad-right0 pad-left0"> <select class="form-control" id="m' . $id . '" name="m' . $id . '">';
         $retVal .= '<option value="0">' . _S_C_THANG. '</option>';
         for ($ii = 1; $ii < 13; $ii++) {
             $select = '';
@@ -927,11 +929,11 @@ class Formbuilder {
                 $select = ' selected';
             $retVal .= '<option value="' . $ii . '"' . $select . '>' . $ii . '</option>';
         }
-        $retVal .= '</select>';
+        $retVal .= '</select></div> ';
         //select nam
         $currY = date('Y');
         $maxY = 100;
-        $retVal .= '<select class="span s2s" id="y' . $id . '" name="y' . $id . '">';
+        $retVal .= '<div class="col-md-3 pad-right0 pad-left0"><select class="form-control" id="y' . $id . '" name="y' . $id . '">';
         $retVal .= '<option value="0">' . _S_C_NAM . '</option>';
         for ($ii = $currY - $maxY; $ii <= $currY; $ii++) {
             $select = '';
@@ -939,8 +941,8 @@ class Formbuilder {
                 $select = ' selected';
             $retVal .= '<option value="' . $ii . '"' . $select . '>' . $ii . '</option>';
         }
-        $retVal .= '</select>';
-        return $retVal;
+        $retVal .= '</select></div> ';
+        return $retVal. '</div>';
     }
     /* Build hidden field */
     function BuildInputHidden($id, $defaultValue = null) {
@@ -1444,9 +1446,9 @@ class Formbuilder {
                 }
             }
 			if (Self::BIRTHDAY == $type){
-				$date = $row[$config['column'] . '_day'];
-				$month = $row[$config['column'] . '_month'];
-				$year = $row[$config['column'] . '_year'];
+				$date = $row[$config['column'] . 'day'];
+				$month = $row[$config['column'] . 'month'];
+				$year = $row[$config['column'] . 'year'];
 				if($date || $month || $year){
 					$config['options']['defaultValue'] = array(
 					'date' => $date,

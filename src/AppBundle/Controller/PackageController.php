@@ -12,8 +12,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * @Route("/package")
  */
-class PackageController extends Controller
-{
+class PackageController extends Controller{
 	
 	/**
      * @Route("/list", name="list_package")

@@ -1,15 +1,14 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-Thêm gói dịch vụ
+Cập nhật thông tin gói dịch vụ
 {% endblock %}
 
 {% block body %}
 <div id="wrapper">
-
    <div class="container">
 			<div class="row">
         	<div class="col-md-12">
-            <h1>Thêm khách hàng</h1>
+            <h1>Sửa thông tin khách hàng</h1>
         	</div>
 			</div>
 			<div class="row">
@@ -24,12 +23,12 @@ Thêm gói dịch vụ
 					</div>
 				</div>
 			</div>
-
+		
 	 </div> <!-- /container --!>
 
 </div><!-- /wrapper --!>
-{% endblock %}
 
+{% endblock %}
 {% block javascripts %}
 <script>
 validation['name'] = {minlength:1, message: 'Nhập tên khách'};
@@ -39,11 +38,10 @@ jQuery(function(){
 	$('.numeric').intOnly();
 	$('#btnsave').click(function(e){
 		e.preventDefault();
-		beforePost() && ajaxPost('/customer/formapi?op=create', $('#f_customerform').serialize(), function(d){});
+		beforePost() && ajaxPost('/customer/formapi?op=update', $('#f_customerform').serialize()+'&id={{id}}', function(d){});
 	})
 })
 
 
 </script>
 {% endblock %}
-

@@ -102,10 +102,7 @@ width: 100px;
 .help-inline{
   display:inline-block;
   padding-left:2px;
-  padding-top:5px;
-}
-.textboxlist ~ .help-inline {
-  margin-top: 10px;
+  padding-top:8px;
 }
 .click{
   cursor:pointer;
@@ -249,7 +246,12 @@ ul.col2{
   -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear;
 }
-
+.pad-left0{
+	padding-left:0;
+}
+.pad-right0{
+	padding-right:0;
+}
 
 @media (min-width: 992px){
 	.col-md-10.form-control {
