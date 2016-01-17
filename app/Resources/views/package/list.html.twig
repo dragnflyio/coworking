@@ -20,7 +20,7 @@ Cập nhật thông tin gói dịch vụ
 					</div>
 					<div class="col-md-12">
 						<div class="center-block width200">
-							<a class="btn btn-primary" href="#" id="btnsearch"> Tìm kiếm </a>
+							<a class="btn btn-info" href="#" id="btnsearch"> Tìm kiếm </a>
 						</div>
 					</div>
 			</div>
@@ -30,17 +30,18 @@ Cập nhật thông tin gói dịch vụ
 					<table class="table table-bordered">
 						<thead>
 						 	<tr>
-								<th>#</th>
+								<th class="width50">#</th>
 								<th>Tên</th>
 								<th>Giá (VND)</th>
 								<th>Thông tin</th>
 								<th>Người tạo</th>
+								<th class="width100"></th>
 							</tr> 
 						</thead>
 						<tbody id="listpackage">
 						 	<tr>
-						 		<th colspan="5" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
-							</tr>							
+						 		<th colspan="6" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
+							</tr>
 						</tbody>
 					</table>
 				</div>
@@ -67,6 +68,7 @@ Cập nhật thông tin gói dịch vụ
 	<td><%price%></td>
 	<td><%description%></td>
 	<td><%createdname%></td>
+	<td><a href="/package/edit/<%id%>"> Edit </a> | <a href="#" class="deleterow" data-id="<%id%>"> Delete </a> </td>
 	</tr>
 	<%/list%>
 </script>
@@ -75,19 +77,33 @@ Cập nhật thông tin gói dịch vụ
 <script>
 jQuery(function(){
 	{{script|raw}}
-	ajaxPost('/package/formapi?op=search', {}, function(data){
-		if (!data.empty){
-			$('#listpackage').html(mr( $('#template_table').html(), {list:data}))
-		} else {
-			$('#listpackage').html('<tr><th colspan="5" scope="row" class="text-center">'+ data.empty + '</th></tr>');
+	$('.numeric').intOnly();
+	function doSearch(){
+		ajaxPost('/package/formapi?op=search', $('#f_packagesearch').serialize(), function(data){
+			if (!data.empty){
+				$('#listpackage').html(mr( $('#template_table').html(), {list:data}))
+			} else {
+				$('#listpackage').html('<tr><th colspan="6" scope="row" class="text-center">'+ data.empty + '</th></tr>');
+			}
+		});
+
+	}
+	doSearch();
+	
+	$('#listpackage').click(function(e){
+		var $el = $(e.target);
+		if ($el.hasClass('deleterow')){
+			e.preventDefault();
+			if (confirm('Bạn chắc chắn muốn xoá gói dịch vụ này?'))
+			ajaxPost('/package/formapi?op=deletepackage', {id: $el.data('id')}, function(d){
+				doSearch();
+			});
 		}
-		
-	});
+	})
 	$('#btnsearch').click(function(e){
 		e.preventDefault();
-		ajaxPost('/package/formapi?op=testsearch', $('#f_packagesearch').serialize(), function(d){
-			console.log(d)
-		});
+		$('#listpackage').html('<tr><th colspan="6" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
+		doSearch();
 	})
 })
 

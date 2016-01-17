@@ -215,7 +215,7 @@ class Formbuilder {
 				case Self::BIRTHDAY:
 					// date
 					if(isset($postData['d'.$config['id']]))
-					$retVal[$config['table']][$config['column'] . '_date'] = $postData['d'.$config['id']];
+					$retVal[$config['table']][$config['column'] . '_day'] = $postData['d'.$config['id']];
 					// month
 					if(isset($postData['m'.$config['id']]))
 						$retVal[$config['table']][$config['column'] . '_month'] = $postData['m'.$config['id']];
@@ -897,7 +897,51 @@ class Formbuilder {
         $this->_mcallib = true;
         return $retVal.'</div>';
     }
-
+	private function BuildInputBirthday($id, $label, $defaultValue = null) {
+        //select ngay
+        $date = 0;
+        $month = 0;
+        $year = 0;
+        if ($defaultValue && $defaultValue['date'])
+            $date = $defaultValue['date'];
+        if ($defaultValue && $defaultValue['month'])
+            $month = $defaultValue['month'];
+        if ($defaultValue && $defaultValue['year'])
+            $year = $defaultValue['year'];
+		$retVal = '';
+        $retVal .= '<select class="span s2s" id="d' . $id . '" name="d' . $id . '">';
+        $retVal .= '<option value="0">' . _S_C_NGAY. '</option>';
+        for ($ii = 1; $ii < 32; $ii++) {
+            $select = '';
+            if ($ii == $date)
+                $select = ' selected';
+            $retVal .= '<option value="' . $ii . '"' . $select . '>' . $ii . '</option>';
+        }
+        $retVal .= '</select>';
+        //select thang
+        $retVal .= '<select class="span s2s" id="m' . $id . '" name="m' . $id . '">';
+        $retVal .= '<option value="0">' . _S_C_THANG. '</option>';
+        for ($ii = 1; $ii < 13; $ii++) {
+            $select = '';
+            if ($ii == $month)
+                $select = ' selected';
+            $retVal .= '<option value="' . $ii . '"' . $select . '>' . $ii . '</option>';
+        }
+        $retVal .= '</select>';
+        //select nam
+        $currY = date('Y');
+        $maxY = 100;
+        $retVal .= '<select class="span s2s" id="y' . $id . '" name="y' . $id . '">';
+        $retVal .= '<option value="0">' . _S_C_NAM . '</option>';
+        for ($ii = $currY - $maxY; $ii <= $currY; $ii++) {
+            $select = '';
+            if ($ii == $year)
+                $select = ' selected';
+            $retVal .= '<option value="' . $ii . '"' . $select . '>' . $ii . '</option>';
+        }
+        $retVal .= '</select>';
+        return $retVal;
+    }
     /* Build hidden field */
     function BuildInputHidden($id, $defaultValue = null) {
         $retVal = '';
@@ -1400,7 +1444,7 @@ class Formbuilder {
                 }
             }
 			if (Self::BIRTHDAY == $type){
-				$date = $row[$config['column'] . '_date'];
+				$date = $row[$config['column'] . '_day'];
 				$month = $row[$config['column'] . '_month'];
 				$year = $row[$config['column'] . '_year'];
 				if($date || $month || $year){
@@ -1864,15 +1908,28 @@ class Formbuilder {
 
     private function BuildInputCheckSearch($id, $label, $labelArr, $valueArr, $inline = false,$defaultValue = null) {
         if (is_array($labelArr)) {
-            $retVal = '<div class="form-group"><label for="' . $id . '" class="col-md-2 control-label">' . $label . '</label><div class="col-md-8"><div class="checkbox"><ul class="col2">';
-            for ($i = 0; $i < count($labelArr); $i++) {
-                $retVal .= '<li><label class="' . ($inline ? 'checkbox-inline' : '') . '">';
-                $retVal .= '<input type="checkbox" name="' . $id . '[]" id="' . $id . '_' . $i . '" value="' . $valueArr[$i] . '"';
-                 if (null !== $defaultValue && $defaultValue == $valueArr[$i] && strtolower($defaultValue) != 'n')
-				$retVal .= 'checked';
-				$retVal .= '/>' . $labelArr[$i] . '</label></li>';
-            }
-            return $retVal . '</ul></div></div></div>';
+			$retVal = '<div class="form-group"> <label for="' . $id . '" class="col-md-2 control-label">' . $label.'</label><div class="col-md-10">';
+			if ($inline){
+				for ($i = 0; $i < count($labelArr); $i++) {
+	                $retVal .= '<label class="checkbox-inline">';
+	                $retVal .= '<input type="checkbox" name="' . $id . '[]" id="' . $id . '_' . $i . '" value="' . $valueArr[$i] . '"';
+                 	if (null !== $defaultValue && $defaultValue == $valueArr[$i] && strtolower($defaultValue) != 'n')
+						$retVal .= 'checked';
+					$retVal .= '/>' . $labelArr[$i] . '</label>';
+            	}
+			} else {
+				
+            	for ($i = 0; $i < count($labelArr); $i++) {
+					$retVal .= '<div class="checkbox">';
+	                $retVal .= '<label>';
+	                $retVal .= '<input type="checkbox" name="' . $id . '[]" id="' . $id . '_' . $i . '" value="' . $valueArr[$i] . '"';
+                 	if (null !== $defaultValue && $defaultValue == $valueArr[$i] && strtolower($defaultValue) != 'n')
+						$retVal .= 'checked';
+					$retVal .= '/>' . $labelArr[$i] . '</label></div>';
+	            }
+			}
+            
+            return $retVal . '</div></div>';
         }
         $retVal = '<div class="form-group"><div class="col-md-offset-2 col-md-8"><div class="checkbox">';
         $retVal .= '<label><input value="1" type="checkbox" id="' . $id . '" name="' . $id.'"';

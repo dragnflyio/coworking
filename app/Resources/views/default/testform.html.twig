@@ -15,18 +15,25 @@
 								<p> Sample form by form builder
 								</p>
 								<h3> Markup </h3>
-								 {{ form }}
+
 								<h4>script</h4>
-								{{ script }}
+
 								<p>
 								<h3> Result </h3>
 								</p>
 								<div class="col-md-12">
-								{{ form|raw}}
+								<form id="testform">
+								<div class="fileupload-container">
+									<input name="abc" type="hidden" value="123">
+									<input type="file" id="testfile" class="fileupload" name="testfile[]" multiple>
+									<div class="btn-fileupload">upload file <span class="fileupload-icon"><i class="glyphicon glyphicon-refresh fa-spin"></i></span></div>
+									
+								</div>
+								</form>
                 <a href = "#" class = "btn btn-default">Submit</a>
 								</div>
             </div>
 {% endblock %}
 {% block javascripts %}
-  <script src="{{ asset('js/person.js') }}" type = "text/javascript"></script>
+<script src="{{ asset('js/jquery.iframe-transport.js')}}"></script>
 {% endblock %}

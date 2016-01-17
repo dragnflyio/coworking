@@ -56,53 +56,67 @@ class PackageController extends Controller
 		$retval[] = $row; */
 		// Ip
 		$row = array();
-		$row['id'] = 'ipinstall';
-		$row['label'] = 'Ips';
+		$row['id'] = 'packagename';
+		$row['label'] = 'Tên gói';
 		$row['type'] = 'text';
-		$row['pos'] = array('row' => 3, 'col' => 1);
+		$row['colname'] = 'name';
+		$row['pos'] = array('row' => 1, 'col' => 1);
 		$retval[] = $row;		
-		// nguon ip
+		/* nguon ip
 		$row = array();
 		$row['id'] = 'ipsource';
 		$row['label'] = 'Chung nguồn IP';
 		$row['type'] = 'check';		
-		$row['pos'] = array('row' => 3, 'col' => 2);
-		$retval[] = $row;
+		$row['pos'] = array('row' => 1, 'col' => 2);
+		$retval[] = $row;*/
 		//ngay tao
         $row = array();
         $row['id'] = 'ngaytao';
         $row['label'] = 'Ngày tạo';
         $row['type'] = 'date';
-        $row['colname'] = 'created';
-        $row['pos'] = array('row' => 3, 'col' => 2);
+        $row['colname'] = 'createdtime';
+        $row['pos'] = array('row' => 1, 'col' => 2);
         $retval[] = $row;
 		
-		// Campaign type, incentive/Nonincent
+		// Locker
 		$row = array();
-		$row['id'] = 'incentive';
-		$row['label'] = 'Campaign';
-		$row['colname'] = 'type';
+		$row['id'] = 'locker';
+		$row['label'] = 'Locker';
+		$row['colname'] = 'locker';
 		$row['type'] = 'check';
 		$arr = array(
             'sameline' => 1,
-            'label' => array('Incentive', 'Nonincent'),
+            'label' => array('Có', 'Không'),
             'value' => array(1, 2)
         );
         $row['ds'] = json_encode($arr);
-		$row['pos'] = array('row' => 6, 'col' => 1);
+		$row['pos'] = array('row' => 2, 'col' => 1);
 		$retval[] = $row;
-		// Number of open app
+		// credit?
 		$row = array();
-		$row['id'] = 'openapp';
+		$row['id'] = 'credit';
+		$row['label'] = 'Cho phép nợ';
+		$row['colname'] = 'allowcredit';
+		$row['type'] = 'check';
+		$arr = array(
+            'sameline' => 1,
+            'label' => array('Có', 'Không'),
+            'value' => array(1, 2)
+        );
+        $row['ds'] = json_encode($arr);
+		$row['pos'] = array('row' => 2, 'col' => 1);
+		$retval[] = $row;
+		// price
+		$row = array();
+		$row['id'] = 'price';
 		$row['type'] = 'numeric';
-		$row['isNumeric'] = 1;
-		$row['lblfrom'] = 'Lượt mở từ';
+		$row['lblfrom'] = 'Giá từ';
 		$row['lblto'] = ' đến ';
-		$row['pos'] = array('row' => 7, 'col' => 1);
-		$row['colname'] = 'opentimes';
+		$row['pos'] = array('row' => 2, 'col' => 2);
+		$row['colname'] = 'price';
 		$retval[] = $row;
 		
-		$row = array();
+		/*$row = array();
 		$row['id'] = 'cvirate';
 		$row['type'] = 'numeric';
 		$row['isNumeric'] = 1;
@@ -111,7 +125,7 @@ class PackageController extends Controller
 		$row['pos'] = array('row' => 4, 'col' => 2);
 		$row['suffix'] = '%';
 		$row['colname'] = 'rate';
-		$retval[] = $row;
+		$retval[] = $row;*/
 
 		return $retval;
 	}
@@ -126,9 +140,10 @@ class PackageController extends Controller
             if ($data['colname'] != 'x') {
                 $where .= $formbuilder->buildSingleCondition($data);
             } else {								
+				// do yourself
 			}
         }
-        return array('w' => $where);
+        return $where;
     }
     /**
      * @Route("/add", name="add_package")
@@ -222,8 +237,19 @@ class PackageController extends Controller
 				$data['w'] = $this->getWhereUserSearchCondition($data['d']);
 				
 				break;
-			case 'search':				
-				$statement = $connection->prepare("SELECT * FROM package WHERE 1");
+			case 'deletepackage':
+				$id = $request->request->get('id', 0);
+				if ($id < 1) throw $this->createAccessDeniedException('Invalid parameters');
+				if ($id){
+					$connection->update('package',array('status' => 0), array('id' => $id));
+					$data['m'] = 'Xóa thành công';
+				}
+				break;
+			case 'search':
+				$grp = $this->getPackageSearchForm();
+				$searchData = $formbuilder->GetSearchData($_POST, $grp);
+				$filters = $this->getWhereUserSearchCondition($searchData);
+				$statement = $connection->prepare("SELECT * FROM package WHERE 1=status $filters");
 				$statement->execute();
 				$all_rows = $statement->fetchAll();
 				$ret = array();
@@ -233,6 +259,7 @@ class PackageController extends Controller
 				} else {
 					foreach ($all_rows as $row){
 						$tmp = array(
+							'id' => $row['id'],
 							'idx' => ++$idx,
 							'name' => $row['name'],
 							'price' => $formbuilder->formatNum($row['price']),
