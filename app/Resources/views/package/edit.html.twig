@@ -40,7 +40,7 @@ validation['maxhours'] = {jsfunction: function(){
 	return '';
 }};
 jQuery(function(){
-	{{script}}
+	{{script|raw}}
 	$('.numeric').intOnly();
 	$('#btnsave').click(function(e){
 		e.preventDefault();

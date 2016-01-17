@@ -842,7 +842,7 @@ function arrOfArr(v){
 	return 1
 }
 
-var TM = function(id, allowEnterNew, url, values, max, instantS){
+var TM = function(id, allowEnterNew, url, values, max, instantS, placeholder){
   var that = this, rmt = 0;  
   if(!allowEnterNew && '' === url) url = [];   
   if(typeof url == 'string'){
@@ -850,8 +850,9 @@ var TM = function(id, allowEnterNew, url, values, max, instantS){
 			rmt = 1;url = url.substr(1)
 		}
 	}
+	placeholder = placeholder ? placeholder : 'type to search';
   var obj = new $.TextboxList('#'+id,{
-  bitsOptions: {plh:'type to search',addOnBlur:allowEnterNew},max:max,
+  bitsOptions: {plh:placeholder,addOnBlur:allowEnterNew},max:max,
   unique: true, plugins: {autocomplete: {queryRemote:rmt, onlyFromValues:!allowEnterNew, placeholder:false,remote: {url:url}}}});
   var autocomplete = obj.plugins['autocomplete'];
 
@@ -991,9 +992,9 @@ var TM = function(id, allowEnterNew, url, values, max, instantS){
     mTrigger && mTrigger.call()
   })	
 }
-Geekutil.TM = function(id, allowEnterNew, url, values, max, instantS){
+Geekutil.TM = function(id, allowEnterNew, url, values, max, instantS, plh){
 		addjsifnot('tm/TextboxList.js',$.TextboxList);addcssifnot('tm/TextboxList.css');
-		return new TM(id, allowEnterNew, url, values, max, instantS)
+		return new TM(id, allowEnterNew, url, values, max, instantS, plh)
 }
 //nic wrapper
 wd.nicW = function(id){

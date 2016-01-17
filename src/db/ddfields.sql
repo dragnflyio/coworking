@@ -50,8 +50,20 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'product', 'product', 'unit', 'unit', 'Đơn vị', 'SELECT', '/unit/json', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-15 02:20:43', NULL, NULL),
 (null, 'product', 'product', 'category', 'category', 'Danh mục', 'SELECT', '/category/json', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 14:16:31', NULL, NULL),
 (null, 'product', 'product', 'type', 'type', 'Loại', 'SELECT', '{\n  "value":["GOODS","PRODUCT","DRINK","MATERIAL","EQUIPMENT","SERVICE","TOOL"],\n  "label":["Hàng hóa", "Sản phẩm", "Uống","Nguyên vật liệu","Đền bù","Dịch vụ","Công cụ"],\n  "sameline": 1\n}', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-15 01:49:48', NULL, NULL),
-(null, 'product', 'product', 'price', 'price', 'Gía', 'numeric', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-11 08:29:23', NULL, NULL),
+(null, 'product', 'product', 'price', 'price', 'Giá', 'numeric', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-11 08:29:23', NULL, NULL),
 (null, 'product', 'product', 'start_date', 'start_date', 'Ngày bắt đầu', 'date', '', 0, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-07 08:42:33', NULL, NULL),
 (null, 'product', 'product', 'end_date', 'end_date', 'Ngày kết thúc', 'date', '', 0, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-07 08:42:33', NULL, NULL),
 (null, 'product', 'product', 'showinbar', 'showinbar', 'Quầy bar?', 'CHECK', '', 1, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-15 02:31:46', NULL, NULL),
 (null, 'product', 'product', 'id', 'id', '', 'hidden', '', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-13 03:57:27', NULL, NULL);
+
+DELETE FROM ddfields WHERE table_name = 'member' AND object_name = 'customerform';
+INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
+(null, 'customerform', 'member', 'level', 'level', 'Hạng', 'radio', '{"label":["Khách", "Thành viên", "Thành viên VIP"],"value":[1,2,3],"sameline":1}', 1, 4109, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-17 14:21:34', NULL, NULL),
+(null, 'customerform', 'member', 'membersince', 'membersince', 'Ngày bắt đầu', 'date', '', NULL, 4110, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-17 14:49:24', NULL, NULL),
+(null, 'customerform', 'member', 'active', 'active', 'Trạng thái', 'radio', '{"label":["Hoạt động", "Ngừng hoạt động"],"value":[1,2],"sameline":1}', 1, 4109, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-17 14:49:32', NULL, NULL),
+(null, 'customerform', 'member', 'birthday', 'birthday', 'Ngày sinh', 'BIRTHDAY', '', NULL, 4106, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-17 14:49:37', NULL, NULL),
+(null, 'customerform', 'member', 'phone', 'phone', 'Điện thoại', 'text', '', NULL, 4109, NULL, NULL, NULL, 20, 1, NULL, NULL, '2016-01-16 15:41:41', NULL, NULL),
+(null, 'customerform', 'member', 'email', 'email', 'Email', 'TEXT_MULTI_NEW', '', NULL, 4105, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-16 15:41:41', NULL, NULL),
+(null, 'customerform', 'member', 'idno', 'idcardnumber', 'CMND', 'text', '', NULL, 4102, NULL, NULL, NULL, 20, 1, NULL, NULL, '2016-01-17 16:17:14', NULL, NULL),
+(null, 'customerform', 'member', 'name', 'name', 'Tên', 'text', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 16:40:22', NULL, NULL);
+
