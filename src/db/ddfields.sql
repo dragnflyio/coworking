@@ -1,3 +1,5 @@
+ALTER TABLE `ddfields` CHANGE `data_type` `data_type` VARCHAR(20) NULL DEFAULT NULL;
+
 delete from ddfields where table_name = 'product_category' and object_name = 'category';
 
 

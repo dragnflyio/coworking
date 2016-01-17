@@ -679,6 +679,53 @@ Geekutil.pager = function(id, t, p, callback){
     }
   });
 }
+wd.ajax_upload = function(selector, form, url){
+	$(selector).change(function(event){
+		var error = 0;
+		/* check the file types */
+		$.each($(this)[0].files, function(index, eachfile){
+			var fileext = eachfile.type.substring(6).toLowerCase();
+			if($.inArray(fileext, ['gif','png','jpg','jpeg']) == -1) {
+				alert(eachfile.name +" is not a valid image file");
+				error=1;
+				return false;
+			}
+			if(eachfile.size > 10000000) {
+				alert(eachfile.name +" is bigger than 10MB");
+				error=1;
+				return false;
+			}
+		});
+		if(!error){
+			var data = new FormData(form);
+
+			var opts = {
+			    url: url,
+			    data: data,
+			    cache: false,
+			    contentType: false,
+			    processData: false,
+			    type: 'POST'			    
+			};
+			if(data.fake) {
+			    // Make sure no text encoding stuff is done by xhr
+			    opts.xhr = function() { var xhr = jQuery.ajaxSettings.xhr(); xhr.send = xhr.sendAsBinary; return xhr; }
+			    opts.contentType = "multipart/form-data; boundary="+data.boundary;
+			    opts.data = data.toString();
+			}
+			$(selector).parent().find('.fileupload-icon').show();
+			
+			$.ajax(opts).done(function(data){
+				console.log(data)
+			}).always(function(){
+						$(selector).parent().find('.fileupload-icon').hide();
+					});
+			$(selector).val('');
+		}
+
+	});
+		
+}
 function hideAllErr(){
   //Hide all;
   $('form .error').removeClass('error');

@@ -6,10 +6,48 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
 use AppBundle\Utils;
 
 class FormController extends Controller
 {
+	/**
+     * @Route("/form/upload", name="form_upload")
+     */
+	public function uploadAction(Request $request){
+		$objfile = $request->files->get('testfile');
+		$data = array();
+		$baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
+
+		if ($objfile){
+			if (is_array($objfile)) {
+				// mutiple files upload
+				$data['ext'] = '';
+				$data['valid'] = '';
+				foreach ($objfile as $file){
+					$data['ext'] .=';' . $file->guessExtension();
+					$data['valid'] .=';'. $file->isValid();
+					$filename = uniqid().'.'.$file->guessExtension();
+					$file->move($this->container->getParameter('kernel.root_dir').'/../web/files', $filename );
+					$data['url'] = $baseurl.'/files/'.$filename;
+				}
+			} else {
+				$data['ext'] = $objfile->guessExtension();
+				$data['valid'] = $objfile->isValid();
+				$filename = $objfile->getClientOriginalName();//.'.'.$objfile->guessExtension();
+				$objfile->move($this->container->getParameter('kernel.root_dir').'/../web/files', $filename );
+				// $data['msg'] = $objfile->getErrorMessage();
+			}
+			
+			
+		}
+		return new Response(
+			json_encode($data),
+			Response::HTTP_OK,
+			array('content-type' => 'application/json')
+	   	);
+	}
+
     /**
      * @Route("/form/index", name="testpage")
      */
@@ -19,8 +57,10 @@ class FormController extends Controller
 		// var_dump($formbuilder->fetchQuery('SELECT * FROM ddfields WHERE 1'));
 		$number = rand(0, 100);
         return $this->render('default/testform.html.twig', [
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
-			'number' => $number
+			'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/../web'),
+            
+            'base_dir2' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
+			'form' => $number
         ]);
     }
 	/**
