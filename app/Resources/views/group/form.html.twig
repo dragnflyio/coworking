@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+{% block title %}Toong - Thêm nhóm{% endblock %}
+{% block body %}
+  <div class = "container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1 class = "page-title">Thêm</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {{ form|raw}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="center-block width200">
+          <a href = "#" class = "btn btn-primary btn-submit">Save</a>
+          <a href = "{{ path('group_list') }}" class = "btn btn-default">Back</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+  <script src="{{ asset('js/group.js') }}" type = "text/javascript"></script>
+  <script>
+  {{script|raw}}
+  </script>
+{% endblock %}
