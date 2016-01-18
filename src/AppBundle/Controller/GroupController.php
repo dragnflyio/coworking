@@ -166,6 +166,175 @@ class GroupController extends Controller
   }
 
   /**
+   * @Route("/add-member", name = "group_add_member_form")
+   *
+   * Render form for user add member into group
+   */
+  public function addmemberformAction(){
+    $formbuilder = $this->get('app.formbuilder');
+    $tmp = $formbuilder->GenerateLayout('group_member');
+    return $this->render('group/formaddmember.html.twig', [
+      'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
+      'form' => $tmp,
+      'script' => $formbuilder->mscript
+    ]);
+  }
+
+  /**
+   * @Route("/add-member-ajax", name = "group_add_member_ajax")
+   *
+   * Using ajax to add member into groups.
+   */
+  public function addmemberajaxAction(){
+    $gid = $_POST['gid'];
+    $members = $_POST['members'];
+    $members = explode(',', $members);
+
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    foreach ($members as $mid) {
+      $statement = $connection->prepare("INSERT INTO `group_member` (gid, mid, isdeleted)
+      VALUES (:gid, :mid, 0)");
+      $statement->bindParam(':gid', $gid);
+      $statement->bindParam(':mid', $mid);
+      $statement->execute();
+    }
+    $message = 'Đã thêm thành viên vào nhóm!';
+    $response = new Response(
+      json_encode(array('message' => $message)),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
+
+  /**
+   * @Route("/member-json", name = "group_member_json")
+   *
+   * Get members not in any groups.
+   */
+  public function memberJsonNotInGroupAction(){
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT mid FROM group_member");
+    $statement->execute();
+    $rows = $statement->fetchAll();
+    // Statement with members table.
+    if (empty($rows)) {
+      $statement2 = $connection->prepare("SELECT * FROM member");
+    }
+    else {
+      $mids = array();
+      foreach ($rows as $value) {
+        $mids[] = $value['mid'];
+      }
+      $membersInGroup = implode(', ', $mids);
+      $statement2 = $connection->prepare("SELECT * FROM member WHERE id NOT IN ($membersInGroup) ");
+    }
+    $statement2->execute();
+    $rows2 = $statement2->fetchAll();
+
+    $members = array();
+    foreach ($rows2 as $member) {
+      $members[] = array($member['id'], $member['name']);
+    }
+
+    $response = new Response(
+      json_encode($members),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
+
+  /**
+   * @Route("/json", name = "group_json")
+   */
+  public function jsonAction(){
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT * FROM `group`");
+    $statement->execute();
+    $rows = $statement->fetchAll();
+    $groups = array();
+    foreach ($rows as $group) {
+      $groups[] = array($group['id'], $group['name']);
+    }
+    $response = new Response(
+      json_encode($groups),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
+
+  /**
+   * @Route("/load-member", name = "group_load_member")
+   */
+  public function loadMembersInGroupAction(){
+    if (isset($_POST['gid'])) {
+      $gid = $_POST['gid'];
+      $em = $this->getDoctrine()->getManager();
+      $connection = $em->getConnection();
+      $statement = $connection->prepare("SELECT mid FROM group_member where gid=:gid AND isdeleted = 0");
+      $statement->bindParam(':gid', $gid);
+      $statement->execute();
+      $rows = $statement->fetchAll();
+      $mids = array();
+      foreach ($rows as $row) {
+        $mids[] = $row['mid'];
+      }
+      $tmp = implode(', ', $mids);
+      if (!empty($tmp)) {
+        $statement2 = $connection->prepare("SELECT * FROM member WHERE id IN ($tmp) ");
+        $statement2->execute();
+        $members = $statement2->fetchAll();
+        $data = array();
+        $idx = 0;
+        foreach ($members as $member) {
+          $data[] = array(
+            'id' => $member['id'],
+            'idx' => ++$idx,
+            'name' => $member['name'],
+            'phone' => $member['phone'],
+            'email' => $member['email'],
+          );
+        }
+      }
+      else {
+        $data['empty'] = 'Không tìm thấy bản ghi nào';
+      }
+    }
+    else {
+      $data['empty'] = 'Không tìm thấy bản ghi nào';
+    }
+    $response = new Response(
+      json_encode($data),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
+
+  /**
+   * @Route("/delete-member", name = "group_delete_member")
+   */
+  public function deleteMemeberInGroupAction(Request $request){
+    $id = $_POST['id'];
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("UPDATE group_member SET isdeleted = 1 where mid=:id");
+    $statement->bindParam(':id', $id);
+    $statement->execute();
+    $response = new Response(
+      json_encode(array('message')),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
+
+  /**
    * Build search group.
    *
    * @return array $retval

@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+{% block title %}Toong - Thêm thành viên{% endblock %}
+{% block body %}
+  <div class = "container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1 class = "page-title">Thêm</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        {{ form|raw}}
+        <div class="center-block width200">
+          <a href = "#" class = "btn btn-primary btn-add-member">Add member</a>
+          <a href = "{{ path('group_list') }}" class = "btn btn-default">Back</a>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <table class = "table table-bordered">
+          <thead>
+            <th>STT</th>
+            <th>Tên</th>
+            <th>Điện thoại</th>
+            <th>Email</th>
+            <th>Thao tác</th>
+          </thead>
+          <tbody id = "list-members">
+            <tr>
+              <th>1</th>
+              <td>1</td>
+              <td>1</td>
+              <td>1</td>
+              <td>1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+  <script id="template_table" type="text/x-handlebars-template">
+  <%#list%>
+    <tr>
+    <th><%idx%></th>
+    <td><%name%></td>
+    <td><%phone%></td>
+    <td><%email%></td>
+    <td><a href="/group/delete-member/<%id%>" class="deleterow" data-id="<%id%>"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></td>
+    </tr>
+  <%/list%>
+  </script>
+  <script src="{{asset ('js/handlebars.min.js')}}"></script>
+  <script>
+    jQuery(function(){
+      // Validation form add
+      // validation['members'] = {minlength:1, message: 'Chọn ít nhất một thành viên!'};
+      validation['gid'] = {jsfunction: function(){
+        if ($('#gid').val() == -1) return "Chọn một nhóm cho thành viên!";
+        return '';
+      }};
+
+      // Script build form
+      {{script|raw}}
+
+      // Load member from a group
+      function loadMember(){
+        ajaxPost('/group/load-member', $('#f_group_member').serialize(), function(data){
+          if (!data.empty){
+            $('#list-members').html(mr( $('#template_table').html(), {list:data}))
+          } else {
+            $('#list-members').html('<tr><th colspan="5" scope="row" class="text-center">'+ data.empty + '</th></tr>');
+          }
+        });
+      }
+
+      // Add member into group
+      function addMember(){
+        ajaxPost('/group/add-member-ajax', $('#f_group_member').serialize(), function(data){
+          alert(data['message']);
+        });
+      }
+
+      loadMember();
+      $('#list-members').click(function(e){
+        var $el = $(e.target);
+        if ($el.parent().hasClass('deleterow')){
+          e.preventDefault();
+          if (confirm('Bạn chắc chắn muốn xoá gói dịch vụ này?'))
+            ajaxPost('/group/delete-member', {id: $el.parent().data('id')}, function(d){
+            loadMember();
+          });
+        }
+        return false;
+      })
+      $('.btn-add-member').click(function(e){
+        e.preventDefault();
+        $('#list-members').html('<tr><th colspan="6" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
+        if (beforePost() == true) {
+          addMember();
+          loadMember();
+        }
+      });
+
+      $('#gid').change(function(e){
+        e.preventDefault();
+        $('#list-members').html('<tr><th colspan="6" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
+        if (beforePost() == true) {
+          loadMember();
+        }
+      });
+    })
+  </script>
+{% endblock %}
