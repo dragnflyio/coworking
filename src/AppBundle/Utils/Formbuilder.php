@@ -848,6 +848,7 @@ class Formbuilder {
     }
 
     function BuildInputDateTimePicker($id, $label, $showTime = false, $required = false, $defaultValue = null, $readonly = false) {
+	
         $plh = 'day/month/year';
         $timestamp = 0;
         $class2 = '';
@@ -855,10 +856,10 @@ class Formbuilder {
             $class2 = 'readonly';
         if ($defaultValue) {
             //Date time in Y-m-d H:m:s
-            if (is_string($defaultValue)) {
-                $timestamp = strtotime($defaultValue);
-            } else {
+            if (is_numeric($defaultValue)) {
                 $timestamp = $defaultValue;
+            } else {
+                $timestamp = strtotime($defaultValue);
             }
         }
 		if(!$timestamp) $timestamp = '0';

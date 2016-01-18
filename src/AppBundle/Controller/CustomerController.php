@@ -56,11 +56,11 @@ class CustomerController extends Controller{
 			$em = $this->getDoctrine()->getEntityManager();
 			$connection = $em->getConnection();
 			// Get current package by id
-			$statement = $connection->prepare("SELECT * FROM member WHERE id = $id");
-			$statement->execute();
-			$row = $statement->fetchAll();
-			if (empty ($row)) throw $this->createNotFoundException('Không tìm thấy khách hàng này');
-			$tmp = $formbuilder->LoadDatarowToConfig($row[0], 'customerform');
+			if ($row = $connection->fetchAssoc("SELECT * FROM member WHERE id = $id")){
+				$tmp = $formbuilder->LoadDatarowToConfig($row, 'customerform');
+			} else throw $this->createNotFoundException('Không tìm thấy khách hàng này');
+
+			
 		} else {
 			throw $this->createNotFoundException('Không tìm thấy trang này');
 		}
