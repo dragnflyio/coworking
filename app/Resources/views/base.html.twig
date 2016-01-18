@@ -31,16 +31,17 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav navbar-right">
         <li><a href="#">Logged in as Admin</a></li>
-        
+
       </ul>
 
       <ul class="nav navbar-nav">
-        
+
 				<li class="dropdown">
           <a href="{{ path('list_package') }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lễ tân <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="{{ path('add_package') }}">Thêm gói dịch vụ</a></li>
             <li><a href="{{ path('list_package') }}">Danh sách gói dịch vụ</a></li>
+            <li><a href="{{ path('group_list') }}">Danh sách nhóm</a></li>
 						<li role="separator" class="divider"></li>
 						<li><a href="{{ path('add_customer') }}">Thêm khách hàng</a></li>
 						<li><a href="{{ path('list_customer') }}">Danh sách gói khách hàng</a></li>
