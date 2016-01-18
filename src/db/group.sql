@@ -1,14 +1,14 @@
 DROP TABLE `group`;
 
-CREATE TABLE IF NOT EXISTS `group` (
+CREATE TABLE IF NOT EXISTS `groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8 NOT NULL,
-  `address` text CHARACTER SET utf8 NOT NULL,
-  `phone` varchar(20) CHARACTER SET utf8 NOT NULL,
-  `taxcode` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `taxaddress` text CHARACTER SET utf8 NOT NULL,
-  `description` text CHARACTER SET utf8 NOT NULL,
+  `name` text NOT NULL,
+  `address` text,
+  `phone` varchar(20) DEFAULT NULL,
+  `taxcode` varchar(255) DEFAULT NULL,
+  `taxaddress` text,
+  `description` text,
   `members` int(11) NOT NULL,
-  `status` tinyint(4) NOT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

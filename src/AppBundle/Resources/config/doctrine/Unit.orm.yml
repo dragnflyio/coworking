@@ -1,0 +1,35 @@
+AppBundle\Entity\Unit:
+    type: entity
+    table: unit
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+    fields:
+        nameen:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        namevi:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+        value:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        baseUnit:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+            column: base_unit
+    lifecycleCallbacks: {  }

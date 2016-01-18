@@ -2,20 +2,12 @@ ALTER TABLE `ddfields` CHANGE `data_type` `data_type` VARCHAR(20) NULL DEFAULT N
 
 delete from ddfields where table_name = 'product_category' and object_name = 'category';
 
-
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
-
 
 (null, 'category', 'product_category', 'parent_id', 'parent_id', 'Danh mục cha', 'SELECT', '/category/json', NULL, 4104, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-12 07:30:34', NULL, NULL),
 (null, 'category', 'product_category', 'name', 'name', 'Tên', 'text', '', NULL, 4104, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-11 08:29:23', NULL, NULL),
 (null, 'category', 'product_category', 'code', 'code', 'Mã', 'text', '', NULL, 4104, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-11 08:29:23', NULL, NULL),
-(null, 'category', 'product_category', 'id', 'id', '', 'hidden', '', NULL, 4104, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-13 03:57:27', NULL, NULL),
-(null, 'tk_product', 'tk_product', 'code', 'code', 'Mã', 'text', '', NULL, 4101, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-11 08:29:23', NULL, NULL),
-(null, 'tk_product', 'tk_product', 'name', 'name', 'Tên', 'text', '', NULL, 4101, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-14 07:23:17', NULL, NULL),
-(null, 'tk_product', 'tk_product', 'type', 'type', 'Loại', 'SELECT', '/category/json', NULL, 4106, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 07:29:48', NULL, NULL),
-(null, 'tk_product', 'tk_product', 'start_date', 'start_date', 'date field', 'date', '', 0, 4109, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-07 08:42:33', NULL, NULL),
-(null, 'tk_product', 'tk_product', 'danh_muc', 'category', 'Danh mục', 'SELECT', '/category/json', NULL, 4105, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 07:29:48', NULL, NULL),
-(null, 'tk_product', 'tk_product', 'end_date', 'end_date', 'date field', 'date', '', 0, 4110, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-07 08:42:33', NULL, NULL);
+(null, 'category', 'product_category', 'id', 'id', '', 'hidden', '', NULL, 4104, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-13 03:57:27', NULL, NULL);
 
 DELETE FROM ddfields WHERE table_name = 'package' and object_name = 'packageform';
 
@@ -32,14 +24,6 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'packageform', 'package', 'locker', 'locker', 'Locker', 'radio', '{"label":["Có", "Không"],"value":[1,2],"sameline":1}', '2', '4110', NULL, NULL, NULL, NULL, '1', NULL, NULL, '2016-01-14 23:40:22', NULL, NULL);
 
 delete from ddfields where table_name = 'tk_product' and object_name = 'tk_product';
-
-INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
-(null, 'tk_product', 'tk_product', 'code', 'code', 'Mã', 'text', '', NULL, 4101, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-11 08:29:23', NULL, NULL),
-(null, 'tk_product', 'tk_product', 'name', 'name', 'Tên', 'text', '', NULL, 4102, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-15 07:55:07', NULL, NULL),
-(null, 'tk_product', 'tk_product', 'type', 'type', 'Loại', 'SELECT', '/category/json', NULL, 4106, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 07:29:48', NULL, NULL),
-(null, 'tk_product', 'tk_product', 'start_date', 'start_date', 'Ngày bắt đầu', 'date', '', 0, 4109, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-15 07:53:33', NULL, NULL),
-(null, 'tk_product', 'tk_product', 'danh_muc', 'category', 'Danh mục', 'SELECT', '/category/json', NULL, 4105, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 07:29:48', NULL, NULL),
-(null, 'tk_product', 'tk_product', 'end_date', 'end_date', 'Ngày kết thúc', 'date', '', 0, 4110, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-15 07:54:01', NULL, NULL);
 
 delete from ddfields where table_name = 'product' and object_name = 'product';
 
@@ -78,3 +62,9 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'customerform', 'member', 'email', 'email', 'Email', 'TEXT_MULTI_NEW', '', NULL, 4105, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-16 15:41:41', NULL, NULL),
 (null, 'customerform', 'member', 'idno', 'idcardnumber', 'CMND', 'text', '', NULL, 4102, NULL, NULL, NULL, 20, 1, NULL, NULL, '2016-01-17 16:17:14', NULL, NULL),
 (null, 'customerform', 'member', 'name', 'name', 'Tên', 'text', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 16:40:22', NULL, NULL);
+
+DELETE FROM ddfields WHERE table_name = 'group_member' AND object_name = 'group_member';
+
+INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
+(null, 'group_member', 'group_member', 'gid', 'gid', 'Nhóm', 'SELECT', '/group/json', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 07:59:06', NULL, NULL),
+(null, 'group_member', 'group_member', 'members', 'members', 'Thành viên', 'TEXT_MULTI', '/group/member-json', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 07:42:23', NULL, NULL);
