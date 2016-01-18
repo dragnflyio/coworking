@@ -28,7 +28,7 @@ class GroupController extends Controller
     // Get connection database.
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `group`");
+    $statement = $connection->prepare("SELECT * FROM `groups`");
     $statement->execute();
     $rows = $statement->fetchAll();
     $groups = array();
@@ -64,7 +64,7 @@ class GroupController extends Controller
     $gid = (int)$id;
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `group` WHERE id = $gid");
+    $statement = $connection->prepare("SELECT * FROM `groups` WHERE id = $gid");
     $statement->execute();
     $row = $statement->fetchAll();
     $tmp = $formbuilder->LoadDatarowToConfig($row[0], 'group');
@@ -85,7 +85,7 @@ class GroupController extends Controller
     $filters = $this->getWhereUserSearchCondition($searchData);
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `group` WHERE 1=status $filters");
+    $statement = $connection->prepare("SELECT * FROM `groups` WHERE 1=status $filters");
     $statement->execute();
     $all_rows = $statement->fetchAll();
     $ret = array();
@@ -132,7 +132,7 @@ class GroupController extends Controller
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
     if (!empty($_POST['id'])) {
-      $statement = $connection->prepare("UPDATE `group`
+      $statement = $connection->prepare("UPDATE `groups`
         SET name = :name,
         address = :address,
         phone = :phone,
@@ -145,7 +145,7 @@ class GroupController extends Controller
       $message = "Bạn đã cập nhật nhóm thành công";
     }
     else {
-      $statement = $connection->prepare("INSERT INTO `group` (name, address, phone, taxcode, taxaddress, description, members, status)
+      $statement = $connection->prepare("INSERT INTO `groups` (name, address, phone, taxcode, taxaddress, description, members, status)
       VALUES (:name, :address, :phone, :taxcode, :taxaddress, :description, :members, 1)");
       $message = "Bạn đã thêm mới nhóm thành công";
     }
@@ -253,7 +253,7 @@ class GroupController extends Controller
   public function jsonAction(){
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `group`");
+    $statement = $connection->prepare("SELECT * FROM `groups`");
     $statement->execute();
     $rows = $statement->fetchAll();
     $groups = array();
