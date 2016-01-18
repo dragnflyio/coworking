@@ -828,7 +828,8 @@ class Formbuilder {
         $urljs = '"' . $url . '"';
         if(is_array($url)) $urljs = json_encode($url);
 		$prompt = '';
-		if ($allEnterNew) $prompt = ',"type to enter value"';
+
+		if ($allEnterNew && $allEnterNew != 'false') $prompt = ',"type to enter value"';
         $this->mscript .= 'tk' . $id . '=new Geekutil.TM("' . $id . '",' . $allEnterNew . ',' . $urljs . ',' . $value . ',' . $maxstr . ',' . $istPopSearchStr . $prompt. ');';
 
 

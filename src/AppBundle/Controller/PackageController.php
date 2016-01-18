@@ -230,6 +230,12 @@ class PackageController extends Controller{
 					$data['m'] = 'Cập nhật thành công';
 				}
 				break;
+			case 'getpackage':
+				$id = $request->query->get('id', 0);
+				if ($row = $connection->fetchAssoc("SELECT * FROM package WHERE id = ?", array($id))){
+					$data = $row;					
+				}
+				break;
 			case 'testsearch':
 				$grp = $this->getPackageSearchForm();
         		$data['d'] = $formbuilder->GetSearchData($_POST, $grp);

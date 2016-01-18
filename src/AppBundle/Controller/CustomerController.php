@@ -28,21 +28,101 @@ class CustomerController extends Controller{
 
     }
 	/**
+     * @Route("/addpackage/{id}", name="add_customer_package", requirements={"id" = "\d+"})
+     */
+	public function addpackageAction($id){
+		$formbuilder = $this->get('app.formbuilder');
+		$tmp = $formbuilder->GenerateLayout('memberpackage');
+		$em = $this->getDoctrine()->getEntityManager();
+		$connection = $em->getConnection();
+		$row = $connection->fetchAssoc('SELECT name FROM member WHERE id=?', array($id));
+		if (empty ($row)) throw $this->createNotFoundException('Không tìm thấy khách hàng');
+		
+
+        return $this->render('customer/addpackage.html.twig', [
+			'form' => $tmp,
+			'row' => $row,
+			'id' => $id,
+			'script' => $formbuilder->mscript
+        ]);
+	}
+	/**
+     * @Route("/getpackages")
+     */
+	public function getpackagesAction(){
+		$em = $this->getDoctrine()->getEntityManager();
+		$connection = $em->getConnection();
+
+		$results = $connection->fetchAll("SELECT id, name FROM package WHERE 1");
+		$data = array();
+		foreach ($results as $row) $data[] = array($row['id'], $row['name']);
+
+		$response = new Response(
+			json_encode($data),
+			Response::HTTP_OK,
+			array('content-type' => 'application/json')
+	   	);
+
+
+		return $response;
+	}
+	/**
      * @Route("/list", name="list_customer")
 	 * @Route("/", name="list_customer")
      */
     public function listAction(Request $request){
 		$formbuilder = $this->get('app.formbuilder');
-		$grp = $this->getPackageSearchForm();
+		$grp = $this->getCustomerSearchForm();
 		
 		$form = $formbuilder->GenerateManualSearchControls($grp);
 		
-        return $this->render('package/list.html.twig', [
+        return $this->render('customer/list.html.twig', [
 			'form' => $form,
 			'script' => $formbuilder->mscript
         ]);
 
     }
+	/**
+	 * Where search for user search
+	 */
+	private function getWhereUserSearchCondition($searchData) {
+		$formbuilder = $this->get('app.formbuilder');
+        $where = '';
+        foreach ($searchData as $data) {
+            // normal fields - colname already there and differ from 'x'
+            if ($data['colname'] != 'x') {
+                $where .= $formbuilder->buildSingleCondition($data);
+            } else {
+				// do yourself
+			}
+        }
+        return $where;
+    }
+	private function getCustomerSearchForm(){
+		$retval = array();
+		$row = array();
+		$row['id'] = 'packagename';
+		$row['label'] = 'Tên gói';
+		$row['type'] = 'text';
+		$row['colname'] = 'name';
+		$row['pos'] = array('row' => 1, 'col' => 1);
+		$retval[] = $row;
+		
+		$row = array();
+		$row['id'] = 'trangthai';
+		$row['label'] = 'Trạng thái';
+		$row['colname'] = 'active';
+		$row['type'] = 'check';
+		$arr = array(
+            'sameline' => 1,
+            'label' => array('Hoạt động', 'Ngừng hoạt động'),
+            'value' => array(1, 2)
+        );
+        $row['ds'] = json_encode($arr);
+		$row['pos'] = array('row' => 1, 'col' => 2);
+		$retval[] = $row;
+		return $retval;
+	}
 	/**
      * @Route("/edit/{id}", requirements={"id" = "\d+"})
      */
@@ -93,6 +173,23 @@ class CustomerController extends Controller{
 		$connection = $em->getConnection();
 		
 		switch($op){
+			case 'addpackage':
+				$customerid = $request->query->get('id', 0);
+				// check if this customer added package?
+				// or belong to a group which added package
+				// if not, do add package
+				if ($customerid){
+					$dataObj = $formbuilder->PrepareInsert($_POST, 'memberpackage');
+					foreach ($dataObj as $table => $postdata){
+						if ($postdata){
+							$postdata['memberid'] = $customerid;
+							$data['v'] = $connection->insert($table, $postdata);
+						}
+					}
+					$data['m'] = 'Thêm thành công';
+				}
+				
+				break;
 			case 'create':
 				$dataObj = $formbuilder->PrepareInsert($_POST, 'customerform');
 				foreach ($dataObj as $table => $postdata){
@@ -126,10 +223,10 @@ class CustomerController extends Controller{
 				}
 				break;
 			case 'search':
-				$grp = $this->getPackageSearchForm();
+				$grp = $this->getCustomerSearchForm();
 				$searchData = $formbuilder->GetSearchData($_POST, $grp);
 				$filters = $this->getWhereUserSearchCondition($searchData);
-				$statement = $connection->prepare("SELECT * FROM customer WHERE 1=status $filters");
+				$statement = $connection->prepare("SELECT * FROM member WHERE 1=active $filters");
 				$statement->execute();
 				$all_rows = $statement->fetchAll();
 				$ret = array();
@@ -142,8 +239,8 @@ class CustomerController extends Controller{
 							'id' => $row['id'],
 							'idx' => ++$idx,
 							'name' => $row['name'],
-							'price' => $formbuilder->formatNum($row['price']),
-							'description' => $row['description'],
+							'price' => $row['email'],
+							'description' => $row['phone'],
 							'createdname' => 'Admin'
 						);
 						$ret[] = $tmp;

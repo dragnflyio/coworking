@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+Thêm gói dịch vụ cho khách khách hàng
+{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+
+   <div class="container">
+			<div class="row">
+        	<div class="col-md-12">
+            <h2>Thêm gói dịch vụ</h2>
+						<h3>Khách hàng: {{row['name']}}</h3>
+        	</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					{{ form|raw}}
+				</div>
+		  </div>
+		  <div class="row">
+				<div class="col-md-12">
+					<div class="center-block width200">
+						<a class="btn btn-primary" href="#" id="btnsave"> Save </a> <a class="btn btn-default" href="{{ path('list_customer')}}" id="btnback"> Back </a>
+					</div>
+				</div>
+			</div>
+
+	 </div> <!-- /container --!>
+
+</div><!-- /wrapper --!>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+validation['packageid'] = {minvalue:1, message: 'Chọn gói dịch vụ'};
+
+jQuery(function(){
+	{{script|raw}}
+	$('.numeric').intOnly();
+	tkpackageid.callback(function(){
+		if (tkpackageid.get() == ''){
+		$('#f_memberpackage')[0].reset();
+		return
+		}
+		ajaxGet('/package/formapi?op=getpackage&id=' + tkpackageid.get(), function(data){
+			if (data && data.id){
+				$('#maxvisitors').val(formatNum(data.maxvisitors));
+				$('#maxprintpapers').val(formatNum(data.maxprintpapers));
+				$('#maxdays').val(formatNum(data.maxdays));
+				$('#maxmeetinghours').val(formatNum(data.maxmeetinghours));
+				$('#maxhours').val(formatNum(data.maxhours));
+				$('#discountbar').val(formatNum(data.discountbar));
+				$('#price').val(formatNum(data.price));
+				
+				$('input[name="allowcredit"][value='+data.allowcredit+']').click();
+				$('input[name="locker"][value='+data.locker+']').click();
+			}
+		})
+	})
+	$('#btnsave').click(function(e){
+		e.preventDefault();
+		beforePost() && ajaxPost('/customer/formapi?op=addpackage&id={{id}}', $('#f_memberpackage').serialize(), function(d){});
+	})
+})
+
+
+</script>
+{% endblock %}
+

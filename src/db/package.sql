@@ -15,7 +15,7 @@ CREATE TABLE `package` (
   `maxprintpapers` int(11) DEFAULT NULL,
   `maxmeetinghours` int(11) DEFAULT NULL,
   `maxvisitorhours` int(11) DEFAULT NULL,
-  `allowcredit` tinyint(4) NOT NULL DEFAULT '0',
+  `allowcredit` tinyint(4) NOT NULL DEFAULT '1',
   `discountbar` tinyint(3) UNSIGNED DEFAULT NULL,
   `locker` tinyint(4) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

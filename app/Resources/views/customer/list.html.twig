@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-Danh sách gói dịch vụ
+Danh sách khách hàng
 {% endblock %}
 
 {% block body %}
@@ -8,13 +8,13 @@ Danh sách gói dịch vụ
    <div class="container">
 			<div class="row">
         	<div class="col-md-12">
-            <h1>Danh sách gói dịch vụ</h1>
+            <h1>Danh sách khách hàng</h1>
         	</div>
 			</div>
 			<div class="row">
 
 					<div class="col-md-12">
-						<form class="form-horizontal" method="post" id="f_packagesearch">
+						<form class="form-horizontal" method="post" id="f_customersearch">
 						{{form|raw}}
 					  </form>
 					</div>
@@ -32,13 +32,13 @@ Danh sách gói dịch vụ
 						 	<tr>
 								<th class="width50">#</th>
 								<th>Tên</th>
-								<th>Giá (VND)</th>
-								<th>Thông tin</th>
+								<th>Email</th>
+								<th>Điện thoại</th>
 								<th>Người tạo</th>
 								<th class="width100"></th>
 							</tr> 
 						</thead>
-						<tbody id="listpackage">
+						<tbody id="listcustomer">
 						 	<tr>
 						 		<th colspan="6" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
 							</tr>
@@ -49,7 +49,7 @@ Danh sách gói dịch vụ
 		  <div class="row">
 				<div class="col-md-12">
 					<div class="center-block width200">
-						<a class="btn btn-primary" href="{{ path('add_package')}}" id="btnback"> Add new </a>
+						<a class="btn btn-primary" href="{{ path('add_customer')}}" id="btnback"> Thêm mới khách hàng </a>
 					</div>
 				</div>
 			</div>
@@ -68,7 +68,7 @@ Danh sách gói dịch vụ
 	<td><%price%></td>
 	<td><%description%></td>
 	<td><%createdname%></td>
-	<td><a href="/package/edit/<%id%>"> Edit </a> | <a href="#" class="deleterow" data-id="<%id%>"> Delete </a> </td>
+	<td><a href="/customer/edit/<%id%>"> Sửa </a> | <a href="/customer/addpackage/<%id%>"> Thêm gói </a> | <a href="#" class="deleterow" data-id="<%id%>"> Xoá </a></td>
 	</tr>
 	<%/list%>
 </script>
@@ -79,30 +79,30 @@ jQuery(function(){
 	{{script|raw}}
 	$('.numeric').intOnly();
 	function doSearch(){
-		ajaxPost('/package/formapi?op=search', $('#f_packagesearch').serialize(), function(data){
+		ajaxPost('/customer/formapi?op=search', $('#f_customersearch').serialize(), function(data){
 			if (!data.empty){
-				$('#listpackage').html(mr( $('#template_table').html(), {list:data}))
+				$('#listcustomer').html(mr( $('#template_table').html(), {list:data}))
 			} else {
-				$('#listpackage').html('<tr><th colspan="6" scope="row" class="text-center">'+ data.empty + '</th></tr>');
+				$('#listcustomer').html('<tr><th colspan="6" scope="row" class="text-center">'+ data.empty + '</th></tr>');
 			}
 		});
 
 	}
 	doSearch();
 	
-	$('#listpackage').click(function(e){
+	$('#listcustomer').click(function(e){
 		var $el = $(e.target);
 		if ($el.hasClass('deleterow')){
 			e.preventDefault();
-			if (confirm('Bạn chắc chắn muốn xoá gói dịch vụ này?'))
-			ajaxPost('/package/formapi?op=deletepackage', {id: $el.data('id')}, function(d){
+			if (confirm('Bạn chắc chắn muốn vô hiệu khách hàng này?'))
+			ajaxPost('/package/formapi?op=deactivate', {id: $el.data('id')}, function(d){
 				doSearch();
 			});
 		}
 	})
 	$('#btnsearch').click(function(e){
 		e.preventDefault();
-		$('#listpackage').html('<tr><th colspan="6" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
+		$('#listcustomer').html('<tr><th colspan="6" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
 		doSearch();
 	})
 })
