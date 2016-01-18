@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  * @Route("/package")
  */
 class PackageController extends Controller{
-	
+
 	/**
      * @Route("/list", name="list_package")
 	 * @Route("/", name="list_package")
@@ -21,9 +21,9 @@ class PackageController extends Controller{
     public function listAction(Request $request){
 		$formbuilder = $this->get('app.formbuilder');
 		$grp = $this->getPackageSearchForm();
-		
+
 		$form = $formbuilder->GenerateManualSearchControls($grp);
-		
+
         return $this->render('package/list.html.twig', [
 			'form' => $form,
 			'script' => $formbuilder->mscript
@@ -31,7 +31,7 @@ class PackageController extends Controller{
 
     }
 	private function getPackageSearchForm(){
-		
+
 		$retval = array();
 		// ten app
 		/*$row = array();
@@ -60,12 +60,12 @@ class PackageController extends Controller{
 		$row['type'] = 'text';
 		$row['colname'] = 'name';
 		$row['pos'] = array('row' => 1, 'col' => 1);
-		$retval[] = $row;		
+		$retval[] = $row;
 		/* nguon ip
 		$row = array();
 		$row['id'] = 'ipsource';
 		$row['label'] = 'Chung nguồn IP';
-		$row['type'] = 'check';		
+		$row['type'] = 'check';
 		$row['pos'] = array('row' => 1, 'col' => 2);
 		$retval[] = $row;*/
 		//ngay tao
@@ -76,7 +76,7 @@ class PackageController extends Controller{
         $row['colname'] = 'createdtime';
         $row['pos'] = array('row' => 1, 'col' => 2);
         $retval[] = $row;
-		
+
 		// Locker
 		$row = array();
 		$row['id'] = 'locker';
@@ -114,7 +114,7 @@ class PackageController extends Controller{
 		$row['pos'] = array('row' => 2, 'col' => 2);
 		$row['colname'] = 'price';
 		$retval[] = $row;
-		
+
 		/*$row = array();
 		$row['id'] = 'cvirate';
 		$row['type'] = 'numeric';
@@ -138,7 +138,7 @@ class PackageController extends Controller{
             // normal fields - colname already there and differ from 'x'
             if ($data['colname'] != 'x') {
                 $where .= $formbuilder->buildSingleCondition($data);
-            } else {								
+            } else {
 				// do yourself
 			}
         }
@@ -161,7 +161,7 @@ class PackageController extends Controller{
      * @Route("/edit/{id}", requirements={"id" = "\d+"})
      */
     public function editAction($id, Request $request){
-		$formbuilder = $this->get('app.formbuilder');		
+		$formbuilder = $this->get('app.formbuilder');
 		$request = Request::createFromGlobals();
 
 		$id = (int)$id;
@@ -178,7 +178,7 @@ class PackageController extends Controller{
 		} else {
 			throw $this->createNotFoundException('Không tìm thấy trang này');
 		}
-		
+
 
         return $this->render('package/edit.html.twig', [
 			'form' => $tmp,
@@ -199,13 +199,13 @@ class PackageController extends Controller{
 		}
 
 		$op = $request->query->get('op', 'create');
-		
+
 		$formbuilder = $this->get('app.formbuilder');
-		
+
 		$data = array();
 		$em = $this->getDoctrine()->getEntityManager();
 		$connection = $em->getConnection();
-		
+
 		switch($op){
 			case 'create':
 				$dataObj = $formbuilder->PrepareInsert($_POST, 'packageform');
@@ -234,7 +234,7 @@ class PackageController extends Controller{
 				$grp = $this->getPackageSearchForm();
         		$data['d'] = $formbuilder->GetSearchData($_POST, $grp);
 				$data['w'] = $this->getWhereUserSearchCondition($data['d']);
-				
+
 				break;
 			case 'deletepackage':
 				$id = $request->request->get('id', 0);
@@ -268,13 +268,13 @@ class PackageController extends Controller{
 						$ret[] = $tmp;
 					}
 					$data = $ret;
-				}				
-				
+				}
+
 				break;
 			default:
 				throw $this->createAccessDeniedException('Invalid operator');
 		}
-		
+
 		$response = new Response(
 			json_encode($data),
 			Response::HTTP_OK,

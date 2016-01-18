@@ -10,8 +10,21 @@
     <th>Số thành viên</th>
     <th></th>
   </thead>
-  <tbody>
+  <tbody id = "list-group">
   <tr>
+    {% for index,group in groups %}
+    <tr>
+      <th>{{index}}</th>
+      <td>{{group.name}}</td>
+      <td>{{group.address}}</td>
+      <td>{{group.phone}}</td>
+      <td>{{group.taxcode}}</td>
+      <td>{{group.taxaddress}}</td>
+      <td>{{group.description}}</td>
+      <td>{{group.members}}</td>
+      <td><a href = "{{path('group_edit', {'id': group.id})}}"><span class = "glyphicon glyphicon-pencil"></span></a></td>
+    </tr>
+    {% endfor %}
     <th colspan="9" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
   </tr>
   </tbody>
