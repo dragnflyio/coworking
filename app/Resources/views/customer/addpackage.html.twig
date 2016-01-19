@@ -21,7 +21,9 @@ Thêm gói dịch vụ cho khách khách hàng
 		  <div class="row">
 				<div class="col-md-12">
 					<div class="center-block width200">
-						<a class="btn btn-primary" href="#" id="btnsave"> Save </a> <a class="btn btn-default" href="{{ path('list_customer')}}" id="btnback"> Back </a>
+						{% if false == error %}<a class="btn btn-primary" href="#" id="btnsave"> Save </a>
+						{% endif %}
+						<a class="btn btn-default" href="{{ path('list_customer')}}" id="btnback"> Back </a>
 					</div>
 				</div>
 			</div>
@@ -45,7 +47,7 @@ validation['efffrom'] = {jsfunction:function(){
 jQuery(function(){
 	{{script|raw}}
 	$('.numeric').intOnly();
-	tkpackageid.callback(function(){
+	window.tkpackageid && tkpackageid.callback(function(){
 		if (tkpackageid.get() == ''){
 		$('#f_memberpackage')[0].reset();
 		return

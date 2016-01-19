@@ -1759,7 +1759,7 @@ class Formbuilder {
     //**************** Search form helper *******************/
 
     private function BuildInputTextSearch($id, $label, $suffix, $attr = null,$defaultValue = '') {
-        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-md-2 control-label">' . $label . '</label><div class="col-md-8">';
+        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-md-2 control-label text-nowrap">' . $label . '</label><div class="col-md-8">';
         $retVal .= '<input type="text" id="' . $id . '" name="' . $id . '" class="form-control" maxlength="1000"';
 		if ($defaultValue)
             $retVal .= ' value="' . htmlspecialchars($defaultValue) . '"';
@@ -1783,7 +1783,7 @@ class Formbuilder {
     }
 
     private function BuildBirthdaySearch($id, $label,$day,$month,$year) {
-        $retVal = '<div class="form-group"><label for="d' . $id . '" class="col-md-2 control-label">' . $label . '</label><div class="controls">';
+        $retVal = '<div class="form-group"><label for="d' . $id . '" class="col-md-2 control-label text-nowrap">' . $label . '</label><div class="controls">';
         //select ngay
         $retVal .= '<select class="span s2s" id="d' . $id . '" name="d' . $id . '">';
         $retVal .= '<option value="0">' . (defined('_S_C_NGAY') ? constant('_S_C_NGAY') : '_S_C_NGAY') . '</option>';
@@ -1822,7 +1822,7 @@ class Formbuilder {
 
 		if(!$from) $from = '0';
 		if(!$to) $to = '0';
-        $retVal = '<div class="form-group"><label for="f' . $id . '_d" class="col-md-2 control-label">' . $label . '</label><div class="daterange col-md-10">';
+        $retVal = '<div class="form-group"><label for="f' . $id . '_d" class="col-md-2 control-label text-nowrap">' . $label . '</label><div class="daterange col-md-10">';
         //select
         $retVal .= '<select class="form-control col-md-3 s1s" id="' . $id . '" name="' . $id . '">';
         $retVal .= '<option value="0">' . (defined('_S_FT') ? constant('_S_FT') : '_S_FT') . '</option>';
@@ -1876,7 +1876,7 @@ class Formbuilder {
     }
 
     private function BuildInputSelectSearch($id, $label, $labelArr, $valueArr, $multiple = false, $url = null, $zero = 1,$defaultValue=null) {
-        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-md-2 control-label">' . $label . '</label><div class="col-md-8">';
+        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-md-2 control-label text-nowrap">' . $label . '</label><div class="col-md-8">';
         if (is_array($labelArr)) {
             $retVal .= '<select class="form-control" name="' . $id . '" id="' . $id . '"';
             if ($multiple)
@@ -1912,7 +1912,7 @@ class Formbuilder {
 
     private function BuildInputCheckSearch($id, $label, $labelArr, $valueArr, $inline = false,$defaultValue = null) {
         if (is_array($labelArr)) {
-			$retVal = '<div class="form-group"> <label for="' . $id . '" class="col-md-2 control-label">' . $label.'</label><div class="col-md-10">';
+			$retVal = '<div class="form-group"> <label for="' . $id . '" class="col-md-2 control-label text-nowrap">' . $label.'</label><div class="col-md-10">';
 			if ($inline){
 				for ($i = 0; $i < count($labelArr); $i++) {
 	                $retVal .= '<label class="checkbox-inline">';
@@ -1961,7 +1961,7 @@ class Formbuilder {
      * */
     private function BuildInputTextMultiSearch($id, $label, $url, $allowNew = false, $maxlength = null, $instantPopSearch = null,$defaultValue = null) {
         $this->_mtextboxlib = true;
-        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-md-2 control-label">' . $label . '</label><div class="col-md-8">';
+        $retVal = '<div class="form-group"><label for="' . $id . '" class="col-md-2 control-label text-nowrap">' . $label . '</label><div class="col-md-8">';
         $max = 0;
         if ($maxlength)
             $max = $maxlength;

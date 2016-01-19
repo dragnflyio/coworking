@@ -1,4 +1,4 @@
-DROP TABLE `group`;
+DROP TABLE `groups`;
 
 CREATE TABLE IF NOT EXISTS `groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use AppBundle\Utils\Validation;
 
 /**
  * @Route("/customer")
@@ -25,21 +26,27 @@ class CustomerController extends Controller{
 			'form' => $tmp,
 			'script' => $formbuilder->mscript
         ]);
-
     }
 	/**
      * @Route("/addpackage/{id}", name="add_customer_package", requirements={"id" = "\d+"})
      */
 	public function addpackageAction($id){
 		$formbuilder = $this->get('app.formbuilder');
-		$tmp = $formbuilder->GenerateLayout('memberpackage');
+		$validation = $this->get('app.validation');
 		$em = $this->getDoctrine()->getEntityManager();
 		$connection = $em->getConnection();
 		$row = $connection->fetchAssoc('SELECT name FROM member WHERE id=?', array($id));
 		if (empty ($row)) throw $this->createNotFoundException('Không tìm thấy khách hàng');
-		
+		$error = false;
+		if ($msg = $validation->checkMemberPackage($id)){
+			$tmp = $msg;
+			$error = true;
+		} else {
+			$tmp = $formbuilder->GenerateLayout('memberpackage');			
+		}
 
         return $this->render('customer/addpackage.html.twig', [
+			'error' => $error,
 			'form' => $tmp,
 			'row' => $row,
 			'id' => $id,
@@ -102,7 +109,7 @@ class CustomerController extends Controller{
 		$retval = array();
 		$row = array();
 		$row['id'] = 'packagename';
-		$row['label'] = 'Tên gói';
+		$row['label'] = 'Tên khách';
 		$row['type'] = 'text';
 		$row['colname'] = 'name';
 		$row['pos'] = array('row' => 1, 'col' => 1);
@@ -175,7 +182,7 @@ class CustomerController extends Controller{
 		switch($op){
 			case 'addpackage':
 				$customerid = $request->query->get('id', 0);
-				// check if this customer added package?
+				// TODO check if this customer added package?
 				// or belong to a group which added package
 				// if not, do add package
 				if ($customerid){

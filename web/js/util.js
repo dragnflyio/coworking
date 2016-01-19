@@ -1200,7 +1200,15 @@ Geekutil.Cal = function(idCal, notime, pt, readonly){
 		$('#' + idCal + '_i').addClass('invisible').css('width',1);
 		$('#' + idCal + '_d').on('click', function(){cal.popup(idCal + '_i')})
 	}
-  self.get = function(){return $('#' + idCal).val()}
+  self.get = function(){
+		var ret = $('#' + idCal).val()
+		if (notime){
+			var obj = new Date(ret*1000);
+			obj = new Date(obj.getFullYear(), obj.getMonth(), obj.getDate(), 0, 0, 0, 0);
+			return obj.getTime()/1000;
+		}
+		return ret;
+	}
   var oldst = '';
   var cal = Calendar.setup({
     onSelect: function(){

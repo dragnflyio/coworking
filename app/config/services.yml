@@ -7,5 +7,8 @@ services:
     app.formbuilder:
         class: AppBundle\Utils\Formbuilder
         arguments: ["@doctrine.orm.entity_manager"]
+    app.validation:
+        class: AppBundle\Utils\Validation
+        arguments: ["@doctrine.orm.entity_manager"]
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
