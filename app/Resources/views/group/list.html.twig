@@ -21,7 +21,10 @@
     <td>{{group.taxaddress}}</td>
     <td>{{group.description}}</td>
     <td>{{group.members}}</td>
-    <td><a href = "{{path('group_edit', {'id': group.id})}}"><span class = "glyphicon glyphicon-pencil"></span></a></td>
+    <td>
+      <a href = "{{path('group_edit', {'id': group.id})}}"><span class = "glyphicon glyphicon-pencil"></span></a>|
+      <a href = "{{path('group_add_package', {'id': group.id})}}">Thêm gói</a>
+    </td>
   </tr>
   {% endfor %}
   <th colspan="9" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>

@@ -335,6 +335,24 @@ class GroupController extends Controller
   }
 
   /**
+   * @Route("/addpackage/{id}", name = "group_add_package")
+   */
+  public function addPackageAction($id){
+    $formbuilder = $this->get('app.formbuilder');
+    $tmp = $formbuilder->GenerateLayout('group_package');
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    $row = $connection->fetchAssoc('SELECT name FROM `groups` WHERE id=?', array($id));
+    if (empty ($row)) throw $this->createNotFoundException('Không tìm thấy nhóm!');
+    return $this->render('group/addpackage.html.twig', [
+      'form' => $tmp,
+      'row' => $row,
+      'id' => $id,
+      'script' => $formbuilder->mscript
+    ]);
+  }
+
+  /**
    * Build search group.
    *
    * @return array $retval
