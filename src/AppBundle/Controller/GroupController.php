@@ -76,6 +76,25 @@ class GroupController extends Controller
   }
 
   /**
+   * @Route("/delete", name = "group_delete")
+   */
+  public function deleteGroupAction(){
+    $id = $_POST['id'];
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("UPDATE groups SET status = 0 where id=:id");
+    $statement->bindParam(':id', $id);
+    $statement->execute();
+    $data['m'] = 'Đã vô hiệu nhóm này!';
+    $response = new Response(
+      json_encode($data),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
+
+  /**
    * @Route("/search", name = "group_search")
    */
   public function searchAction(){
@@ -253,7 +272,7 @@ class GroupController extends Controller
   public function jsonAction(){
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `groups`");
+    $statement = $connection->prepare("SELECT * FROM `groups` WHERE status = 1");
     $statement->execute();
     $rows = $statement->fetchAll();
     $groups = array();
