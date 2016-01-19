@@ -27,4 +27,28 @@
   <script>
   {{script|raw}}
   </script>
+  <script>
+    jQuery(function(){
+      // Validation group
+      $('.numeric').intOnly();
+      validation['members'] = {minvalue:2, message: 'Nhập số thành viên, lớn hơn 2'};
+      validation['name'] = {minlength:1, message: 'Nhập tên nhóm!'};
+      // Add/Update group.
+      $('.btn-submit').click(function(e){
+        e.preventDefault();
+        if (beforePost() == true) {
+          $.ajax({
+            type: 'POST',
+            url: '/group/ajax-action',
+            data: $('#f_group').serialize()
+          })
+          .done(function (data) {
+            alert(data['message']);
+            $('#f_group').trigger("reset");
+          })
+          return false;
+        }
+      });
+    })
+  </script>
 {% endblock %}
