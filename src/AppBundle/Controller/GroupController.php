@@ -28,7 +28,7 @@ class GroupController extends Controller
     // Get connection database.
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `groups`");
+    $statement = $connection->prepare("SELECT * FROM `groups` WHERE status = 1");
     $statement->execute();
     $rows = $statement->fetchAll();
     $groups = array();
@@ -161,12 +161,12 @@ class GroupController extends Controller
         members = :members
         where id =:id");
       $statement->bindParam(':id', $_POST['id']);
-      $message = "Bạn đã cập nhật nhóm thành công";
+      $data['m'] = "Bạn đã cập nhật nhóm thành công";
     }
     else {
       $statement = $connection->prepare("INSERT INTO `groups` (name, address, phone, taxcode, taxaddress, description, members, status)
       VALUES (:name, :address, :phone, :taxcode, :taxaddress, :description, :members, 1)");
-      $message = "Bạn đã thêm mới nhóm thành công";
+      $data['m'] = "Bạn đã thêm mới nhóm thành công";
     }
     $statement->bindParam(':name', $name);
     $statement->bindParam(':address', $address);
@@ -177,7 +177,7 @@ class GroupController extends Controller
     $statement->bindParam(':members', $members);
     $statement->execute();
     $response = new Response(
-      json_encode(array('message' => $message)),
+      json_encode($data),
       Response::HTTP_OK,
       array('content-type' => 'application/json')
     );
@@ -358,15 +358,24 @@ class GroupController extends Controller
    */
   public function addPackageFormAction($id){
     $formbuilder = $this->get('app.formbuilder');
+    $validation = $this->get('app.validation');
     $tmp = $formbuilder->GenerateLayout('group_package');
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
     $row = $connection->fetchAssoc('SELECT * FROM `groups` WHERE id=?', array($id));
     if (empty ($row)) throw $this->createNotFoundException('Không tìm thấy nhóm!');
+    $error = false;
+    if ($msg = $validation->checkGroupPackage($id)){
+      $tmp = $msg;
+      $error = true;
+    } else {
+      $tmp = $formbuilder->GenerateLayout('memberpackage');
+    }
     return $this->render('group/addpackage.html.twig', [
       'form' => $tmp,
       'row' => $row,
       'id' => $id,
+      'error' => $error,
       'script' => $formbuilder->mscript
     ]);
   }
