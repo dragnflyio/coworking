@@ -48,7 +48,7 @@
     <td><%description%></td>
     <td><%members%></td>
     <td>
-      <a href="/group/edit/<%id%>">Sửa</a> | <a href="/group/addpackage/<%id%>">Thêm gói</span></a>
+      <a href="/group/edit/<%id%>">Sửa</a> | <a href="/group/addpackage/<%id%>">Thêm gói</span></a> | <a href="#" class="deleterow" data-id="<%id%>"> Vô hiệu </a>
     </td>
     </tr>
   <%/list%>
@@ -80,6 +80,17 @@
         e.preventDefault();
         $('#list-group').html('<tr><th colspan="6" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
         doSearch();
+      })
+
+      $('#list-group').click(function(e){
+        var $el = $(e.target);
+        if ($el.hasClass('deleterow')){
+          e.preventDefault();
+          if (confirm('Bạn chắc chắn muốn vô hiệu nhóm này?'))
+          ajaxPost('/group/delete', {id: $el.data('id')}, function(d){
+            doSearch();
+          });
+        }
       })
     })
   </script>

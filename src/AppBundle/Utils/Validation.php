@@ -20,10 +20,10 @@ class Validation{
 			}
 		}
 		// Belong a group?
-		if ($row = $this->em->fetchAssoc('SELECT gid FROM group_member WHERE memberid = ?', array($memberid))){
+		if ($row = $this->em->fetchAssoc('SELECT groupid FROM group_member WHERE memberid = ?', array($memberid))){
 			// group has active package?
-			if ($group_package = $this->em->fetchAssoc('SELECT packageid FROM group_package WHERE 1 = active AND groupid = '. $row['gid'])){
-				if ($package_name = $this->em->fetchColumn('SELECT name FROM package WHERE id = '. $row['packageid'])){
+			if ($group_package = $this->em->fetchAssoc('SELECT packageid FROM group_package WHERE 1 = active AND groupid = '. $row['groupid'])){
+				if ($package_name = $this->em->fetchColumn('SELECT name FROM package WHERE id = '. $group_package['packageid'])){
 					return "Khách hàng này nằm trong một nhóm đang dùng gói {$package_name}, đóng gói hiện tại trước khi đăng kí gói mới";
 				}
 			}
