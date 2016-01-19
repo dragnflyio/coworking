@@ -16,6 +16,12 @@ class ProductController extends Controller
    * @Route("/product", name="product")
    */
   public function indexAction(){
+    // Get search form.
+    $formbuilder = $this->get('app.formbuilder');
+    $search_form = $this->getSearchForm();
+    $form = $formbuilder->GenerateManualSearchControls($search_form);
+
+    // Get connection database.
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
     $statement = $connection->prepare("SELECT * FROM product");
@@ -31,7 +37,7 @@ class ProductController extends Controller
     $tmp = $formbuilder->GenerateLayout('tk_product');
     return $this->render('product/index.html.twig', [
         'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
-        'form' => $tmp,
+        'form' => $form,
         'script' => $formbuilder->mscript,
         'products' => $products,
     ]);
@@ -260,7 +266,7 @@ class ProductController extends Controller
    *
    * @return array $products
    */
-  public function checkProduct($code){
+  private function checkProduct($code){
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
     $statement = $connection->prepare("SELECT * FROM product WHERE code = '$code'");
@@ -281,7 +287,7 @@ class ProductController extends Controller
    *
    * @return int $int
    */
-  public function getCidByName($name){
+  private function getCidByName($name){
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
     $statement = $connection->prepare("SELECT * FROM product_category WHERE name = :name");
@@ -303,7 +309,7 @@ class ProductController extends Controller
    *
    * @return $int
    */
-  public function getUnitIdByName($name){
+  private function getUnitIdByName($name){
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
     $statement = $connection->prepare("SELECT * FROM unit WHERE namevi = :name OR nameen = :name");
@@ -325,7 +331,7 @@ class ProductController extends Controller
    *
    * @return string $name_vi
    */
-  public function getUnitNameById($id){
+  private function getUnitNameById($id){
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
     $statement = $connection->prepare("SELECT * FROM unit WHERE id = :id");
@@ -347,7 +353,7 @@ class ProductController extends Controller
    *
    * @return string $name_vi
    */
-  public function getCatNameById($id){
+  private function getCatNameById($id){
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
     $statement = $connection->prepare("SELECT * FROM product_category WHERE id = :id");
@@ -361,4 +367,71 @@ class ProductController extends Controller
       return NULL;
     }
   }
+
+  /**
+   * Build search product
+   *
+   * @return array $retval
+   */
+  private function getSearchForm(){
+    $retval = array();
+    // Product code.
+    $row = array();
+    $row['id'] = 'code';
+    $row['label'] = 'Mã';
+    $row['type'] = 'text';
+    $row['colname'] = 'code';
+    $row['pos'] = array('row' => 1, 'col' => 1);
+    $retval[] = $row;
+
+    // Product name.
+    $row = array();
+    $row['id'] = 'name';
+    $row['label'] = 'Tên';
+    $row['type'] = 'text';
+    $row['colname'] = 'name';
+    $row['pos'] = array('row' => 1, 'col' => 2);
+    $retval[] = $row;
+
+    // Product category.
+    $row = array();
+    $row['id'] = 'category';
+    $row['label'] = 'Danh mục';
+    $row['type'] = 'select';
+    $row['colname'] = 'category';
+    $row['ds'] = 'category/json';
+    $row['pos'] = array('row' => 2, 'col' => 1);
+    $retval[] = $row;
+
+    // Type.
+    $row = array();
+    $row['id'] = 'type';
+    $row['label'] = 'Loại';
+    $row['type'] = 'select';
+    $row['colname'] = 'type';
+    $row['ds'] = 'category/json'; // Sample
+    $row['pos'] = array('row' => 2, 'col' => 2);
+    $retval[] = $row;
+
+    // Product start date
+    $row = array();
+    $row['id'] = 'start_date';
+    $row['label'] = 'Ngày tạo';
+    $row['type'] = 'date';
+    $row['colname'] = 'start_date';
+    $row['pos'] = array('row' => 3, 'col' => 1);
+    $retval[] = $row;
+
+    // Product start date
+    $row = array();
+    $row['id'] = 'end_date';
+    $row['label'] = 'Ngày kết thúc';
+    $row['type'] = 'date';
+    $row['colname'] = 'end_date';
+    $row['pos'] = array('row' => 3, 'col' => 2);
+    $retval[] = $row;
+
+    return $retval;
+  }
 }
+
