@@ -5,7 +5,7 @@ class Validation{
 	private $em = null;
 	function __construct($em) {
 		$this->em = $em->getConnection();
-    }
+  }
 	/**
 	 * Check if member has active package or not,
 	 * or this member belongs to a group which have active package
@@ -31,4 +31,19 @@ class Validation{
 		return '';
 	}
 
+	/**
+   * Check if group has active package or not
+   * or this group belongs to a group which have active package
+   * @return empty string or error string
+	 */
+	function checkGroupPackage($groupid, $efffrom = null, $effto = null){
+		$row = $this->em->fetchAssoc('SELECT * FROM `group_package` WHERE groupid=?', array($groupid));
+		if (!empty($row)) {
+			if ($package_name = $this->em->fetchColumn('SELECT name FROM package WHERE id = '. $row['packageid'])){
+				return "Nhóm này nằm trong một nhóm đang dùng gói {$package_name}, đóng gói hiện tại trước khi đăng kí gói mới";
+			}
+		}
+
+		return '';
+	}
 }

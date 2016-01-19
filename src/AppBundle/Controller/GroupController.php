@@ -28,7 +28,7 @@ class GroupController extends Controller
     // Get connection database.
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `groups`");
+    $statement = $connection->prepare("SELECT * FROM `groups` WHERE status = 1");
     $statement->execute();
     $rows = $statement->fetchAll();
     $groups = array();
@@ -358,15 +358,24 @@ class GroupController extends Controller
    */
   public function addPackageFormAction($id){
     $formbuilder = $this->get('app.formbuilder');
+    $validation = $this->get('app.validation');
     $tmp = $formbuilder->GenerateLayout('group_package');
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
     $row = $connection->fetchAssoc('SELECT * FROM `groups` WHERE id=?', array($id));
     if (empty ($row)) throw $this->createNotFoundException('Không tìm thấy nhóm!');
+    $error = false;
+    if ($msg = $validation->checkGroupPackage($id)){
+      $tmp = $msg;
+      $error = true;
+    } else {
+      $tmp = $formbuilder->GenerateLayout('memberpackage');
+    }
     return $this->render('group/addpackage.html.twig', [
       'form' => $tmp,
       'row' => $row,
       'id' => $id,
+      'error' => $error,
       'script' => $formbuilder->mscript
     ]);
   }
