@@ -37,7 +37,7 @@ CREATE TABLE `member_package` (
   `maxdays` int(11) DEFAULT NULL,
   `maxprintpapers` int(11) DEFAULT NULL,
   `maxmeetinghours` int(11) DEFAULT NULL,
-  `allowcredit` tinyint(4) NOT NULL DEFAULT '0'
+  `allowcredit` tinyint(4) NOT NULL DEFAULT '0',
 	`discountbar` tinyint(3) UNSIGNED DEFAULT NULL,
   `price` int(10) UNSIGNED NOT NULL,
   `locker` tinyint(4) DEFAULT '1'
