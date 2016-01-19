@@ -193,7 +193,7 @@ class GroupController extends Controller
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
     foreach ($members as $mid) {
-      $statement = $connection->prepare("INSERT INTO `group_member` (gid, mid, isdeleted)
+      $statement = $connection->prepare("INSERT INTO `group_member` (groupid, memberid, isdeleted)
       VALUES (:gid, :mid, 0)");
       $statement->bindParam(':gid', $gid);
       $statement->bindParam(':mid', $mid);
@@ -216,7 +216,7 @@ class GroupController extends Controller
   public function memberJsonNotInGroupAction(){
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT mid FROM group_member");
+    $statement = $connection->prepare("SELECT memberid FROM group_member");
     $statement->execute();
     $rows = $statement->fetchAll();
     // Statement with members table.
@@ -226,7 +226,7 @@ class GroupController extends Controller
     else {
       $mids = array();
       foreach ($rows as $value) {
-        $mids[] = $value['mid'];
+        $mids[] = $value['memberid'];
       }
       $membersInGroup = implode(', ', $mids);
       $statement2 = $connection->prepare("SELECT * FROM member WHERE id NOT IN ($membersInGroup) ");
@@ -276,13 +276,13 @@ class GroupController extends Controller
       $gid = $_POST['gid'];
       $em = $this->getDoctrine()->getManager();
       $connection = $em->getConnection();
-      $statement = $connection->prepare("SELECT mid FROM group_member where gid=:gid AND isdeleted = 0");
+      $statement = $connection->prepare("SELECT memberid FROM group_member where groupid=:gid AND isdeleted = 0");
       $statement->bindParam(':gid', $gid);
       $statement->execute();
       $rows = $statement->fetchAll();
       $mids = array();
       foreach ($rows as $row) {
-        $mids[] = $row['mid'];
+        $mids[] = $row['memberid'];
       }
       $tmp = implode(', ', $mids);
       if (!empty($tmp)) {
@@ -323,7 +323,7 @@ class GroupController extends Controller
     $id = $_POST['id'];
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("UPDATE group_member SET isdeleted = 1 where mid=:id");
+    $statement = $connection->prepare("UPDATE group_member SET isdeleted = 1 where memberid=:id");
     $statement->bindParam(':id', $id);
     $statement->execute();
     $response = new Response(
