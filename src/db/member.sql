@@ -24,6 +24,8 @@ CREATE TABLE `member_package` (
   `id` int(11) NOT NULL,
   `packageid` int(50) NOT NULL,
   `memberid` int(11) DEFAULT NULL,
+	`efffrom` int(11) DEFAULT NULL,
+  `effto` int(11) DEFAULT NULL,
   `active` tinyint(4) NOT NULL DEFAULT '1',
   `createdby` int(11) DEFAULT NULL,
   `updatedby` int(11) DEFAULT NULL,

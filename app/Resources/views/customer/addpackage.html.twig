@@ -34,6 +34,13 @@ Thêm gói dịch vụ cho khách khách hàng
 {% block javascripts %}
 <script>
 validation['packageid'] = {minvalue:1, message: 'Chọn gói dịch vụ'};
+validation['efffrom'] = {jsfunction:function(){
+	if (cakefffrom.get() < 1){
+		return "Chọn ngày bắt đầu"
+	}
+	if (cakeffto.get() < cakefffrom.get()) return "Ngày kết thúc không nhỏ hơn ngày bắt đầu";
+	return '';
+}};
 
 jQuery(function(){
 	{{script|raw}}

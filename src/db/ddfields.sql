@@ -68,3 +68,20 @@ DELETE FROM ddfields WHERE table_name = 'group_member' AND object_name = 'group_
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
 (null, 'group_member', 'group_member', 'gid', 'gid', 'Nhóm', 'SELECT', '/group/json', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 07:59:06', NULL, NULL),
 (null, 'group_member', 'group_member', 'members', 'members', 'Thành viên', 'TEXT_MULTI', '/group/member-json', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 07:42:23', NULL, NULL);
+
+
+DELETE FROM ddfields WHERE table_name = 'member_package' AND object_name = 'memberpackage';
+
+INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
+(null, 'memberpackage', 'member_package', 'packageid', 'packageid', 'Chọn gói', 'text_multi', '/customer/getpackages', NULL, 4101, NULL, NULL, NULL, 1, 1, NULL, NULL, '2016-01-14 16:40:22', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'maxhours', 'maxhours', 'Số giờ', 'numeric', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 10:25:59', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'maxvisitors', 'maxvisitors', 'Số khách', 'numeric', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 10:26:04', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'maxdays', 'maxdays', 'Số ngày', 'numeric', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 10:25:45', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'maxprintpapers', 'maxprintpapers', 'Số tờ in', 'numeric', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 16:40:22', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'maxmeetinghours', 'maxmeetinghours', 'Số giờ họp', 'numeric', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 16:40:22', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'allowcredit', 'allowcredit', 'Cho phép nợ', 'radio', '{"label":["Có", "Không"],"value":[1,2],"sameline":1}', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 10:31:53', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'locker', 'locker', 'locker', 'radio', '{"label":["Có", "Không"],"value":[1,2],"sameline":1}', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 10:31:53', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'discountbar', 'discountbar', 'Giảm giá bar', 'percentage', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 10:31:53', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'price', 'price', 'price', 'money', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 10:31:53', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'efffrom', 'efffrom', 'Bắt đầu', 'date', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 10:31:53', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'effto', 'effto', 'Hết hạn', 'date', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 10:31:53', NULL, NULL);

@@ -252,6 +252,11 @@ ul.col2{
 .pad-right0{
 	padding-right:0;
 }
+.text-error::before {
+  content: "";
+  display: block;
+  clear: both;
+}
 
 @media (min-width: 992px){
 	.col-md-10.form-control {

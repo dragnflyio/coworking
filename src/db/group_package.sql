@@ -3,6 +3,8 @@ CREATE TABLE `group_package` (
   `packageid` int(50) NOT NULL,
   `groupid` int(11) DEFAULT NULL,
   `active` tinyint(4) NOT NULL DEFAULT '1',
+	`efffrom` int(11) DEFAULT NULL,
+  `effto` int(11) DEFAULT NULL,
   `createdby` int(11) DEFAULT NULL,
   `updatedby` int(11) DEFAULT NULL,
   `createdtime` int(11) DEFAULT NULL,
