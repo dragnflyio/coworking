@@ -161,12 +161,12 @@ class GroupController extends Controller
         members = :members
         where id =:id");
       $statement->bindParam(':id', $_POST['id']);
-      $message = "Bạn đã cập nhật nhóm thành công";
+      $data['m'] = "Bạn đã cập nhật nhóm thành công";
     }
     else {
       $statement = $connection->prepare("INSERT INTO `groups` (name, address, phone, taxcode, taxaddress, description, members, status)
       VALUES (:name, :address, :phone, :taxcode, :taxaddress, :description, :members, 1)");
-      $message = "Bạn đã thêm mới nhóm thành công";
+      $data['m'] = "Bạn đã thêm mới nhóm thành công";
     }
     $statement->bindParam(':name', $name);
     $statement->bindParam(':address', $address);
@@ -177,7 +177,7 @@ class GroupController extends Controller
     $statement->bindParam(':members', $members);
     $statement->execute();
     $response = new Response(
-      json_encode(array('message' => $message)),
+      json_encode($data),
       Response::HTTP_OK,
       array('content-type' => 'application/json')
     );
