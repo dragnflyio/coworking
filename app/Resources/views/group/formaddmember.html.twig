@@ -86,7 +86,7 @@
         var $el = $(e.target);
         if ($el.parent().hasClass('deleterow')){
           e.preventDefault();
-          if (confirm('Bạn chắc chắn muốn xoá gói dịch vụ này?'))
+          if (confirm('Bạn chắc chắn muốn xoá thành viên này?'))
             ajaxPost('/group/delete-member', {id: $el.parent().data('id')}, function(d){
             loadMember();
           });
