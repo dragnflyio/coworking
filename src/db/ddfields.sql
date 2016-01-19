@@ -87,7 +87,7 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 
 DELETE FROM ddfields WHERE table_name = 'group_package' AND object_name = 'group_package';
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
-(null, 'group_package', 'group_package', 'packageid', 'packageid', 'Gói', 'select', '/group/member-json', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-19 04:00:23', NULL, NULL),
+(null, 'group_package', 'group_package', 'packageid', 'packageid', 'Chọn gói', 'text_multi', '/customer/getpackages', NULL, 4101, NULL, NULL, NULL, 1, 1, NULL, NULL, '2016-01-19 07:03:50', NULL, NULL),
 (null, 'group_package', 'group_package', 'price', 'price', 'Gía', 'numeric', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-19 04:03:17', NULL, NULL),
 (null, 'group_package', 'group_package', 'maxhours', 'maxhours', 'Số giờ', 'numeric', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-19 04:03:17', NULL, NULL),
 (null, 'group_package', 'group_package', 'maxdays', 'maxdays', 'Số ngày', 'numeric', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-19 04:03:17', NULL, NULL),

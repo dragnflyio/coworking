@@ -16,6 +16,7 @@ Thêm gói dịch vụ cho khách khách hàng
       <div class="row">
         <div class="col-md-12">
           {{ form|raw}}
+          <input type = "hidden" id = "members" value = {{row['members']}} />
         </div>
       </div>
       <div class="row">
@@ -26,9 +27,9 @@ Thêm gói dịch vụ cho khách khách hàng
         </div>
       </div>
 
-   </div> <!-- /container --!>
+   </div>
 
-</div><!-- /wrapper --!>
+</div>
 {% endblock %}
 
 {% block javascripts %}
@@ -52,13 +53,14 @@ jQuery(function(){
     }
     ajaxGet('/package/formapi?op=getpackage&id=' + tkpackageid.get(), function(data){
       if (data && data.id){
-        $('#maxvisitors').val(formatNum(data.maxvisitors));
-        $('#maxprintpapers').val(formatNum(data.maxprintpapers));
-        $('#maxdays').val(formatNum(data.maxdays));
+        var members = $('#members').val();
+        $('#maxvisitors').val(formatNum(members * 6));
+        $('#maxprintpapers').val(formatNum(data.maxprintpapers * members));
+        $('#maxdays').val(formatNum(data.maxdays * members));
         $('#maxmeetinghours').val(formatNum(data.maxmeetinghours));
-        $('#maxhours').val(formatNum(data.maxhours));
+        $('#maxhours').val(formatNum(data.maxhours * members));
         $('#discountbar').val(formatNum(data.discountbar));
-        $('#price').val(formatNum(data.price));
+        $('#price').val(formatNum(data.price * members));
 
         $('input[name="allowcredit"][value='+data.allowcredit+']').click();
         $('input[name="locker"][value='+data.locker+']').click();
@@ -67,7 +69,7 @@ jQuery(function(){
   })
   $('#btnsave').click(function(e){
     e.preventDefault();
-    beforePost() && ajaxPost('/customer/formapi?op=addpackage&id={{id}}', $('#f_memberpackage').serialize(), function(d){});
+    beforePost() && ajaxPost('/group/addpackage-ajax?group={{id}}', $('#f_group_package').serialize(), function(d){});
   })
 })
 

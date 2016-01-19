@@ -337,12 +337,12 @@ class GroupController extends Controller
   /**
    * @Route("/addpackage/{id}", name = "group_add_package")
    */
-  public function addPackageAction($id){
+  public function addPackageFormAction($id){
     $formbuilder = $this->get('app.formbuilder');
     $tmp = $formbuilder->GenerateLayout('group_package');
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
-    $row = $connection->fetchAssoc('SELECT name FROM `groups` WHERE id=?', array($id));
+    $row = $connection->fetchAssoc('SELECT * FROM `groups` WHERE id=?', array($id));
     if (empty ($row)) throw $this->createNotFoundException('Không tìm thấy nhóm!');
     return $this->render('group/addpackage.html.twig', [
       'form' => $tmp,
@@ -350,6 +350,33 @@ class GroupController extends Controller
       'id' => $id,
       'script' => $formbuilder->mscript
     ]);
+  }
+
+  /**
+   * @Route("/addpackage-ajax", name = "group_add_package_ajax")
+   */
+  public function addPackageAjaxAction(Request $request){
+    $formbuilder = $this->get('app.formbuilder');
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    $groupid = $request->query->get('group', 0);
+    if ($groupid){
+      $dataObj = $formbuilder->PrepareInsert($_POST, 'group_package');
+      foreach ($dataObj as $table => $postdata){
+        if ($postdata){
+          $postdata['groupid'] = $groupid;
+          $data['v'] = $connection->insert($table, $postdata);
+        }
+      }
+      $data['m'] = 'Thêm thành công';
+    }
+
+    $response = new Response(
+      json_encode($data),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
   }
 
   /**
