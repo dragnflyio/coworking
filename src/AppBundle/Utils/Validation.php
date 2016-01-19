@@ -43,7 +43,6 @@ class Validation{
 				return "Nhóm này nằm trong một nhóm đang dùng gói {$package_name}, đóng gói hiện tại trước khi đăng kí gói mới";
 			}
 		}
-
 		return '';
 	}
 }

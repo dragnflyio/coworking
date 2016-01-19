@@ -23,7 +23,22 @@
     <div class="row"><div class="height20"></div></div>
     <div class = "row">
       <div class = "col-md-12">
-        {{ include('group/list.html.twig', {'groups': groups}) }}
+        <table class = "table table-bordered">
+          <thead>
+            <th>#</th>
+            <th>Tên nhóm</th>
+            <th>Địa chỉ</th>
+            <th>Điện thoại</th>
+            <th>Mã số thuế</th>
+            <th>Địa chỉ thuế</th>
+            <th>Mô tả</th>
+            <th>Số thành viên</th>
+            <th></th>
+          </thead>
+          <tbody id = "list-group">
+            <th colspan="9" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
+          </tbody>
+        </table>
       </div>
     </div>
     <div class = "row">
