@@ -14,35 +14,125 @@ use AppBundle\Utils;
 
 class CheckingController extends Controller
 {
+  /**
+   * @Route("/checking", name = "checking_list")
+   */
+  public function indexAction(){
+    // Get form builder.
+    $formbuilder = $this->get('app.formbuilder');
+
+    // Get connection database.
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT * FROM `customer_timelog`");
+    $statement->execute();
+    $rows = $statement->fetchAll();
+    $timelogs = array();
+    foreach ($rows as $timelog) {
+      $memberid = $timelog['memberid'];
+      // Get member name.
+      $statement = $connection->prepare("SELECT * FROM `member` where id = :id");
+      $statement->bindParam(':id', $memberid);
+      $statement->execute();
+      $member = $statement->fetchAll();
+      $timelog['membername'] = $member[0]['name'];
+      // Get package.
+      $statement = $connection->prepare("SELECT * FROM `member_package` where memberid = :id");
+      $statement->bindParam(':id', $memberid);
+      $statement->execute();
+      $member_package = $statement->fetchAll();
+      if (!empty($package)) {
+        $statement = $connection->prepare("SELECT * FROM `package` where id = :id");
+        $statement->bindParam(':id', $member_package[0]['packageid']);
+        $statement->execute();
+        $package = $statement->fetchAll();
+        $timelog['packagename'] = $package[0]['name'];
+      } else {
+        $timelog['packagename'] = 'Thành viên không đăng ký dùng gói nào.';
+      }
+      $timelogs[] = (object) $timelog;
+    }
+    return $this->render('checking/index.html.twig', [
+      'timelogs' => $timelogs,
+      // 'form' => $form,
+      'script' => $formbuilder->mscript,
+    ]);
+  }
 
   /**
    * @Route("/member/checking", name = "member_checking")
    */
-  public function memberCheckingAction(){
+  public function memberCheckingAction(Request $request){
+    // Get connection.
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    // Get form builder.
     $formbuilder = $this->get('app.formbuilder');
-    $tmp = $formbuilder->GenerateLayout('memberchecking');
+
+    $op = $request->query->get('op', 'member');
+    switch ($op) {
+      case 'checkin':
+        $tmp = $formbuilder->GenerateLayout('memberchecking');
+        $op = 'Check in';
+        break;
+
+      case 'checkout' :
+        $id = $request->query->get('id');
+        $statement = $connection->prepare("SELECT * FROM `customer_timelog` where id=:id");
+        $statement->bindParam(':id', $id);
+        $statement->execute();
+        $rows = $statement->fetchAll();
+        if (empty ($rows)) throw $this->createNotFoundException('Không tìm thấy đăng ký này');
+        $tmp = $formbuilder->LoadDatarowToConfig($rows[0], 'memberchecking');
+        $op = 'Check in';
+        break;
+    }
+
     return $this->render('checking/member.html.twig', [
       'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
       'form' => $tmp,
-      'script' => $formbuilder->mscript
+      'script' => $formbuilder->mscript,
+      'op' => $op,
     ]);
   }
 
   /**
    * @Route("/visitor/checking", name = "visitor_checking")
    */
-  public function visitorCheckingAction(){
+  public function visitorCheckinAction(Request $request){
+    // Get connection.
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    // Get formbuilder
     $formbuilder = $this->get('app.formbuilder');
-    $tmp = $formbuilder->GenerateLayout('visitorchecking');
+    $op = $request->query->get('op', 'member');
+    switch ($op) {
+      case 'checkin':
+        $tmp = $formbuilder->GenerateLayout('visitorchecking');
+        $op = 'Check in';
+        break;
+
+      default:
+        $id = $request->query->get('id');
+        $statement = $connection->prepare("SELECT * FROM `customer_timelog` where id=:id");
+        $statement->bindParam(':id', $id);
+        $statement->execute();
+        $rows = $statement->fetchAll();
+        if (empty ($rows)) throw $this->createNotFoundException('Không tìm thấy đăng ký này');
+        $tmp = $formbuilder->LoadDatarowToConfig($rows[0], 'visitorchecking');
+        $op = 'Check out';
+        break;
+    }
     return $this->render('checking/visitor.html.twig', [
       'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
       'form' => $tmp,
-      'script' => $formbuilder->mscript
+      'script' => $formbuilder->mscript,
+      'op' => $op,
     ]);
   }
 
   /**
-   * @Route("/checking", name = "checking")
+   * @Route("/checking-ajax", name = "checking_ajax")
    *
    * Store checkin/checkout of member(or visitor) into database using ajax.
    */
@@ -60,24 +150,48 @@ class CheckingController extends Controller
     $op = $request->query->get('type', 'member');
     switch ($op) {
       case 'member':
-        $dataObj = $formbuilder->PrepareInsert($_POST, 'memberchecking');
-        foreach ($dataObj as $table => $postdata){
-          if ($postdata){
-            $data['v'] = $connection->insert($table, $postdata);
+        if (empty($_POST['id'])) {
+          $dataObj = $formbuilder->PrepareInsert($_POST, 'memberchecking');
+          foreach ($dataObj as $table => $postdata){
+            if ($postdata){
+              $data['v'] = $connection->insert($table, $postdata);
+            }
           }
+          $data['m'] = 'Thêm thành công';
+        } else {
+          $formbuilder->setUpdateMode(true);
+          $dataObj = $formbuilder->PrepareInsert($_POST, 'memberchecking');
+          foreach ($dataObj as $table => $postdata){
+            if ($postdata){
+              $postdata['visitedhours'] = ($postdata['checkout'] - $postdata['checkin']) / 60;
+              $data['v'] = $connection->update($table, $postdata, array('id' => $_POST['id']));
+            }
+          }
+          $data['m'] = 'Check out thành công';
         }
-        $data['m'] = 'Thêm thành công';
         break;
 
       case 'visitor':
-        $dataObj = $formbuilder->PrepareInsert($_POST, 'visitorchecking');
-        foreach ($dataObj as $table => $postdata){
-          if ($postdata){
-            $postdata['isvisitor'] = 1;
-            $data['v'] = $connection->insert($table, $postdata);
+        if (empty($_POST['id'])) {
+          $dataObj = $formbuilder->PrepareInsert($_POST, 'visitorchecking');
+          foreach ($dataObj as $table => $postdata){
+            if ($postdata){
+              $postdata['isvisitor'] = 1;
+              $data['v'] = $connection->insert($table, $postdata);
+            }
           }
+          $data['m'] = 'Thêm thành công';
+        } else {
+          $formbuilder->setUpdateMode(true);
+          $dataObj = $formbuilder->PrepareInsert($_POST, 'visitorchecking');
+          foreach ($dataObj as $table => $postdata){
+            if ($postdata){
+              $postdata['visitedhours'] = ($postdata['checkout'] - $postdata['checkin']) / 60;
+              $data['v'] = $connection->update($table, $postdata, array('id' => $_POST['id']));
+            }
+          }
+          $data['m'] = 'Check out thành công';
         }
-        $data['m'] = 'Thêm thành công';
         break;
     }
 

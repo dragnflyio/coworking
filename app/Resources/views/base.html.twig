@@ -48,8 +48,9 @@
 						<li><a href="{{ path('add_customer') }}">Thêm khách hàng</a></li>
 						<li><a href="{{ path('list_customer') }}">Danh sách khách hàng</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="{{ path('member_checking') }}">Check in/Check out Thành viên</a></li>
-            <li><a href="{{ path('visitor_checking') }}">Check in/Check out Khách</a></li>
+            <li><a href="{{path('checking_list')}}">Theo dõi thành viên/khách</a></li>
+            <li><a href="{{ path('member_checking') }}?op=checkin">Check in thành viên</a></li>
+            <li><a href="{{ path('visitor_checking') }}?op=checkin">Check in khách</a></li>
           </ul>
         </li>
 				<li class="dropdown">

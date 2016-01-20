@@ -4,7 +4,7 @@
   <div class = "container">
     <div class="row">
       <div class="col-md-12">
-        <h1 class = "page-title">Checking</h1>
+        <h1 class = "page-title">{{op}}</h1>
       </div>
     </div>
     <div class="row">
@@ -16,6 +16,7 @@
       <div class="col-md-12">
         <div class="center-block width200">
           <a href = "#" class = "btn btn-primary btn-submit">Save</a>
+          <a href = "{{ path('checking_list') }}" class = "btn btn-default">Back</a>
         </div>
       </div>
     </div>
@@ -41,7 +42,7 @@
       $('.btn-submit').click(function(e){
         e.preventDefault();
         if (beforePost() == true) {
-          ajaxPost('/checking?type=member', $('#f_memberchecking').serialize(), function(d){})
+          ajaxPost('/checking-ajax?type=member', $('#f_memberchecking').serialize(), function(d){})
         }
       });
     })

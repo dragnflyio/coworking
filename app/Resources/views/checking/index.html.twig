@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+{% block title %}Toong - Nhóm{% endblock %}
+
+{% block body %}
+  <div class = "container">
+    <div class = "row">
+      <div class = "col-md-12">
+        <h1>Danh sách đăng ký vào</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        Search here...
+      </div>
+      <div class="col-md-12">
+        <div class="center-block width200">
+          <!-- <a class="btn btn-info" href="#" id="btnsearch"> Tìm kiếm </a> -->
+        </div>
+      </div>
+    </div>
+    <div class="row"><div class="height20"></div></div>
+    <div class = "row">
+      <div class = "col-md-12">
+        <table class = "table table-bordered">
+          <thead>
+            <th>#</th>
+            <th>Thành viên</th>
+            <th>Khách</th>
+            <th>Giờ check in</th>
+            <th>Giờ check out</th>
+            <th>Gói</th>
+            <th>Thao tác</th>
+          </thead>
+          <tbody id = "list-checking">
+            {% for index,timelog in timelogs %}
+            <tr>
+              <th>{{index}}</th>
+              <td>{{timelog.membername}}</td>
+              <td>{{timelog.visitorname}}</td>
+              <td>{{timelog.checkin|date("m/d/Y H:i")}}</td>
+              {% if 0 != timelog.checkout %}
+                <td>{{timelog.checkout|date("m/d/Y H:i")}}</td>
+              {% else %}
+                <td>Chưa check out.</td>
+              {% endif %}
+              <td>{{timelog.packagename}}</td>
+              <td>
+              {% if 0 == timelog.checkout %}
+                {% if '' !=  timelog.visitorname %}
+                  <a href = "{{ path('visitor_checking') }}?op=checkout&id={{timelog.id}}">Check out</a>
+                {% else %}
+                  <a href = "{{ path('member_checking') }}?op=checkout&id={{timelog.id}}">Check out</a>
+                {% endif %}
+              {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+  <script>
+    jQuery(function(){
+
+    })
+  </script>
+{% endblock %}
