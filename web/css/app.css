@@ -218,7 +218,7 @@ ul.col2{
 }
 .btncak{
 	height:32px;
-	margin-top:-6px;
+	vertical-align:bottom;
 }
 .width50{
 	width: 50px;
