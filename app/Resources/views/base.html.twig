@@ -47,6 +47,9 @@
 						<li role="separator" class="divider"></li>
 						<li><a href="{{ path('add_customer') }}">Thêm khách hàng</a></li>
 						<li><a href="{{ path('list_customer') }}">Danh sách khách hàng</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="{{ path('member_checking') }}">Check in/Check out Thành viên</a></li>
+            <li><a href="{{ path('visitor_checking') }}">Check in/Check out Khách</a></li>
           </ul>
         </li>
 				<li class="dropdown">
@@ -56,6 +59,7 @@
             <li role="separator" class="divider"></li>
             <li><a href="{{ path('product_add') }}">Thêm sản phẩm</a></li>
             <li><a href="{{ path('product') }}">Quản lý giá sản phẩm</a></li>
+            <li><a href="{{ path('product_import') }}">Nhập sản phẩm từ excel</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="{{ path('category') }}">PL hàng hóa</a></li>
           </ul>
@@ -64,7 +68,6 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bar <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#">Thêm gói dịch vụ</a></li>
-
           </ul>
         </li>
       </ul>

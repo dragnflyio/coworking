@@ -99,3 +99,16 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'group_package', 'group_package', 'locker', 'locker', 'Locker', 'radio', '{"label":["Có", "Không"],"value":[1,2],"sameline":1}', 2, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 16:40:22', NULL, NULL),
 (null, 'group_package', 'group_package', 'efffrom', 'efffrom', 'Ngày bắt đầu', 'date', '', 0, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-15 00:53:33', NULL, NULL),
 (null, 'group_package', 'group_package', 'effto', 'effto', 'Ngày hết hạn', 'date', '', 0, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-15 00:53:33', NULL, NULL);
+
+DELETE FROM ddfields WHERE table_name = 'customer_timelog' AND object_name IN ('memberchecking', 'visitorchecking');
+
+INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
+(null, 'memberchecking', 'customer_timelog', 'memberid', 'memberid', 'Thành viên', 'TEXT_MULTI', '/get-members', NULL, 4101, NULL, NULL, NULL, 1, 1, NULL, NULL, '2016-01-20 03:50:59', NULL, NULL),
+(null, 'memberchecking', 'customer_timelog', 'checkin', 'checkin', 'Check in', 'datetime', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-20 03:50:59', NULL, NULL),
+(null, 'memberchecking', 'customer_timelog', 'checkout', 'checkout', 'Check out', 'datetime', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-20 03:50:59', NULL, NULL),
+(null, 'visitorchecking', 'customer_timelog', 'memberid', 'memberid', 'Thành viên', 'TEXT_MULTI', '/get-members', NULL, 4101, NULL, NULL, NULL, 1, 1, NULL, NULL, '2016-01-20 03:50:59', NULL, NULL),
+(null, 'visitorchecking', 'customer_timelog', 'visitorname', 'visitorname', 'Tên khách', 'text', '', NULL, 4102, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-20 03:50:59', NULL, NULL),
+(null, 'visitorchecking', 'customer_timelog', 'visitoremail', 'visitoremail', 'Email', 'text', '', NULL, 4101, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-20 03:50:59', NULL, NULL),
+(null, 'visitorchecking', 'customer_timelog', 'visitorphone', 'visitorphone', 'Điện thoại', 'text', '', NULL, 4102, NULL, NULL, NULL, 20, 1, NULL, NULL, '2016-01-20 03:50:59', NULL, NULL),
+(null, 'visitorchecking', 'customer_timelog', 'checkin', 'checkin', 'Check in', 'datetime', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-20 03:50:59', NULL, NULL),
+(null, 'visitorchecking', 'customer_timelog', 'checkout', 'checkout', 'Check out', 'datetime', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-20 03:50:59', NULL, NULL);
