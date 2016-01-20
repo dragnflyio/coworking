@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% block title %}Toong - Checking{% endblock %}
+{% block body %}
+  <div class = "container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1 class = "page-title">Checking</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {{ form|raw}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="center-block width200">
+          <a href = "#" class = "btn btn-primary btn-submit">Save</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+  <script>
+    {{script|raw}}
+  </script>
+  <script>
+    jQuery(function(){
+      // Validation group
+      $('.numeric').intOnly();
+      validation['memberid'] = {minlength:1, message: 'Chọn thành viên!'};
+      validation['checkin_d'] = {jsfunction:function(){
+        if (cakcheckin.get() < 1){
+          return "Nhập thời gian đăng ký vào!"
+        }
+        if (cakcheckout.get() < cakcheckin.get()) return "Thời gian đăng ký ra phải nhỏ hơn thời gian đăng ký vào";
+        return '';
+      }};
+      // Add/Update group.
+      $('.btn-submit').click(function(e){
+        e.preventDefault();
+        if (beforePost() == true) {
+          ajaxPost('/checking?type=member', $('#f_memberchecking').serialize(), function(d){})
+        }
+      });
+    })
+  </script>
+{% endblock %}
