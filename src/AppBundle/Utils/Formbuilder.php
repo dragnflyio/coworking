@@ -1309,14 +1309,15 @@ class Formbuilder {
 
 	/** Layout for insert form
      * @param String $obj_name value of object_name in table config
-     * @param Array $arrGrpName array of group name, ex: ['ten nhom 1', 'ten nhom 2', 'ten nhom 3']
+     * @param String $where filter fields to get
      * @return String
      * */
-    public function GenerateLayout($obj_name, $arrGrpName = null) {
+    public function GenerateLayout($obj_name, $where = null) {
+		$this->mscript = '';
         if (!$this->_mConfigList)
-            $this->_mConfigList = $this->getTableConfig($obj_name);
-		// if(null === $arrGrpName) $arrGrpName = $this->getGroupName($obj_name);
-		$retVal = $this->BuildLayout($this->_mConfigList, $obj_name, $arrGrpName);
+            $this->_mConfigList = $this->getTableConfig($obj_name, '', true, $where);
+
+		$retVal = $this->BuildLayout($this->_mConfigList, $obj_name, null);
 
         return $retVal;
     }
@@ -1431,6 +1432,7 @@ class Formbuilder {
      * @return String
      */
     public function LoadDatarowToConfig($row, $obj_name, $arrGrpName = null, $forview = 0) {
+		$this->mscript = '';
         $this->_mforview = $forview;
         $this->_mupdateMode = true;
 		$this->_mainID = $row['id'];

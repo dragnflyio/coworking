@@ -64,11 +64,21 @@ Danh sách khách hàng
   <%#list%>
 	<tr>
 	<td><%idx%></td>
-	<td><%name%></td>
+	<td><%name%>
+	<%#if package%>
+	<p><a href='#'>Dùng <% package %></a></p>
+	<%/if%>
+	</td>
 	<td><%price%></td>
 	<td><%description%></td>
 	<td><%createdname%></td>
-	<td><a href="/customer/edit/<%id%>"> Sửa </a> | <a href="/customer/addpackage/<%id%>"> Thêm gói </a> | <a href="#" class="deleterow" data-id="<%id%>"> Vô hiệu </a></td>
+	<td><a href="/customer/edit/<%id%>"> Sửa </a> |
+	<%#if package%>
+	<a href="/customer/editpackage/<%id%>">Thay đổi</a>
+	<%else%>
+	<a href="/customer/addpackage/<%id%>">Thêm gói</a>
+	<%/if%>
+	| <a href="#" class="deleterow" data-id="<%id%>"> Vô hiệu </a></td>
 	</tr>
 	<%/list%>
 </script>

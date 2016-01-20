@@ -28,6 +28,31 @@ class CustomerController extends Controller{
         ]);
     }
 	/**
+     * @Route("/editpackage/{id}", name="edit_customer_package", requirements={"id" = "\d+"})
+     */
+	public function editpackageAction($id){
+		$formbuilder = $this->get('app.formbuilder');
+		$validation = $this->get('app.validation');
+		$em = $this->getDoctrine()->getEntityManager();
+		$connection = $em->getConnection();
+		$row = $connection->fetchAssoc('SELECT name FROM member WHERE id=?', array($id));
+		if (empty ($row)) throw $this->createNotFoundException('Không tìm thấy khách hàng');
+		// get active package?
+		$current_package = $validation->getMemberPackage($id);
+		if (empty ($current_package)) throw $this->createNotFoundException('Khách hàng hiện không dùng dịch vụ, bạn cần thêm gói dịch vụ trước');
+		$error = false;
+		$tmp = $formbuilder->GenerateLayout('memberpackage', "col_name NOT IN ('packageid','efffrom', 'effto')");
+
+        return $this->render('customer/editpackage.html.twig', [
+			'error' => $error,
+			'form' => $tmp,
+			'row' => $row,
+			'package' => $current_package,
+			'id' => $id,
+			'script' => $formbuilder->mscript
+        ]);
+	}
+	/**
      * @Route("/addpackage/{id}", name="add_customer_package", requirements={"id" = "\d+"})
      */
 	public function addpackageAction($id){
@@ -113,6 +138,13 @@ class CustomerController extends Controller{
 		$row['type'] = 'text';
 		$row['colname'] = 'name';
 		$row['pos'] = array('row' => 1, 'col' => 1);
+		$retval[] = $row;
+		$row = array();
+		$row['id'] = 'email';
+		$row['label'] = 'Email';
+		$row['type'] = 'text';
+		$row['colname'] = 'email';
+		$row['pos'] = array('row' => 2, 'col' => 1);
 		$retval[] = $row;
 		
 		$row = array();
@@ -233,7 +265,7 @@ class CustomerController extends Controller{
 				$grp = $this->getCustomerSearchForm();
 				$searchData = $formbuilder->GetSearchData($_POST, $grp);
 				$filters = $this->getWhereUserSearchCondition($searchData);
-				$statement = $connection->prepare("SELECT * FROM member WHERE 1=active $filters");
+				$statement = $connection->prepare("SELECT m.*, p.name AS packagename FROM member m LEFT JOIN member_package mp ON m.id = mp.memberid LEFT JOIN package p ON p.id = mp.packageid WHERE 1 $filters");
 				$statement->execute();
 				$all_rows = $statement->fetchAll();
 				$ret = array();
@@ -248,7 +280,8 @@ class CustomerController extends Controller{
 							'name' => $row['name'],
 							'price' => $row['email'],
 							'description' => $row['phone'],
-							'createdname' => 'Admin'
+							'createdname' => 'Admin',
+							'package' => $row['packagename']
 						);
 						$ret[] = $tmp;
 					}

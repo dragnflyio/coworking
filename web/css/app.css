@@ -257,6 +257,10 @@ ul.col2{
   display: block;
   clear: both;
 }
+.btn-selected{
+	border-color:red;
+	border-width:2px;
+}
 
 @media (min-width: 992px){
 	.col-md-10.form-control {
