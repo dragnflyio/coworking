@@ -29,6 +29,16 @@ class Validation{
 			}
 		}
 		return '';
+	}   
+	/**
+	 * Get current active package for a member
+	 */
+	function getMemberPackage($memberid){
+		$ret = array();
+		if ($row = $this->em->fetchAssoc('SELECT packageid, p.name AS packagename, mp.efffrom, mp.effto FROM member_package mp JOIN package p ON mp.packageid = p.id WHERE memberid = ? AND 1 = mp.active', array($memberid))){
+			$ret = $row;
+		}
+		return $ret;
 	}
 
 	/**

@@ -218,6 +218,7 @@ ul.col2{
 }
 .btncak{
 	height:32px;
+	vertical-align:bottom;
 }
 .width50{
 	width: 50px;
@@ -256,6 +257,10 @@ ul.col2{
   content: "";
   display: block;
   clear: both;
+}
+.btn-selected{
+	border-color:red;
+	border-width:2px;
 }
 
 @media (min-width: 992px){

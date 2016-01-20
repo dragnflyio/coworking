@@ -1,0 +1,160 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+Thay đổi dịch vụ cho khách khách hàng
+{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+
+   <div class="container">
+			<div class="row">
+        	<div class="col-md-12">
+            <h2>Thay đổi dịch vụ</h2>
+						<h3>Khách hàng: {{row['name']}}</h3>
+						<h3>Dịch vụ đang dùng: {{package['packagename']}}</h3>
+        	</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a class="btn btn-warning btn-pkg" data-action="edit">Sửa thông tin</a>
+					<a class="btn btn-info btn-pkg" data-action="extend">Gia hạn tạm thời</a>
+					<a class="btn btn-info btn-pkg" data-action="renew">Gia hạn gói</a>
+					<a class="btn btn-info btn-pkg" data-action="change">Đổi gói</a>
+				</div>
+			</div>
+			<div class="height20"></div>
+			<div class="row pkg-edit-area" style="display:block">
+				<div class="col-md-12">
+					{{ form|raw}}
+				</div>
+		  </div>
+			<div class="row pkg-renew">
+				<div class="col-md-12">
+
+				</div>
+		  </div>
+			<div class="row pkg-extend">
+				<div class="col-md-12">
+					<form class="form-horizontal pkg-extend-form" method="post">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group ">
+									<label class="control-label text-nowrap col-md-2">Tính phí?</label>
+									<div class="col-md-10">
+										<div>
+											<label class="radio-inline"><input type="radio" name="tinhphi" value="1">Có</label>
+											<label class="radio-inline"><input type="radio" name="tinhphi" value="2">Không</label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group ">
+									<label for="effto_extend_d" class="control-label text-nowrap col-md-2">Gia hạn đến</label>
+									<div class="col-md-10">
+										<input type="text" placeholder="day/month/year" autocomplete="off" id="effto_extend_d" name="effto_extend_d" class="form-control col-md-9" maxlength="10">
+										<input t="d" type="hidden" id="effto_extend" name="effto_extend"><span class="help-inline"><i class="glyphicon glyphicon-calendar click" id="effto_extend_i"></i><i id="effto_extend_r" class="glyphicon glyphicon-erase click"></i></span>
+									</div>
+								</div>
+							</div>
+							
+					  </div>
+					</form>
+				</div>
+		  </div>
+			<div class="row pkg-renew">
+				<div class="col-md-12">
+					<form class="form-horizontal pkg-renew-form" method="post">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group ">
+									<label for="efffrom_renew_d" class="control-label text-nowrap col-md-2">Bắt đầu</label>
+									<div class="col-md-10">
+										<input type="text" placeholder="day/month/year" autocomplete="off" id="efffrom_renew_d" name="efffrom_renew_d" class="form-control col-md-9" maxlength="10">
+										<input t="d" type="hidden" id="efffrom_renew" name="efffrom_renew"><span class="help-inline"><i class="glyphicon glyphicon-calendar click" id="efffrom_renew_i"></i><i id="efffrom_renew_r" class="glyphicon glyphicon-erase click"></i></span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group ">
+									<label for="effto_renew_d" class="control-label text-nowrap col-md-2">Hết hạn</label>
+									<div class="col-md-10">
+										<input type="text" placeholder="day/month/year" autocomplete="off" id="effto_renew_d" name="effto_renew_d" class="form-control col-md-9" maxlength="10">
+										<input t="d" type="hidden" id="effto_renew" name="effto_renew"><span class="help-inline"><i class="glyphicon glyphicon-calendar click" id="effto_renew_i"></i><i id="effto_renew_r" class="glyphicon glyphicon-erase click"></i></span>
+									</div>
+								</div>
+							</div>							
+							
+					  </div>
+					</form>
+				</div>
+		  </div>
+			<div class="row pkg-change">
+				<div class="col-md-12">
+
+				</div>
+		  </div>
+		  <div class="row">
+				<div class="col-md-12">
+					<div class="center-block width200">
+						{% if false == error %}<a class="btn btn-primary" href="#" id="btnsave"> Save </a>
+						{% endif %}
+						<a class="btn btn-default" href="{{ path('list_customer')}}" id="btnback"> Back </a>
+					</div>
+				</div>
+			</div>
+
+	 </div> <!-- /container --!>
+
+</div><!-- /wrapper --!>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+validation['packageid'] = {minvalue:1, message: 'Chọn gói dịch vụ'};
+validation['effto_extend'] = {jsfunction:function(){
+	if (cakeffto_extend.get() < 1){
+		return "Chọn ngày kết thúc"
+	}
+	return '';
+}};
+
+jQuery(function(){
+	{{script|raw}}
+	cakeffto_extend=new Geekutil.Cal("effto_extend",true,'{{package['effto']}}',0);
+	$('.numeric').intOnly();
+	window.tkpackageid && tkpackageid.callback(function(){
+		if (tkpackageid.get() == ''){
+		$('#f_memberpackage')[0].reset();
+		return
+		}
+		ajaxGet('/package/formapi?op=getpackage&id=' + tkpackageid.get(), function(data){
+			if (data && data.id){
+				$('#maxvisitors').val(formatNum(data.maxvisitors));
+				$('#maxprintpapers').val(formatNum(data.maxprintpapers));
+				$('#maxdays').val(formatNum(data.maxdays));
+				$('#maxmeetinghours').val(formatNum(data.maxmeetinghours));
+				$('#maxhours').val(formatNum(data.maxhours));
+				$('#discountbar').val(formatNum(data.discountbar));
+				$('#price').val(formatNum(data.price));
+				
+				$('input[name="allowcredit"][value='+data.allowcredit+']').click();
+				$('input[name="locker"][value='+data.locker+']').click();
+			}
+		})
+	})
+	$('#btnsave').click(function(e){
+		e.preventDefault();
+		beforePost() && ajaxPost('/customer/formapi?op=addpackage&id={{id}}', $('#f_memberpackage').serialize(), function(d){});
+	});
+	$('.btn-pkg').click(function(e){
+		$('.btn-pkg').removeClass('btn-selected');
+		$(this).addClass('btn-selected');
+		var action = $(this).data('action');
+		
+	})
+})
+
+</script>
+{% endblock %}
+
