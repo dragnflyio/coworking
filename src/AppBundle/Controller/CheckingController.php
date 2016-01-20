@@ -73,6 +73,7 @@ class CheckingController extends Controller
         $dataObj = $formbuilder->PrepareInsert($_POST, 'visitorchecking');
         foreach ($dataObj as $table => $postdata){
           if ($postdata){
+            $postdata['isvisitor'] = 1;
             $data['v'] = $connection->insert($table, $postdata);
           }
         }
