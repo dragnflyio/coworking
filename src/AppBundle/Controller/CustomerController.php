@@ -41,15 +41,21 @@ class CustomerController extends Controller{
 		$current_package = $validation->getMemberPackage($id);
 		if (empty ($current_package)) throw $this->createNotFoundException('Khách hàng hiện không dùng dịch vụ, bạn cần thêm gói dịch vụ trước');
 		$error = false;
-		$tmp = $formbuilder->GenerateLayout('memberpackage', "col_name NOT IN ('packageid','efffrom', 'effto')");
+		$form_update = $formbuilder->GenerateLayout('memberpackage', "col_name NOT IN ('packageid','efffrom', 'effto')");
+		$script_update = $formbuilder->mscript;
+
+		$form_change = $formbuilder->GenerateLayout('memberpackage','','change_');
+		$script_change = $formbuilder->mscript;
 
         return $this->render('customer/editpackage.html.twig', [
 			'error' => $error,
-			'form' => $tmp,
+			'form' => $form_update,
+			'form_change' => $form_change,
 			'row' => $row,
 			'package' => $current_package,
 			'id' => $id,
-			'script' => $formbuilder->mscript
+			'script' => $script_update,
+			'script_change' => $script_change
         ]);
 	}
 	/**
@@ -212,6 +218,10 @@ class CustomerController extends Controller{
 		$connection = $em->getConnection();
 		
 		switch($op){
+			case 'memberpackage':
+				$action = $request->query->get('action');
+				
+				break;
 			case 'addpackage':
 				$customerid = $request->query->get('id', 0);
 				// TODO check if this customer added package?
