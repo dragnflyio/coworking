@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * @Route("/package")
  */
-class PackageController extends Controller{
+class PackageController extends BaseController{
 
 	/**
      * @Route("/list", name="list_package")
@@ -174,6 +174,7 @@ class PackageController extends Controller{
 			$statement->execute();
 			$row = $statement->fetchAll();
 			if (empty ($row)) throw $this->createNotFoundException('Không tìm thấy gói dịch vụ này');
+
 			$tmp = $formbuilder->LoadDatarowToConfig($row[0], 'packageform');
 		} else {
 			throw $this->createNotFoundException('Không tìm thấy trang này');

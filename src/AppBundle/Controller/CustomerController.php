@@ -14,7 +14,7 @@ use AppBundle\Utils\Validation;
 /**
  * @Route("/customer")
  */
-class CustomerController extends Controller{
+class CustomerController extends BaseController{
 	/**
      * @Route("/add", name="add_customer")
      */

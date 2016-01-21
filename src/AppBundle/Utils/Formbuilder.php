@@ -198,7 +198,7 @@ class Formbuilder {
      * */
     public function PrepareInsert($postData, $obj_name) {
         $retVal = array();
-        if (null == $this->_mConfigList) {
+        if (null === $this->_mConfigList) {
             $this->_mConfigList = $this->getTableConfig($obj_name, null, false, '', 1);
         }
         foreach ($this->_mConfigList as $config) {
@@ -1318,8 +1318,11 @@ class Formbuilder {
     public function GenerateLayout($obj_name, $where = null, $prefix = null) {
 		$this->mscript = '';
 		$this->_prefixID = '';
-		if ($prefix) $this->_prefixID = $prefix;
-
+		if ($prefix) {
+			$this->_prefixID = $prefix;
+			$this->_mConfigList = null;
+		}
+        if (empty($this->_mConfigList))
         $this->_mConfigList = $this->getTableConfig($obj_name, '', true, $where);
 
 		$retVal = $this->BuildLayout($this->_mConfigList, $obj_name, null);
@@ -1442,6 +1445,7 @@ class Formbuilder {
 			$type = $config['inputType'];
             if (Self::BIRTHDAY != $type && isset($row[$config['column']])){
                 $config['options']['defaultValue'] = $row[$config['column']];
+				
                 if (Self::DATETIME == $type){
                     $config['options']['defaultValue'] = '0000-00-00 00:00:00' === ($row[$config['column']]) ? '' : $row[$config['column']];
                 }
