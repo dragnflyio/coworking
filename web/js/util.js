@@ -1664,10 +1664,10 @@ var createInstLK = function(d, callback, selector, options, popcode, isMulti){
 			that.fillD(jsSearch(d, this.value))
 		})
 	 }
-	if(_tpl_pop_CM){
+	/*if(_tpl_pop_CM){
 		atpl(_tpl_pop_CM)
 	}else
-		ajaxGet(getAppUrl()+'/themes/admin/tpl/popupCM_Lk.html',function(t){_tpl_pop_CM = t;atpl(t)})
+		ajaxGet(getAppUrl()+'/themes/admin/tpl/popupCM_Lk.html',function(t){_tpl_pop_CM = t;atpl(t)}) */
 	$(selector).off();
 	$(selector).click(function(e){ e.preventDefault();that.show()})
 }
