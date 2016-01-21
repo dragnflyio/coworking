@@ -20,7 +20,7 @@ define('_S_C_NAM','Năm');
  * @author Nguyen Viet Cuong <vietcuonghn3@gmail.com>
  */
 class Formbuilder {
-	
+
 	/** Original Textbox */
     const TEXT = 1;
     /** Original Textarea */
@@ -470,7 +470,7 @@ class Formbuilder {
 		}
 		if(null == $strYMD){
 			return mktime();
-		} else 
+		} else
         	$a = strtotime($strYMD);
         return ($a - 3600*$m);
     }
@@ -515,8 +515,8 @@ class Formbuilder {
 
         $retVal['label'] = defined($row['col_label']) ? constant($row['col_label']) : $row['col_label'];
 		$nguon = null;
-		
-		$dmtype = preg_replace("/[^0-9]/","",$row['data_source']); 
+
+		$dmtype = preg_replace("/[^0-9]/","",$row['data_source']);
 
 		if($dmtype) $nguon = 'dm';
 		$retVal['nguon'] = $nguon;
@@ -849,7 +849,7 @@ class Formbuilder {
     }
 
     function BuildInputDateTimePicker($id, $label, $showTime = false, $required = false, $defaultValue = null, $readonly = false) {
-	
+
         $plh = 'day/month/year';
         $timestamp = 0;
         $class2 = '';
@@ -1924,7 +1924,7 @@ class Formbuilder {
 					$retVal .= '/>' . $labelArr[$i] . '</label>';
             	}
 			} else {
-				
+
             	for ($i = 0; $i < count($labelArr); $i++) {
 					$retVal .= '<div class="checkbox">';
 	                $retVal .= '<label>';
@@ -1934,7 +1934,7 @@ class Formbuilder {
 					$retVal .= '/>' . $labelArr[$i] . '</label></div>';
 	            }
 			}
-            
+
             return $retVal . '</div></div>';
         }
         $retVal = '<div class="form-group"><div class="col-md-offset-2 col-md-8"><div class="checkbox">';

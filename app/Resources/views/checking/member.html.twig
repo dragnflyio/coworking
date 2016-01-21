@@ -35,10 +35,15 @@
         if (cakcheckin.get() < 1){
           return "Nhập thời gian đăng ký vào!"
         }
-        if (cakcheckout.get() < cakcheckin.get()) return "Thời gian đăng ký ra phải nhỏ hơn thời gian đăng ký vào";
         return '';
       }};
-      // Add/Update group.
+      validation['checkout_d'] = {jsfunction:function(){
+        if ('' != $('#id').val()) {
+          if (cakcheckout.get() < cakcheckin.get()) return "Thời gian đăng ký ra phải lớn hơn thời gian đăng ký vào";
+        }
+        return '';
+      }};
+      // Checking action.
       $('.btn-submit').click(function(e){
         e.preventDefault();
         if (beforePost() == true) {

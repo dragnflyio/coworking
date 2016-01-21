@@ -4,51 +4,46 @@
   <div class = "container">
     <div class="row">
       <div class="col-md-12">
-        <h1 class = "page-title">{{op}}</h1>
+        <h1 class = "page-title">Check out</h1>
       </div>
     </div>
     <div class="row">
       <div class="col-md-12">
-        {{ form|raw}}
+        <form class="form-horizontal" method="post" id="f_checkoutall">
+          {{form|raw}}
+        </form>
       </div>
     </div>
+    <div class="row"><div class="height20"></div></div>
     <div class="row">
       <div class="col-md-12">
         <div class="center-block width200">
-          <a href = "#" class = "btn btn-primary btn-submit">Save</a>
+          <a href = "#" class = "btn btn-primary btn-submit">Check out</a>
           <a href = "{{ path('checking_list') }}" class = "btn btn-default">Back</a>
         </div>
       </div>
     </div>
   </div>
 {% endblock %}
+
 {% block javascripts %}
   <script>
     {{script|raw}}
   </script>
   <script>
     jQuery(function(){
-      // Validation group
-      $('.numeric').intOnly();
-      validation['memberid'] = {minlength:1, message: 'Chọn thành viên!'};
-      validation['visitorname'] = {minlength:1, message: 'Chọn thành viên!'};
-      validation['checkin_d'] = {jsfunction:function(){
-        if (cakcheckin.get() < 1){
-          return "Nhập thời gian đăng ký vào!"
-        }
-        return '';
-      }};
+      // Validation
       validation['checkout_d'] = {jsfunction:function(){
-        if ('' != $('#id').val()) {
-          if (cakcheckout.get() < cakcheckin.get()) return "Thời gian đăng ký ra phải lớn hơn thời gian đăng ký vào";
+        if (cakcheckout.get() < 1){
+          return "Nhập thời gian đăng ký ra!"
         }
         return '';
       }};
-      // Add/Update group.
+      // Checking action.
       $('.btn-submit').click(function(e){
         e.preventDefault();
         if (beforePost() == true) {
-          ajaxPost('/checking-ajax?type=visitor', $('#f_visitorchecking').serialize(), function(d){})
+          ajaxPost('/checkout-all-ajax', $('#f_checkoutall').serialize(), function(d){})
         }
       });
     })
