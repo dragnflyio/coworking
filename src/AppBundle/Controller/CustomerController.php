@@ -220,7 +220,7 @@ class CustomerController extends BaseController{
 		switch($op){
 			case 'memberpackage':
 				$action = $request->query->get('action');
-				
+				$data['m'] = $action;
 				break;
 			case 'addpackage':
 				$customerid = $request->query->get('id', 0);
