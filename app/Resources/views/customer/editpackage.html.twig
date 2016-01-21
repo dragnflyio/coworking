@@ -2,7 +2,13 @@
 {% block title %}
 Thay đổi dịch vụ cho khách khách hàng
 {% endblock %}
-
+{% block stylesheets %}
+<style>
+.pkg-form{
+	display:none;
+}
+</style>
+{% endblock %}
 {% block body %}
 <div id="wrapper">
 
@@ -16,35 +22,34 @@ Thay đổi dịch vụ cho khách khách hàng
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<a class="btn btn-warning btn-pkg" data-action="edit">Sửa thông tin</a>
+					<a class="btn btn-info btn-pkg" data-action="edit">Sửa thông tin</a>
 					<a class="btn btn-info btn-pkg" data-action="extend">Gia hạn tạm thời</a>
 					<a class="btn btn-info btn-pkg" data-action="renew">Gia hạn gói</a>
 					<a class="btn btn-info btn-pkg" data-action="change">Đổi gói</a>
 				</div>
 			</div>
 			<div class="height20"></div>
-			<div class="row pkg-edit-area" style="display:block">
+			<div class="row pkg-form pkg-form-edit">
 				<div class="col-md-12">
 					{{ form|raw}}
 				</div>
 		  </div>
-			<div class="row pkg-renew">
-				<div class="col-md-12">
 
-				</div>
-		  </div>
-			<div class="row pkg-extend">
+			<div class="row pkg-form pkg-form-extend">
 				<div class="col-md-12">
-					<form class="form-horizontal pkg-extend-form" method="post">
+					<form class="form-horizontal " method="post">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group ">
 									<label class="control-label text-nowrap col-md-2">Tính phí?</label>
-									<div class="col-md-10">
+									<div class="col-md-4">
 										<div>
 											<label class="radio-inline"><input type="radio" name="tinhphi" value="1">Có</label>
 											<label class="radio-inline"><input type="radio" name="tinhphi" value="2">Không</label>
 										</div>
+									</div>
+									<div class="col-md-4">
+										<input type="text" class="form-control numeric" name="price" value="">
 									</div>
 								</div>
 							</div>
@@ -62,9 +67,9 @@ Thay đổi dịch vụ cho khách khách hàng
 					</form>
 				</div>
 		  </div>
-			<div class="row pkg-renew">
+			<div class="row pkg-form pkg-form-renew">
 				<div class="col-md-12">
-					<form class="form-horizontal pkg-renew-form" method="post">
+					<form class="form-horizontal " method="post">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group ">
@@ -89,9 +94,9 @@ Thay đổi dịch vụ cho khách khách hàng
 					</form>
 				</div>
 		  </div>
-			<div class="row pkg-change">
+		  <div class="row pkg-form pkg-form-change">
 				<div class="col-md-12">
-
+					{{ form_change|raw}}
 				</div>
 		  </div>
 		  <div class="row">
@@ -121,40 +126,46 @@ validation['effto_extend'] = {jsfunction:function(){
 
 jQuery(function(){
 	{{script|raw}}
+	{{script_change|raw}}
 	cakeffto_extend=new Geekutil.Cal("effto_extend",true,'{{package['effto']}}',0);
 	$('.numeric').intOnly();
-	window.tkpackageid && tkpackageid.callback(function(){
-		if (tkpackageid.get() == ''){
-		$('#f_memberpackage')[0].reset();
-		return
+	window.tkchange_packageid && tkchange_packageid.callback(function(){
+		if (tkchange_packageid.get() == ''){
+			$('.pkg-form-change form')[0].reset();
+			return
 		}
-		ajaxGet('/package/formapi?op=getpackage&id=' + tkpackageid.get(), function(data){
+		ajaxGet('/package/formapi?op=getpackage&id=' + tkchange_packageid.get(), function(data){
 			if (data && data.id){
-				$('#maxvisitors').val(formatNum(data.maxvisitors));
-				$('#maxprintpapers').val(formatNum(data.maxprintpapers));
-				$('#maxdays').val(formatNum(data.maxdays));
-				$('#maxmeetinghours').val(formatNum(data.maxmeetinghours));
-				$('#maxhours').val(formatNum(data.maxhours));
-				$('#discountbar').val(formatNum(data.discountbar));
-				$('#price').val(formatNum(data.price));
+				$('#change_maxvisitors').val(formatNum(data.maxvisitors));
+				$('#change_maxprintpapers').val(formatNum(data.maxprintpapers));
+				$('#change_maxdays').val(formatNum(data.maxdays));
+				$('#change_maxmeetinghours').val(formatNum(data.maxmeetinghours));
+				$('#change_maxhours').val(formatNum(data.maxhours));
+				$('#change_discountbar').val(formatNum(data.discountbar));
+				$('#change_price').val(formatNum(data.price));
 				
-				$('input[name="allowcredit"][value='+data.allowcredit+']').click();
-				$('input[name="locker"][value='+data.locker+']').click();
+				$('input[name="change_allowcredit"][value='+data.allowcredit+']').click();
+				$('input[name="change_locker"][value='+data.locker+']').click();
 			}
 		})
 	})
+	
 	$('#btnsave').click(function(e){
 		e.preventDefault();
 		beforePost() && ajaxPost('/customer/formapi?op=addpackage&id={{id}}', $('#f_memberpackage').serialize(), function(d){});
 	});
 	$('.btn-pkg').click(function(e){
+		$('.pkg-form').hide();
 		$('.btn-pkg').removeClass('btn-selected');
 		$(this).addClass('btn-selected');
 		var action = $(this).data('action');
+		var $action = $('.pkg-form-' + action).show();
+		ajaxPost('/customer/formapi?op=memberpackage&action='+action, $action.find('form').serialize(), function(d){
+			
+		})
 		
 	})
 })
 
 </script>
 {% endblock %}
-

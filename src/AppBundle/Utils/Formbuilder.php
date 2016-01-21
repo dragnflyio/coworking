@@ -198,7 +198,7 @@ class Formbuilder {
      * */
     public function PrepareInsert($postData, $obj_name) {
         $retVal = array();
-        if (null == $this->_mConfigList) {
+        if (null === $this->_mConfigList) {
             $this->_mConfigList = $this->getTableConfig($obj_name, null, false, '', 1);
         }
         foreach ($this->_mConfigList as $config) {
@@ -206,6 +206,8 @@ class Formbuilder {
             if (false == isset($retVal[$config['table']]))
                 $retVal[$config['table']] = array();
             $type = $config['inputType'];
+			$id = $config['id'];
+			if ($this->_prefixID) $id = $this->_prefixID.$id;
             $isNumeric = 0;$isMobi = 0;
             if (isset($config['options']['isNumeric']))
                 $isNumeric = $config['options']['isNumeric'];
@@ -214,14 +216,14 @@ class Formbuilder {
             switch ($type) {
 				case Self::BIRTHDAY:
 					// date
-					if(isset($postData['d'.$config['id']]))
-					$retVal[$config['table']][$config['column'] . 'day'] = $postData['d'.$config['id']];
+					if(isset($postData['d'.$id]))
+					$retVal[$config['table']][$config['column'] . 'day'] = $postData['d'.$id];
 					// month
-					if(isset($postData['m'.$config['id']]))
-						$retVal[$config['table']][$config['column'] . 'month'] = $postData['m'.$config['id']];
+					if(isset($postData['m'.$id]))
+						$retVal[$config['table']][$config['column'] . 'month'] = $postData['m'.$id];
 					// year
-					if(isset($postData['y'.$config['id']]))
-						$retVal[$config['table']][$config['column'] . 'year'] = $postData['y'.$config['id']];
+					if(isset($postData['y'.$id]))
+						$retVal[$config['table']][$config['column'] . 'year'] = $postData['y'.$id];
 					break;
                 case Self::CURR_DATE:
                     $retVal[$config['table']][strtolower($config['column'])] = $this->getCurrentTimestamp();
@@ -248,19 +250,19 @@ class Formbuilder {
                     $retVal[$config['table']][strtolower($config['column'])] = 1;
                     break;
                 case Self::DATETIME:
-                    if (isset($postData[$config['id']])) {
+                    if (isset($postData[$id])) {
                         if ($config['options']['showTime']) {
-                            $retVal[$config['table']][strtolower($config['column'])] = $postData[$config['id']] ? (int) $postData[$config['id']] : null;
+                            $retVal[$config['table']][strtolower($config['column'])] = $postData[$id] ? (int) $postData[$id] : null;
                         }
                         else
-                            $retVal[$config['table']][strtolower($config['column'])] = $postData[$config['id']] ? (int) $postData[$config['id']] : null;
+                            $retVal[$config['table']][strtolower($config['column'])] = $postData[$id] ? (int) $postData[$id] : null;
                     }
                     break;
                 case Self::SELECT:
-                    if (false == isset($postData[$config['id']]))
+                    if (false == isset($postData[$id]))
                         break;
                     $isMultiple = 0;
-                    $v = $postData[$config['id']];
+                    $v = $postData[$id];
 
                     if (isset($config['options']['multiple']))
                         $isMultiple = $config['options']['multiple'];
@@ -274,22 +276,22 @@ class Formbuilder {
                     $retVal[$config['table']][strtolower($config['column'])] = $v;
                     break;
                 case Self::CHECK:
-                    if (isset($postData[$config['id']])) {
-                        $v = $postData[$config['id']];
+                    if (isset($postData[$id])) {
+                        $v = $postData[$id];
                         $retVal[$config['table']][strtolower($config['column'])] = $v;
                     }
                     else
                         $retVal[$config['table']][strtolower($config['column'])] = 0;
                     break;
 				case Self::TEXT_MULTI:
-						if(!array_key_exists($config['id'], $postData)) break;
-						$v = $postData[$config['id']];
+						if(!array_key_exists($id, $postData)) break;
+						$v = $postData[$id];
 						if($v && $isMobi) $v = $this->getPhone($v);
 						$retVal[$config['table']][strtolower($config['column'])] = $v ? $v : null;
 					break;
                 default:
-                    if (isset($postData[$config['id']])) {
-                        $v = $postData[$config['id']];
+                    if (isset($postData[$id])) {
+                        $v = $postData[$id];
                         if ($isNumeric){
                             $v = $this->getNum($v);
 						}
@@ -301,6 +303,7 @@ class Formbuilder {
 
         return $retVal;
     }
+	
 	private function getPhone($tmp){
 		return preg_replace('/[^0-9,]/', '', strip_tags($tmp));
     }
@@ -1312,10 +1315,15 @@ class Formbuilder {
      * @param String $where filter fields to get
      * @return String
      * */
-    public function GenerateLayout($obj_name, $where = null) {
+    public function GenerateLayout($obj_name, $where = null, $prefix = null) {
 		$this->mscript = '';
-        if (!$this->_mConfigList)
-            $this->_mConfigList = $this->getTableConfig($obj_name, '', true, $where);
+		$this->_prefixID = '';
+		if ($prefix) {
+			$this->_prefixID = $prefix;
+			$this->_mConfigList = null;
+		}
+        if (empty($this->_mConfigList))
+        $this->_mConfigList = $this->getTableConfig($obj_name, '', true, $where);
 
 		$retVal = $this->BuildLayout($this->_mConfigList, $obj_name, null);
 
@@ -1362,14 +1370,7 @@ class Formbuilder {
                         $col2 = '';
                     }
                 }
-                //ignore custom build
-                if ('' === $this->_prefixID) {
-                    if (isset($arrGrpName) && isset($arrGrpName[$currentGrp - 1])) {
-                        // $retVal .= '<legend id="_lg_' . $currentGrp . '">' . $arrGrpName[$currentGrp - 1] . '</legend>';
-                    } else {
-                        // $retVal .= '<legend id="_lg_' . $currentGrp . '">Thong tin grp ' . $currentGrp . '</legend>';
-                    }
-                }
+                
 
                 $currentRow = 1; //Reset row for new group
             }
@@ -1420,9 +1421,8 @@ class Formbuilder {
             $retVal .= '<div class="col-md-6">' . $col2 . '</div> ';
             $retVal .= '</div>';
         }
-        if ('' !== $this->_prefixID)
-            return $retVal;
-        return '<form class="form-horizontal" method="post" id="f_' . $formid . '">' . $retVal . '</form>';
+
+        return '<form class="form-horizontal" method="post" id="f_' .$this->_prefixID. $formid . '">' . $retVal . '</form>';
     }
 	/** Load data and render update form
      * @param Array $row single row data fetch from tables data
@@ -1445,6 +1445,7 @@ class Formbuilder {
 			$type = $config['inputType'];
             if (Self::BIRTHDAY != $type && isset($row[$config['column']])){
                 $config['options']['defaultValue'] = $row[$config['column']];
+				
                 if (Self::DATETIME == $type){
                     $config['options']['defaultValue'] = '0000-00-00 00:00:00' === ($row[$config['column']]) ? '' : $row[$config['column']];
                 }

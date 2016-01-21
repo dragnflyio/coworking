@@ -262,7 +262,9 @@ ul.col2{
 	border-color:red;
 	border-width:2px;
 }
-
+.form-horizontal .control-label{
+	text-align:left;
+}
 @media (min-width: 992px){
 	.col-md-10.form-control {
 	  width: 83.33333333%;
