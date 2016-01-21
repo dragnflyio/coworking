@@ -28,7 +28,7 @@
   </script>
   <script>
     jQuery(function(){
-      // Validation group
+      // Validation checking form
       $('.numeric').intOnly();
       validation['memberid'] = {minlength:1, message: 'Chọn thành viên!'};
       validation['visitorname'] = {minlength:1, message: 'Chọn thành viên!'};
@@ -44,7 +44,7 @@
         }
         return '';
       }};
-      // Add/Update group.
+      // Visitor checking action.
       $('.btn-submit').click(function(e){
         e.preventDefault();
         if (beforePost() == true) {

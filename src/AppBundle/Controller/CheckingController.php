@@ -234,15 +234,21 @@ class CheckingController extends Controller
     $grp = $this->getSearchForm();
     $searchData = $formbuilder->GetSearchData($_POST, $grp);
     $filters = '';
-    foreach ($searchData as $data) {
-      if ('text_multi' == $data['type']) {
-        $filters = $data['colname'] . ' IN (' . $data['v'] . ')';
+    if (!empty($searchData)){
+      foreach ($searchData as $data) {
+        if ('text_multi' == $data['type']) {
+          $filters = $data['colname'] . ' IN (' . $data['v'] . ')';
+        }
       }
     }
 
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM  `customer_timelog` WHERE $filters");
+    if (!empty($searchData)) {
+      $statement = $connection->prepare("SELECT * FROM  `customer_timelog` WHERE $filters");
+    } else {
+      $statement = $connection->prepare("SELECT * FROM  `customer_timelog`");
+    }
     $statement->execute();
     $rows = $statement->fetchAll();
     $ret = array();
@@ -320,7 +326,7 @@ class CheckingController extends Controller
     $row['id'] = 'memberid';
     $row['label'] = 'Thành viên';
     $row['type'] = 'text_multi';
-    $row['pos'] = array('row' => 2, 'col' => 1);
+    $row['pos'] = array('row' => 2, 'col' => 0);
     $row['colname'] = 'memberid';
     $row['pop'] = 'M';
     $row['ds'] = '/get-members';
