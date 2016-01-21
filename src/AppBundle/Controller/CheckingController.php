@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-use AppBundle\Utils;
+use AppBundle\Utils\Services;
 
 class CheckingController extends Controller
 {
@@ -203,6 +203,74 @@ class CheckingController extends Controller
   }
 
   /**
+   * @Route("/customer/{id}/history", name = "customer_history")
+   */
+  public function customerHistoryAction($id){
+    $services = $this->get('app.services');
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT name, phone FROM `member` WHERE id=:id and active=1");
+    $statement->bindParam(':id', $id);
+    $statement->execute();
+    $member = $statement->fetchAll();
+    $data = array();
+    if (empty($member)) throw $this->createNotFoundException('Không tìm thấy thành viên hoặc thành viên này ngừng hoạt động.');
+    $data['name'] = $member[0]['name'];
+    $data['phone'] = $member[0]['phone'];
+    // Get package.
+    $package = $services->getPackageByMemberId($id);
+    $data['packagename'] = $package['name'];
+    $data['maxhours'] = $package['maxhours'];
+    $data['maxdays'] = $package['maxdays'];
+    $data['price_hour'] = $package['price'] / $package['maxhours'];
+    // Get effective from datetime start using package
+    $statement = $connection->prepare("SELECT efffrom FROM `member_package`
+    WHERE memberid=:memberid and active=1 and packageid=:packageid");
+    $statement->bindParam(':memberid', $id);
+    $statement->bindParam(':packageid', $package['id']);
+    $statement->execute();
+    $member_package = $statement->fetchAll();
+    if (empty($member_package)) {
+      $group = $services->getGroupByMemberId($id);
+      $statement = $connection->prepare("SELECT efffrom FROM `group_package`
+      WHERE groupid=:groupid and active=1 and packageid=:packageid");
+      $statement->bindParam(':groupid', $group['groupid']);
+      $statement->bindParam(':packageid', $package['id']);
+      $statement->execute();
+      $group_package = $statement->fetchAll();
+      $efffrom = $group_package[0]['efffrom'];
+      $members = $services->getMembersInGroup($group['groupid']);
+    } else {
+      $members = array($id);
+      $efffrom = $member_package[0]['efffrom'];
+    }
+    // Get total hour is used.
+    $tmp = implode(', ', $members);
+    $statement = $connection->prepare("SELECT * FROM `customer_timelog`
+    WHERE memberid IN ($tmp) AND checkin > $efffrom");
+    $statement->execute();
+    $timelogs = $statement->fetchAll();
+    $totalMinutes = null;
+    foreach ($timelogs as $timelog) {
+      if (null == $timelog['checkout']) {
+        $current_log = ceil((time() - $timelog['checkin']) / 60);
+        $totalMinutes += $current_log;
+      } else {
+        $totalMinutes += $timelog['visitedhours'];
+      }
+    }
+    $totalHours = ceil($totalMinutes/60);
+    $totalHoursOver = abs($package['maxhours'] - $totalHours);
+    $data['totalhours'] = $totalHours;
+    $data['totalhoursover'] = $totalHoursOver;
+    $data['money'] = $totalHoursOver * $data['price_hour'];
+
+    return $this->render('checking/customerhistory.html.twig', [
+      'data' => $data,
+    ]);
+  }
+
+  /**
    * @Route("/checkout-all-ajax", name = "checkout_all_ajax")
    */
   public function checkOutAllAjaxAction(){
@@ -268,6 +336,7 @@ class CheckingController extends Controller
         $tmp = array(
           'id' => $row['id'],
           'idx' => ++$idx,
+          'memberid' => $row['memberid'],
           'name' => $this->getMemberName($memberid),
           'visitorname' => $row['visitorname'],
           'checkin' => date('d-m-Y H:i', $row['checkin']),

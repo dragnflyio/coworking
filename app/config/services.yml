@@ -12,3 +12,6 @@ services:
         arguments: ["@doctrine.orm.entity_manager"]
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    app.services:
+        class: AppBundle\Utils\Services
+        arguments: ["@doctrine.orm.entity_manager"]

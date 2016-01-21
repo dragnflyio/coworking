@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %}Toong - Nhóm{% endblock %}
+{% block title %}Toong - Checking{% endblock %}
 
 {% block body %}
   <div class = "container">
@@ -40,7 +40,7 @@
             {% for index,timelog in timelogs %}
             <tr>
               <th>{{index}}</th>
-              <td>{{timelog.membername}}</td>
+              <td><a href = "{{ path('customer_history', {'id': timelog.memberid}) }}">{{timelog.membername}}</a></td>
               <td>{{timelog.visitorname}}</td>
               <td>{{timelog.checkin|date("m/d/Y H:i")}}</td>
               {% if 0 != timelog.checkout %}
@@ -71,7 +71,7 @@
   <%#list%>
     <tr>
     <th><%idx%></th>
-    <td><%name%></td>
+    <td><a href = "/customer/<% memberid %>/history"><%name%></a></td>
     <td><%visitorname%></td>
     <td><%checkin%></td>
     <td><%checkout%></td>

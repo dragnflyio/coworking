@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+{% block title %}Toong - Lịch sử thành viên{% endblock %}
+
+{% block body %}
+  <div class = "container">
+    <div class = "row">
+      <div class = "col-md-12">
+        <h1>Lịch sử thành viên</h1>
+      </div>
+    </div>
+    <div class="row"><div class="height20"></div></div>
+    <div class = "row">
+      <div class = "col-md-6">
+        <ul class="list-group">
+          <li class = "list-group-item list-group-item-info">Tên thành viên: {{data['name']}}</li>
+          <li class = "list-group-item list-group-item-info">Điện thoại: {{data['phone']}}</li>
+          <li class = "list-group-item list-group-item-info">Gói đang dùng: {{data['packagename']}}</li>
+          <li class = "list-group-item list-group-item-info">Số giờ trong gói: {{data['maxhours']}}  giờ</li>
+          <li class = "list-group-item list-group-item-info">Số giờ đã dùng: {{data['totalhours']}}  giờ</li>
+          <li class = "list-group-item list-group-item-info">Số giờ vượt quá: {{data['totalhoursover']}} giờ</li>
+          <li class = "list-group-item list-group-item-info">Thành tiền: {{data['money']|number_format(2, '.', ',')}} VND</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}
