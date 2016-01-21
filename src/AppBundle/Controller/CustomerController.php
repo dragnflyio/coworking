@@ -231,6 +231,9 @@ class CustomerController extends BaseController{
 					$dataObj = $formbuilder->PrepareInsert($_POST, 'memberpackage');
 					foreach ($dataObj as $table => $postdata){
 						if ($postdata){
+						    // Disable current package
+						    $validation = $this->get('app.validation');
+						    $validation->closedMemberPackage($customerid);
 							$postdata['memberid'] = $customerid;
 							$data['v'] = $connection->insert($table, $postdata);
 						}
