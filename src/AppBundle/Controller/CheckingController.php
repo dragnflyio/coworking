@@ -124,6 +124,7 @@ class CheckingController extends Controller
    * Store checkin/checkout of member(or visitor) into database using ajax.
    */
   public function checkingAction(Request $request){
+    $services = $this->get('app.services');
     if (false == $request->isXmlHttpRequest()){
       throw new HTTPException(403, 'Request forbidden');
     }
@@ -141,6 +142,13 @@ class CheckingController extends Controller
           $dataObj = $formbuilder->PrepareInsert($_POST, 'memberchecking');
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
+              $package = $services->getPackageByMemberId($postdata['memberid']);
+              $group = $services->getGroupByMemberId($postdata['memberid']);
+              if (!empty($group)) {
+                $postdata['grouppackageid'] = $package['id'];
+              } else {
+                $postdata['memberpackageid'] = $package['id'];
+              }
               $data['v'] = $connection->insert($table, $postdata);
             }
           }
@@ -163,6 +171,13 @@ class CheckingController extends Controller
           $dataObj = $formbuilder->PrepareInsert($_POST, 'visitorchecking');
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
+              $package = $services->getPackageByMemberId($postdata['memberid']);
+              $group = $services->getGroupByMemberId($postdata['memberid']);
+              if (!empty($group)) {
+                $postdata['grouppackageid'] = $package['id'];
+              } else {
+                $postdata['memberpackageid'] = $package['id'];
+              }
               $postdata['isvisitor'] = 1;
               $data['v'] = $connection->insert($table, $postdata);
             }

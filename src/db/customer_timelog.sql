@@ -2,6 +2,8 @@ DROP TABLE `customer_timelog`;
 CREATE TABLE IF NOT EXISTS `customer_timelog` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `memberid` int(11) NOT NULL,
+  `memberpackageid` int(11) DEFAULT NULL,
+  `grouppackageid` int(11) DEFAULT NULL,
   `visitorname` varchar(50) DEFAULT NULL,
   `visitoremail` varchar(50) DEFAULT NULL,
   `visitorphone` varchar(32) DEFAULT NULL,
@@ -14,7 +16,6 @@ CREATE TABLE IF NOT EXISTS `customer_timelog` (
   `visitedhours` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
 
 ALTER TABLE `customer_timelog`
   ADD PRIMARY KEY (`id`);
