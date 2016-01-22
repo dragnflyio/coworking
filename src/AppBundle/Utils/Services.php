@@ -46,6 +46,21 @@ class Services{
       }
     }
   }
+  function getPackageByMemberId_alt($memberid){
+    if ($row = $this->em->fetchAssoc('SELECT mp.id AS memberpackageid, mp.efftoextend,mp.price, mp.maxhours, mp.maxdays, packageid, p.name, mp.efffrom, mp.effto FROM member_package mp LEFT JOIN package p ON mp.packageid = p.id WHERE memberid = ? AND 1 = mp.active', array($memberid))){
+      return $row;
+    }
+    $statement = $this->em->prepare("SELECT groupid FROM group_member WHERE memberid=:memberid");
+    $statement->bindParam(':memberid', $memberid);
+    $statement->execute();
+    if ($group_member = $statement->fetchColumn()){
+      // user belongs to a group
+      if ($row = $this->em->fetchAssoc('SELECT gp.id AS grouppackageid, gp.efftoextend,gp.price, gp.maxhours, gp.maxdays, packageid, p.name, gp.efffrom, gp.effto FROM group_package gp LEFT JOIN package p ON gp.packageid = p.id WHERE groupid = ? AND 1 = gp.active', array($group_member))){
+        return $row;
+      }
+    }
+    return array();// no package found
+  }
 
   /**
    * Get group of member
