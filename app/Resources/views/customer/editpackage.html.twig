@@ -62,7 +62,7 @@ Thay đổi dịch vụ cho khách khách hàng
 									</div>
 								</div>
 							</div>
-							
+
 					  </div>
 					</form>
 				</div>
@@ -88,8 +88,8 @@ Thay đổi dịch vụ cho khách khách hàng
 										<input t="d" type="hidden" id="effto_renew" name="effto_renew"><span class="help-inline"><i class="glyphicon glyphicon-calendar click" id="effto_renew_i"></i><i id="effto_renew_r" class="glyphicon glyphicon-erase click"></i></span>
 									</div>
 								</div>
-							</div>							
-							
+							</div>
+
 					  </div>
 					</form>
 				</div>
@@ -150,19 +150,19 @@ jQuery(function(){
 				$('#change_maxhours').val(formatNum(data.maxhours));
 				$('#change_discountbar').val(formatNum(data.discountbar));
 				$('#change_price').val(formatNum(data.price));
-				
+
 				$('input[name="change_allowcredit"][value='+data.allowcredit+']').click();
 				$('input[name="change_locker"][value='+data.locker+']').click();
 			}
 		})
 	})
-	
+
 	$('#btnsave').click(function(e){
 		e.preventDefault();
 		var action = $('.btn-selected').data('action');
 		var $action = $('.pkg-form-' + action);
 		beforePost() && ajaxPost('/customer/formapi?op=memberpackage&action='+action, $action.find('form').serialize(), function(d){
-			
+
 		})
 	});
 	$('.btn-pkg').click(function(e){
@@ -170,7 +170,7 @@ jQuery(function(){
 		$('.btn-pkg').removeClass('btn-selected');
 		$(this).addClass('btn-selected');
 		var action = $(this).data('action');
-		var $action = $('.pkg-form-' + action).show();		
+		var $action = $('.pkg-form-' + action).show();
 	})
 })
 
