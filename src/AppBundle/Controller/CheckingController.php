@@ -18,6 +18,7 @@ class CheckingController extends Controller
    * @Route("/checking", name = "checking_list")
    */
   public function indexAction(){
+    $services = $this->get('app.services');
     // Get form builder.
     $formbuilder = $this->get('app.formbuilder');
     $search_form = $this->getSearchForm();
@@ -35,7 +36,8 @@ class CheckingController extends Controller
       // Get membername.
       $timelog['membername'] = $this->getMemberName($memberid);
       // Get package.
-      $timelog['packagename'] = $this->getPackageNameByMemberId($memberid);
+      $package = $services->getPackageByMemberId($memberid);
+      $timelog['packagename'] = $package['name'];
       $idx = ++$idx;
       $timelogs[$idx] = (object) $timelog;
     }
@@ -441,31 +443,6 @@ class CheckingController extends Controller
       return $rows[0]['name'];
     } else {
       return "Thành viên này không tồn tại.";
-    }
-  }
-
-  /**
-   * Get package name of member is using.
-   *
-   * @param $memberid
-   *
-   * @return $packagename
-   */
-  private function getPackageNameByMemberId($memberid){
-    $em = $this->getDoctrine()->getManager();
-    $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `member_package` where memberid = :id");
-    $statement->bindParam(':id', $memberid);
-    $statement->execute();
-    $member_package = $statement->fetchAll();
-    if (!empty($member_package)) {
-      $statement = $connection->prepare("SELECT * FROM package where id = :packageid");
-      $statement->bindParam(':packageid', $member_package[0]['packageid']);
-      $statement->execute();
-      $package = $statement->fetchAll();
-      return $package[0]['name'];
-    } else {
-      return "Thành viên không đăng ký dùng gói nào.";
     }
   }
 }
