@@ -53,7 +53,7 @@ class CustomerController extends BaseController{
 			'form_change' => $form_change,
 			'row' => $row,
 			'package' => $current_package,
-			'id' => $id,
+			'memberid' => $id,
 			'script' => $script_update,
 			'script_change' => $script_change
         ]);
@@ -214,10 +214,22 @@ class CustomerController extends BaseController{
 		$formbuilder = $this->get('app.formbuilder');
 		
 		$data = array();
-		$em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getEntityManager();
 		$connection = $em->getConnection();
 		
 		switch($op){
+		    case 'extendfee':
+		        $memberid = $request->query->get('id', 0);
+		        $newdate = $request->query->get('d');
+		        if ($memberid){
+		            $validation = $this->get('app.validation');
+		            if ($current_package = $validation->getMemberPackage($memberid)){
+		                $data['v'] = (int)$newdate - (int)$current_package['effto'];
+		                $data['old'] = (int)$current_package['effto'];
+		            }
+		            
+		        }
+		        break;
 			case 'memberpackage':
 				$action = $request->query->get('action');
 				$data['m'] = $action;

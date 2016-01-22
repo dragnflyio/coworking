@@ -47,7 +47,10 @@ validation['efffrom'] = {jsfunction:function(){
 jQuery(function(){
 	{{script|raw}}
 	$('.numeric').intOnly();
-	cakefffrom.change = function(d){d && cakeffto.set ( d.getTime()/1000 + ( $('#maxdays').val() - 1)*86400 ) }
+	cakefffrom.change = function(d){
+		console.log(d);
+		d && cakeffto.set ( d.getTime()/1000 + ( $('#maxdays').val() - 1)*86400 ) 
+	}
 	window.tkpackageid && tkpackageid.callback(function(){
 		if (tkpackageid.get() == ''){
 		$('#f_memberpackage')[0].reset();

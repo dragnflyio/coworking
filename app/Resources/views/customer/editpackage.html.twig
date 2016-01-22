@@ -49,7 +49,7 @@ Thay đổi dịch vụ cho khách khách hàng
 										</div>
 									</div>
 									<div class="col-md-4">
-										<input type="text" class="form-control numeric" name="price" value="">
+										<input type="text" class="form-control numeric" id="price" name="price" value="">
 									</div>
 								</div>
 							</div>
@@ -132,10 +132,7 @@ jQuery(function(){
 	{{script_change|raw}}
 	cakeffto_extend=new Geekutil.Cal("effto_extend",true,'{{package['effto']}}',0);
 	$('.numeric').intOnly();
-	cakeffto_extend.change = function(d){
-		console.log(d);
-		// tinh toan so tien neu co khi gia han
-	}
+	
 	window.tkchange_packageid && tkchange_packageid.callback(function(){
 		if (tkchange_packageid.get() == ''){
 			$('.pkg-form-change form')[0].reset();
@@ -170,8 +167,26 @@ jQuery(function(){
 		$('.btn-pkg').removeClass('btn-selected');
 		$(this).addClass('btn-selected');
 		var action = $(this).data('action');
-		var $action = $('.pkg-form-' + action).show();		
+		$('.pkg-form-' + action).show();		
+	});
+	$('input[name="tinhphi"]').click(function(){
+		extend_fee()
 	})
+	cakeffto_extend.change = function(d){
+		console.log(d);
+		// tinh toan so tien neu co khi gia han
+	}
+	function extend_fee(){
+		if ($('input[name="tinhphi"]:checked').val() == 2){
+			// ko tinh phi
+			$('#price').val('');
+		} else {
+			ajaxGet('/customer/formapi?op=extendfee&id={{memberid}}&d='+cakeffto_extend.get(), function(d){
+			
+			} )
+		}
+	}
+
 })
 
 </script>

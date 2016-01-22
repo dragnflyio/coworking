@@ -46,23 +46,13 @@ CREATE TABLE `member_package` (
 ALTER TABLE `member`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `member_package`
---
 ALTER TABLE `member_package`
   ADD PRIMARY KEY (`id`);
 
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `member`
---
 ALTER TABLE `member`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `member_package`
---
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `member_package`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `member_package`  ADD `visitorprice` INT NULL DEFAULT NULL ;
+ALTER TABLE `member_package`  ADD `efftoextend` INT NULL DEFAULT NULL ;
