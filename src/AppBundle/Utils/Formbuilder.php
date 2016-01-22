@@ -657,7 +657,7 @@ class Formbuilder {
             if (!$this->_mupdateMode) {
                 if ($retVal['inputType'] == Self::SELECT) {
                     $options['defaultValue'] = explode(',', $row['value_default']);
-                } else if (isset($row['value_default']) && strtolower($row['value_default']) == 'now') {
+                } else if (strtolower($row['value_default']) == 'now') {
                     $options['defaultValue'] = 'now';
                 } else {
                     $options['defaultValue'] = $row['value_default'];

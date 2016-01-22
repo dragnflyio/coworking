@@ -17,7 +17,7 @@ class Services{
    * @return array $package
    */
   function getPackageByMemberId($memberid){
-    $statement = $this->em->prepare("SELECT packageid FROM `member_package` WHERE memberid=:memberid");
+    $statement = $this->em->prepare("SELECT packageid FROM `member_package` WHERE 1=active AND memberid=:memberid");
     $statement->bindParam(':memberid', $memberid);
     $statement->execute();
     $member_package = $statement->fetchAll();

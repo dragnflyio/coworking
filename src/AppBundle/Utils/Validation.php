@@ -40,6 +40,13 @@ class Validation{
 		}
 		return $ret;
 	}
+	/**
+	 * Closed current active package if it has
+	 */
+	function closedMemberPackage($memberid){
+	    $count = $this->em->executeUpdate('UPDATE member_package SET active = 0 WHERE active = 1 AND memberid = ?', array($memberid));
+	    return $count;
+	}
 
 	/**
    * Check if group has active package or not
