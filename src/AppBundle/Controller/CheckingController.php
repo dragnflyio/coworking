@@ -61,7 +61,7 @@ class CheckingController extends Controller
     $op = $request->query->get('op', 'member');
     switch ($op) {
       case 'checkin':
-        $tmp = $formbuilder->GenerateLayout('memberchecking');
+        $tmp = $formbuilder->GenerateLayout('memberchecking', "col_name NOT IN ('checkout')");
         $op = 'Check in';
         break;
 
@@ -97,7 +97,7 @@ class CheckingController extends Controller
     $op = $request->query->get('op', 'member');
     switch ($op) {
       case 'checkin':
-        $tmp = $formbuilder->GenerateLayout('visitorchecking');
+        $tmp = $formbuilder->GenerateLayout('visitorchecking', "col_name NOT IN ('checkout')");
         $op = 'Check in';
         break;
 
@@ -268,6 +268,8 @@ class CheckingController extends Controller
     $statement->execute();
     $timelogs = $statement->fetchAll();
     $totalMinutes = null;
+    $logs = array();
+    $idx = 0;
     foreach ($timelogs as $timelog) {
       if (null == $timelog['checkout']) {
         $current_log = ceil((time() - $timelog['checkin']) / 60);
@@ -275,6 +277,7 @@ class CheckingController extends Controller
       } else {
         $totalMinutes += $timelog['visitedhours'];
       }
+      $logs[++$idx] = $timelog;
     }
     $totalHours = ceil($totalMinutes/60);
     if ($totalHours > $package['maxhours']) {
@@ -285,7 +288,8 @@ class CheckingController extends Controller
     $data['totalhours'] = $totalHours;
     $data['totalhoursover'] = $totalHoursOver;
     $data['money'] = $totalHoursOver * $data['price_hour'];
-
+    $data['logs'] = $logs;
+    $data['efffrom'] = $efffrom;
     return $this->render('checking/customerhistory.html.twig', [
       'data' => $data,
     ]);

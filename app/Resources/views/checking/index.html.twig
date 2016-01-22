@@ -30,10 +30,10 @@
           <thead>
             <th>#</th>
             <th>Thành viên</th>
+            <th>Gói</th>
             <th>Tên khách</th>
             <th>Giờ check in</th>
             <th>Giờ check out</th>
-            <th>Gói</th>
             <th>Thao tác</th>
           </thead>
           <tbody id = "list-checking">
@@ -41,6 +41,7 @@
             <tr>
               <th>{{index}}</th>
               <td><a href = "{{ path('customer_history', {'id': timelog.memberid}) }}">{{timelog.membername}}</a></td>
+              <td>{{timelog.packagename}}</td>
               <td>{{timelog.visitorname}}</td>
               <td>{{timelog.checkin|date("m/d/Y H:i")}}</td>
               {% if 0 != timelog.checkout %}
@@ -48,7 +49,6 @@
               {% else %}
                 <td></td>
               {% endif %}
-              <td>{{timelog.packagename}}</td>
               <td>
               {% if 0 == timelog.checkout %}
                 {% if '' !=  timelog.visitorname %}
@@ -72,10 +72,10 @@
     <tr>
     <th><%idx%></th>
     <td><a href = "/customer/<% memberid %>/history"><%name%></a></td>
+    <td><%packagename%></td>
     <td><%visitorname%></td>
     <td><%checkin%></td>
     <td><%checkout%></td>
-    <td><%packagename%></td>
     <td>
       <a href = "/<%type%>/checking?op=checkout&id=<%id%>">Check out</a>
     </td>
