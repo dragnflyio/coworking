@@ -324,6 +324,7 @@ class CheckingController extends Controller
    */
   public function searchAction(){
     $formbuilder = $this->get('app.formbuilder');
+    $services = $this->get('app.services');
     $grp = $this->getSearchForm();
     $searchData = $formbuilder->GetSearchData($_POST, $grp);
     $filters = '';
@@ -352,11 +353,18 @@ class CheckingController extends Controller
     } else {
       foreach ($rows as $row){
         $memberid = $row['memberid'];
+        $package = $services->getPackageByMemberId($memberid);
         $type = '';
         if (empty($row['visitorname'])) {
           $type = 'member';
         } else {
           $type = 'visitor';
+        }
+        $checkout = null;
+        if (!empty($row['checkout'])) {
+          $checkout = date('d-m-Y H:i', $row['checkout']);
+        } else {
+          $checkout = null;
         }
         $tmp = array(
           'id' => $row['id'],
@@ -365,8 +373,8 @@ class CheckingController extends Controller
           'name' => $this->getMemberName($memberid),
           'visitorname' => $row['visitorname'],
           'checkin' => date('d-m-Y H:i', $row['checkin']),
-          'checkout' => date('d-m-Y H:i', $row['checkout']),
-          'packagename' => $this->getPackageNameByMemberId($memberid),
+          'checkout' => $checkout,
+          'packagename' => $package['name'],
           'type' => $type,
         );
         $ret[] = $tmp;

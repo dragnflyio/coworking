@@ -43,9 +43,9 @@
               <td><a href = "{{ path('customer_history', {'id': timelog.memberid}) }}">{{timelog.membername}}</a></td>
               <td>{{timelog.packagename}}</td>
               <td>{{timelog.visitorname}}</td>
-              <td>{{timelog.checkin|date("m/d/Y H:i")}}</td>
+              <td>{{timelog.checkin|date("d-m-Y H:i")}}</td>
               {% if 0 != timelog.checkout %}
-                <td>{{timelog.checkout|date("m/d/Y H:i")}}</td>
+                <td>{{timelog.checkout|date("d-m-Y H:i")}}</td>
               {% else %}
                 <td></td>
               {% endif %}
@@ -77,7 +77,10 @@
     <td><%checkin%></td>
     <td><%checkout%></td>
     <td>
-      <a href = "/<%type%>/checking?op=checkout&id=<%id%>">Check out</a>
+      <%#if checkout.length %>
+      <%else%>
+        <a href = "/<%type%>/checking?op=checkout&id=<%id%>">Check out</a>
+      <%/if%>
     </td>
     </tr>
   <%/list%>
