@@ -264,7 +264,7 @@ class CheckingController extends Controller
     // Get total hour is used.
     $tmp = implode(', ', $members);
     $statement = $connection->prepare("SELECT * FROM `customer_timelog`
-    WHERE memberid IN ($tmp) AND checkin > $efffrom AND visitorname IS NOT NULL");
+    WHERE memberid IN ($tmp) AND checkin > $efffrom AND visitorname IS NULL");
     $statement->execute();
     $timelogs = $statement->fetchAll();
     $totalMinutes = null;
