@@ -260,7 +260,11 @@ class CheckingController extends Controller
       }
     }
     $totalHours = ceil($totalMinutes/60);
-    $totalHoursOver = abs($package['maxhours'] - $totalHours);
+    if ($totalHours > $package['maxhours']) {
+      $totalHoursOver = abs($package['maxhours'] - $totalHours);
+    } else {
+      $totalHoursOver = 0;
+    }
     $data['totalhours'] = $totalHours;
     $data['totalhoursover'] = $totalHoursOver;
     $data['money'] = $totalHoursOver * $data['price_hour'];
