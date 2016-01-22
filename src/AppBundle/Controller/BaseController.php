@@ -13,7 +13,7 @@ use AppBundle\Utils\Validation;
 
 
 class BaseController extends Controller{
+    
 	function __construct(){
 	}
-	
 }

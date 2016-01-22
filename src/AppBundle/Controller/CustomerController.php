@@ -53,7 +53,7 @@ class CustomerController extends BaseController{
 			'form_change' => $form_change,
 			'row' => $row,
 			'package' => $current_package,
-			'id' => $id,
+			'memberid' => $id,
 			'script' => $script_update,
 			'script_change' => $script_change
         ]);
@@ -214,13 +214,37 @@ class CustomerController extends BaseController{
 		$formbuilder = $this->get('app.formbuilder');
 		
 		$data = array();
-		$em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getEntityManager();
 		$connection = $em->getConnection();
 		
 		switch($op){
+		    case 'extendfee':
+		        $memberid = $request->query->get('id', 0);
+		        $newdate = $request->query->get('d');
+		        if ($memberid){
+		            $validation = $this->get('app.validation');
+		            if ($current_package = $validation->getMemberPackage($memberid)){
+		                $extend_days = ((int)$newdate - (int)$current_package['effto'])/86400;
+		                // rate per day
+		                $day_price = 0;
+		                if ($current_package['maxdays'])
+		                    $day_price = (int)($current_package['price'] / $current_package['maxdays']);
+		                $data['v'] = $extend_days * $day_price;
+		            }
+		            
+		        }
+		        break;
 			case 'memberpackage':
 				$action = $request->query->get('action');
 				$data['m'] = $action;
+				if('extend' == $action){
+				    $memberid = $request->query->get('id', 0);
+		            $newdate = $request->request->get('effto_extend');
+		            $amount = $formbuilder->getNum($request->request->get('price_extend'));
+		            $validation = $this->get('app.validation');
+		            $validation->extendMemberPackage($memberid, $newdate, $amount);
+		            $data['m'] = 'Đã cập nhật gia hạn tạm thời';
+				}
 				break;
 			case 'addpackage':
 				$customerid = $request->query->get('id', 0);

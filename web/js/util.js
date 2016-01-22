@@ -1031,8 +1031,14 @@ wd.nicW = function(id){
 Geekutil.DATE_SEPERATOR = '/';
 Geekutil.DEC = 0;
 function setUpCalValue(idCal, cal){
-  var tmp = new Date(cal.selection.print('%Y/%m/%d %H:%M'));
+  if($('#' + idCal + '_h' ).length){
+    var tmp = new Date(cal.selection.print('%Y/%m/%d %H:%M'));
+    $('#' + idCal).val(tmp.getTime()/1000);
+    return
+  }
+  var tmp = new Date(cal.selection.print('%Y/%m/%d 00:00:00'));
   $('#' + idCal).val(tmp.getTime()/1000);
+  
 }
 wd.clearCal=function (idCal){
   $('#' + idCal).val('');
@@ -1217,7 +1223,8 @@ Geekutil.Cal = function(idCal, notime, pt, readonly){
     },
     onChange: function(e,b){    
       if(oldst != self.getstr()){        
-        oldst = self.getstr();        
+        oldst = self.getstr();
+        if (notime) b = new Date(b.getFullYear(), b.getMonth(), b.getDate(), 0, 0, 0, 0);
         if(typeof self.change == 'function') self.change.call(null,b)
       }
     },
@@ -1267,7 +1274,7 @@ Geekutil.Cal = function(idCal, notime, pt, readonly){
   self.enb = function(){
     clearCal(idCal);
 		$('#' + idCal + '_i,#' + idCal + '_r').show();
-    $('#' + idCal + '_d').prop('disabled',0)
+		$('#' + idCal + '_d,#' + idCal + '_h').prop('disabled',0)
   }
   self.fors = function(){
     $('#' + idCal + '_i').parent().addClass('invisible').css('width',1);

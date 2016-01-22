@@ -715,7 +715,7 @@ class Formbuilder {
 		if(null === $v || ''===$v) return '';
         return number_format($v, 0, '.', ',');
     }
-	private function getNum($tmp) {
+	function getNum($tmp) {
 		$tmp = str_replace(',', '', $tmp);
         return $tmp;
     }
