@@ -10,16 +10,47 @@
     </div>
     <div class="row"><div class="height20"></div></div>
     <div class = "row">
-      <div class = "col-md-6">
-        <ul class="list-group">
-          <li class = "list-group-item list-group-item-info">Tên thành viên: {{data['name']}}</li>
-          <li class = "list-group-item list-group-item-info">Điện thoại: {{data['phone']}}</li>
-          <li class = "list-group-item list-group-item-info">Gói đang dùng: {{data['packagename']}}</li>
-          <li class = "list-group-item list-group-item-info">Số giờ trong gói: {{data['maxhours']}}  giờ</li>
-          <li class = "list-group-item list-group-item-info">Số giờ đã dùng: {{data['totalhours']}}  giờ</li>
-          <li class = "list-group-item list-group-item-info">Số giờ vượt quá: {{data['totalhoursover']}} giờ</li>
-          <li class = "list-group-item list-group-item-info">Thành tiền: {{data['money']|number_format(2, '.', ',')}} VND</li>
-        </ul>
+      <div class = "col-md-12">
+        <div class = "col-md-6">
+          <ul class="list-group">
+            <li class = "list-group-item list-group-item-info">Tên thành viên: {{data['name']}}</li>
+            <li class = "list-group-item list-group-item-info">Điện thoại: {{data['phone']}}</li>
+            <li class = "list-group-item list-group-item-info">Gói đang dùng: {{data['packagename']}}</li>
+            <li class = "list-group-item list-group-item-info">Ngày đăng ký dùng gói: {{data['efffrom']|date("d/m/Y")}}</li>
+            <li class = "list-group-item list-group-item-info">Số giờ trong gói: {{data['maxhours']}}  giờ</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <a href = "{{ path('checking_list') }}" class = "btn btn-default pull-right">Back</a>
+        </div>
+        <div class = "col-md-12">
+          <h4>Thống kê</h4>
+          <table class = "table table-bordered">
+            <thead>
+              <th>#</th>
+              <th>Check in</th>
+              <th>Check out</th>
+              <th>Số phút</th>
+            </thead>
+            <tbody>
+              {% for index,log in data['logs'] %}
+              <tr>
+                <th>{{index}}</th>
+                <td>{{log['checkin']|date("m/d/Y H:i")}}</td>
+                <td>{{log['checkout']|date("m/d/Y H:i")}}</td>
+                <td>{{log['visitedhours']}} phút</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class = "col-md-4 pull-right">
+            <ul class="list-group">
+              <li class = "list-group-item list-group-item-info">Số giờ đã dùng: {{data['totalhours']}}  giờ</li>
+              <li class = "list-group-item list-group-item-info">Số giờ vượt quá: {{data['totalhoursover']}} giờ</li>
+              <li class = "list-group-item list-group-item-info">Thành tiền: {{data['money']|number_format(2, '.', ',')}} VND</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>

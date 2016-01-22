@@ -37,7 +37,7 @@ class Services{
         $statement->bindParam(':groupid', $group_member[0]['groupid']);
         $statement->execute();
         $group_package = $statement->fetchAll();
-        if (empty($group_package)) throw new Exception('Thành viên này không dùng gói nào.');
+        if (empty($group_package)) return NULL;
         $statement = $this->em->prepare("SELECT * FROM `package` WHERE id=:packageid");
         $statement->bindParam(':packageid', $group_package[0]['packageid']);
         $statement->execute();
@@ -59,8 +59,11 @@ class Services{
     $statement->bindParam(':memberid', $memberid);
     $statement->execute();
     $group_member = $statement->fetchAll();
-    if (empty($group_member)) throw new Exception('Thành viên này không thuộc nhóm nào.');
-    return $group_member[0];
+    if (empty($group_member)) {
+      return NULL;
+    } else {
+      return $group_member[0];
+    }
   }
 
   /**

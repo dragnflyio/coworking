@@ -31,7 +31,7 @@
       // Validation checking form
       $('.numeric').intOnly();
       validation['memberid'] = {minlength:1, message: 'Chọn thành viên!'};
-      validation['visitorname'] = {minlength:1, message: 'Chọn thành viên!'};
+      validation['visitorname'] = {minlength:1, message: 'Nhập tên khách!'};
       validation['checkin_d'] = {jsfunction:function(){
         if (cakcheckin.get() < 1){
           return "Nhập thời gian đăng ký vào!"

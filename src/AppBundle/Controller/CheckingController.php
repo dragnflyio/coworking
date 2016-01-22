@@ -18,6 +18,7 @@ class CheckingController extends Controller
    * @Route("/checking", name = "checking_list")
    */
   public function indexAction(){
+    $services = $this->get('app.services');
     // Get form builder.
     $formbuilder = $this->get('app.formbuilder');
     $search_form = $this->getSearchForm();
@@ -35,7 +36,8 @@ class CheckingController extends Controller
       // Get membername.
       $timelog['membername'] = $this->getMemberName($memberid);
       // Get package.
-      $timelog['packagename'] = $this->getPackageNameByMemberId($memberid);
+      $package = $services->getPackageByMemberId($memberid);
+      $timelog['packagename'] = $package['name'];
       $idx = ++$idx;
       $timelogs[$idx] = (object) $timelog;
     }
@@ -59,7 +61,7 @@ class CheckingController extends Controller
     $op = $request->query->get('op', 'member');
     switch ($op) {
       case 'checkin':
-        $tmp = $formbuilder->GenerateLayout('memberchecking');
+        $tmp = $formbuilder->GenerateLayout('memberchecking', "col_name NOT IN ('checkout')");
         $op = 'Check in';
         break;
 
@@ -95,7 +97,7 @@ class CheckingController extends Controller
     $op = $request->query->get('op', 'member');
     switch ($op) {
       case 'checkin':
-        $tmp = $formbuilder->GenerateLayout('visitorchecking');
+        $tmp = $formbuilder->GenerateLayout('visitorchecking', "col_name NOT IN ('checkout')");
         $op = 'Check in';
         break;
 
@@ -124,6 +126,7 @@ class CheckingController extends Controller
    * Store checkin/checkout of member(or visitor) into database using ajax.
    */
   public function checkingAction(Request $request){
+    $services = $this->get('app.services');
     if (false == $request->isXmlHttpRequest()){
       throw new HTTPException(403, 'Request forbidden');
     }
@@ -141,6 +144,13 @@ class CheckingController extends Controller
           $dataObj = $formbuilder->PrepareInsert($_POST, 'memberchecking');
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
+              $package = $services->getPackageByMemberId($postdata['memberid']);
+              $group = $services->getGroupByMemberId($postdata['memberid']);
+              if (!empty($group)) {
+                $postdata['grouppackageid'] = $package['id'];
+              } else {
+                $postdata['memberpackageid'] = $package['id'];
+              }
               $data['v'] = $connection->insert($table, $postdata);
             }
           }
@@ -163,6 +173,13 @@ class CheckingController extends Controller
           $dataObj = $formbuilder->PrepareInsert($_POST, 'visitorchecking');
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
+              $package = $services->getPackageByMemberId($postdata['memberid']);
+              $group = $services->getGroupByMemberId($postdata['memberid']);
+              if (!empty($group)) {
+                $postdata['grouppackageid'] = $package['id'];
+              } else {
+                $postdata['memberpackageid'] = $package['id'];
+              }
               $postdata['isvisitor'] = 1;
               $data['v'] = $connection->insert($table, $postdata);
             }
@@ -247,10 +264,12 @@ class CheckingController extends Controller
     // Get total hour is used.
     $tmp = implode(', ', $members);
     $statement = $connection->prepare("SELECT * FROM `customer_timelog`
-    WHERE memberid IN ($tmp) AND checkin > $efffrom");
+    WHERE memberid IN ($tmp) AND checkin > $efffrom AND visitorname IS NULL");
     $statement->execute();
     $timelogs = $statement->fetchAll();
     $totalMinutes = null;
+    $logs = array();
+    $idx = 0;
     foreach ($timelogs as $timelog) {
       if (null == $timelog['checkout']) {
         $current_log = ceil((time() - $timelog['checkin']) / 60);
@@ -258,13 +277,19 @@ class CheckingController extends Controller
       } else {
         $totalMinutes += $timelog['visitedhours'];
       }
+      $logs[++$idx] = $timelog;
     }
     $totalHours = ceil($totalMinutes/60);
-    $totalHoursOver = abs($package['maxhours'] - $totalHours);
+    if ($totalHours > $package['maxhours']) {
+      $totalHoursOver = abs($package['maxhours'] - $totalHours);
+    } else {
+      $totalHoursOver = 0;
+    }
     $data['totalhours'] = $totalHours;
     $data['totalhoursover'] = $totalHoursOver;
     $data['money'] = $totalHoursOver * $data['price_hour'];
-
+    $data['logs'] = $logs;
+    $data['efffrom'] = $efffrom;
     return $this->render('checking/customerhistory.html.twig', [
       'data' => $data,
     ]);
@@ -299,6 +324,7 @@ class CheckingController extends Controller
    */
   public function searchAction(){
     $formbuilder = $this->get('app.formbuilder');
+    $services = $this->get('app.services');
     $grp = $this->getSearchForm();
     $searchData = $formbuilder->GetSearchData($_POST, $grp);
     $filters = '';
@@ -327,11 +353,18 @@ class CheckingController extends Controller
     } else {
       foreach ($rows as $row){
         $memberid = $row['memberid'];
+        $package = $services->getPackageByMemberId($memberid);
         $type = '';
         if (empty($row['visitorname'])) {
           $type = 'member';
         } else {
           $type = 'visitor';
+        }
+        $checkout = null;
+        if (!empty($row['checkout'])) {
+          $checkout = date('d-m-Y H:i', $row['checkout']);
+        } else {
+          $checkout = null;
         }
         $tmp = array(
           'id' => $row['id'],
@@ -340,8 +373,8 @@ class CheckingController extends Controller
           'name' => $this->getMemberName($memberid),
           'visitorname' => $row['visitorname'],
           'checkin' => date('d-m-Y H:i', $row['checkin']),
-          'checkout' => date('d-m-Y H:i', $row['checkout']),
-          'packagename' => $this->getPackageNameByMemberId($memberid),
+          'checkout' => $checkout,
+          'packagename' => $package['name'],
           'type' => $type,
         );
         $ret[] = $tmp;
@@ -422,31 +455,6 @@ class CheckingController extends Controller
       return $rows[0]['name'];
     } else {
       return "Thành viên này không tồn tại.";
-    }
-  }
-
-  /**
-   * Get package name of member is using.
-   *
-   * @param $memberid
-   *
-   * @return $packagename
-   */
-  private function getPackageNameByMemberId($memberid){
-    $em = $this->getDoctrine()->getManager();
-    $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `member_package` where memberid = :id");
-    $statement->bindParam(':id', $memberid);
-    $statement->execute();
-    $member_package = $statement->fetchAll();
-    if (!empty($member_package)) {
-      $statement = $connection->prepare("SELECT * FROM package where id = :packageid");
-      $statement->bindParam(':packageid', $member_package[0]['packageid']);
-      $statement->execute();
-      $package = $statement->fetchAll();
-      return $package[0]['name'];
-    } else {
-      return "Thành viên không đăng ký dùng gói nào.";
     }
   }
 }
