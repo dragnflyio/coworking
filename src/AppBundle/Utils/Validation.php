@@ -35,10 +35,27 @@ class Validation{
 	 */
 	function getMemberPackage($memberid){
 		$ret = array();
-		if ($row = $this->em->fetchAssoc('SELECT packageid, p.name AS packagename, mp.efffrom, mp.effto FROM member_package mp LEFT JOIN package p ON mp.packageid = p.id WHERE memberid = ? AND 1 = mp.active', array($memberid))){
+		if ($row = $this->em->fetchAssoc('SELECT mp.efftoextend,mp.price, mp.maxdays, packageid, p.name AS packagename, mp.efffrom, mp.effto FROM member_package mp LEFT JOIN package p ON mp.packageid = p.id WHERE memberid = ? AND 1 = mp.active', array($memberid))){
 			$ret = $row;
 		}
 		return $ret;
+	}
+	function extendMemberPackage($memberid, $extend_day, $amount){
+	    if ($current_package = $this->getMemberPackage($memberid)){
+	        // extend
+	        $this->em->executeUpdate('UPDATE member_package SET efftoextend = ? WHERE active = 1 AND memberid = ?', array($extend_day, $memberid));
+	        // log activity
+	        $log = array(
+	           'memberid' => $memberid,
+	           'code' => 'giahantam',
+	           'oldvalue' => $current_package['effto'],
+	           'newvalue' => $extend_day,
+	           'createdtime' => time(),
+	           'amount' => (int)$amount
+	        );
+	        $this->em->insert('customer_activity', $log);
+	    }
+	    
 	}
 	/**
 	 * Closed current active package if it has

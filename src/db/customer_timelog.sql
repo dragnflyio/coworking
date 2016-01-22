@@ -17,9 +17,6 @@ CREATE TABLE IF NOT EXISTS `customer_timelog` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-ALTER TABLE `customer_timelog`
-  ADD PRIMARY KEY (`id`);
-
 
 ALTER TABLE `customer_timelog`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
