@@ -11,7 +11,7 @@ class Validation{
 	 * or this member belongs to a group which have active package
 	 * @return empty string or error string
 	 */
-	function checkMemberPackage($memberid, $efffrom = null, $effto = null){
+	function checkMemberPackage($memberid){
 		// Has active package
 
 		if ($row = $this->em->fetchAssoc('SELECT packageid FROM member_package WHERE memberid = ? AND 1 = active', array($memberid))){
@@ -29,16 +29,52 @@ class Validation{
 			}
 		}
 		return '';
-	}   
+	}
 	/**
 	 * Get current active package for a member
 	 */
 	function getMemberPackage($memberid){
 		$ret = array();
-		if ($row = $this->em->fetchAssoc('SELECT mp.efftoextend,mp.price, mp.maxdays, packageid, p.name AS packagename, mp.efffrom, mp.effto FROM member_package mp LEFT JOIN package p ON mp.packageid = p.id WHERE memberid = ? AND 1 = mp.active', array($memberid))){
+		if ($row = $this->em->fetchAssoc('SELECT mp.id, mp.efftoextend,mp.price, mp.maxhours, mp.maxdays, packageid, p.name AS packagename, mp.efffrom, mp.effto FROM member_package mp LEFT JOIN package p ON mp.packageid = p.id WHERE memberid = ? AND 1 = mp.active', array($memberid))){
+		    // remainder, so tien con du?
+		    $row['remain'] = 0;
+		    if (0 < $row['maxhours']){
+		        // Goi tinh gio, se tinh toan so gio da dung
+		        $used_minutes = $this->getUsedHours($row['id']);
+
+		        if ($used_minutes) {
+		            // so tien tuong ung
+		            $fee = $row['price'] / ($row['maxhours'] * 60) * $used_minutes;
+		            // so du
+		            $row['remain'] = $row['price'] - $fee;
+		        }
+		    } else {
+		        // Goi tinh ngay, count up to today
+		        $today = mktime(0,0,0);
+		        $diff = max(0, $today - $row['efffrom'])/ 86400;// convert second to day
+		        $fee = $row['price'] / $row['maxdays'] * $diff;
+		        // so du
+	            $row['remain'] = $row['price'] - $fee;		        
+		    }
 			$ret = $row;
 		}
 		return $ret;
+	}
+	/**
+	 * Get used hours of member in a package
+	 * @return used hours in minutes
+	 */
+	function getUsedHours($member_packageid){
+	    $retval = 0;
+	    $log = $this->em->fetchAll('SELECT checkin, checkout FROM customer_timelog WHERE isvisitor = 0 AND memberpackageid = ?', array($member_packageid));
+	    if ($log){
+	        foreach($log as $check){
+	            if ($check['checkout']){
+	                $retval += max(0, $check['checkout'] - $check['checkin']) / 60;// Convert second to minute
+	            }
+	        }
+	    }
+	    return $retval;
 	}
 	function extendMemberPackage($memberid, $extend_day, $amount){
 	    if ($current_package = $this->getMemberPackage($memberid)){

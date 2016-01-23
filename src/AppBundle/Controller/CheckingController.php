@@ -144,12 +144,13 @@ class CheckingController extends Controller
           $dataObj = $formbuilder->PrepareInsert($_POST, 'memberchecking');
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
-              $package = $services->getPackageByMemberId($postdata['memberid']);
+              // $package = $services->getPackageByMemberId($postdata['memberid']);
+              $package = $services->getPackageByMemberId_alt($postdata['memberid']);
               $group = $services->getGroupByMemberId($postdata['memberid']);
               if (!empty($group)) {
-                $postdata['grouppackageid'] = $package['id'];
+                $postdata['grouppackageid'] = $package['grouppackageid'];
               } else {
-                $postdata['memberpackageid'] = $package['id'];
+                $postdata['memberpackageid'] = $package['memberpackageid'];
               }
               $data['v'] = $connection->insert($table, $postdata);
             }
@@ -264,7 +265,7 @@ class CheckingController extends Controller
     // Get total hour is used.
     $tmp = implode(', ', $members);
     $statement = $connection->prepare("SELECT * FROM `customer_timelog`
-    WHERE memberid IN ($tmp) AND checkin > $efffrom AND visitorname IS NULL");
+    WHERE memberid IN ($tmp) AND checkin > $efffrom AND visitorname IS NULL");//Why dont use isvisitor
     $statement->execute();
     $timelogs = $statement->fetchAll();
     $totalMinutes = null;
@@ -279,15 +280,17 @@ class CheckingController extends Controller
       }
       $logs[++$idx] = $timelog;
     }
-    $totalHours = ceil($totalMinutes/60);
-    if ($totalHours > $package['maxhours']) {
-      $totalHoursOver = abs($package['maxhours'] - $totalHours);
+    $totalHours = ceil($totalMinutes/60);// Need to calculate by minutes
+    // if ($totalHours > $package['maxhours']) {
+    if ($totalMinutes > 60*$package['maxhours']) {
+      // $totalHoursOver = abs($package['maxhours'] - $totalHours);
+      $totalHoursOver = abs($package['maxhours']*60 - $totalMinutes);
     } else {
       $totalHoursOver = 0;
     }
-    $data['totalhours'] = $totalHours;
+    $data['totalhours'] = $totalMinutes;
     $data['totalhoursover'] = $totalHoursOver;
-    $data['money'] = $totalHoursOver * $data['price_hour'];
+    $data['money'] = $totalHoursOver * $data['price_hour']/60;
     $data['logs'] = $logs;
     $data['efffrom'] = $efffrom;
     return $this->render('checking/customerhistory.html.twig', [

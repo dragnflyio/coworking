@@ -196,7 +196,8 @@ class Formbuilder {
      * @param String $obj_name object_name in table_conf
      * @return Array
      * */
-    public function PrepareInsert($postData, $obj_name) {
+    public function PrepareInsert($postData, $obj_name, $prefix = '') {
+        if ($prefix) $this->_prefixID = $prefix;
         $retVal = array();
         if (null === $this->_mConfigList) {
             $this->_mConfigList = $this->getTableConfig($obj_name, null, false, '', 1);

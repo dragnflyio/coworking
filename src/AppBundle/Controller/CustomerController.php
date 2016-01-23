@@ -236,14 +236,46 @@ class CustomerController extends BaseController{
 		        break;
 			case 'memberpackage':
 				$action = $request->query->get('action');
+				$memberid = $request->query->get('id', 0);
 				$data['m'] = $action;
 				if('extend' == $action){
-				    $memberid = $request->query->get('id', 0);
+				    
 		            $newdate = $request->request->get('effto_extend');
 		            $amount = $formbuilder->getNum($request->request->get('price_extend'));
 		            $validation = $this->get('app.validation');
 		            $validation->extendMemberPackage($memberid, $newdate, $amount);
 		            $data['m'] = 'Đã cập nhật gia hạn tạm thời';
+				}
+				if ('renew' == $action){
+				    // Gia han goi
+				    
+				}
+				if ('change' == $action){
+				    // Doi goi
+				    if ($memberid){
+				        $validation = $this->get('app.validation');
+				        $dataObj = $formbuilder->PrepareInsert($_POST, 'memberpackage', 'change_');
+                        $current_package = $validation->getMemberPackage($memberid);
+    					foreach ($dataObj as $table => $postdata){
+    						if ($postdata){
+    						    // Disable current package    						    
+                                $validation->closedMemberPackage($memberid);
+    							$postdata['memberid'] = $memberid;
+    							$data['v'] = $connection->insert($table, $postdata);
+    							// Log activity
+                    	        $log = array(
+                    	           'memberid' => $memberid,
+                    	           'code' => 'changepackage',
+                    	           'oldvalue' => $current_package['packageid'],
+                    	           'newvalue' => $postdata['packageid'],
+                    	           'createdtime' => time(),
+                    	           'amount' => (int)$current_package['remain']
+                    	        );
+                    	        $data['v'] = $connection->insert('customer_activity', $log);
+    						}
+    					}
+    					$data['m'] = 'Đổi gói thành công';
+				    }
 				}
 				break;
 			case 'addpackage':
@@ -252,17 +284,23 @@ class CustomerController extends BaseController{
 				// or belong to a group which added package
 				// if not, do add package
 				if ($customerid){
-					$dataObj = $formbuilder->PrepareInsert($_POST, 'memberpackage');
-					foreach ($dataObj as $table => $postdata){
-						if ($postdata){
-						    // Disable current package
-						    $validation = $this->get('app.validation');
-						    $validation->closedMemberPackage($customerid);
-							$postdata['memberid'] = $customerid;
-							$data['v'] = $connection->insert($table, $postdata);
-						}
-					}
-					$data['m'] = 'Thêm thành công';
+				    $validation = $this->get('app.validation');
+				    if ($msg = $validation->checkMemberPackage($customerid)){
+				        $data['e'] = $msg;
+			        } else {
+			            $dataObj = $formbuilder->PrepareInsert($_POST, 'memberpackage');
+    					foreach ($dataObj as $table => $postdata){
+    						if ($postdata){
+    						    // Disable current package
+                                // $validation = $this->get('app.validation');
+                                // $validation->closedMemberPackage($customerid);
+    							$postdata['memberid'] = $customerid;
+    							$data['v'] = $connection->insert($table, $postdata);
+    						}
+    					}
+    					$data['m'] = 'Thêm thành công';
+			        }
+					
 				}
 				
 				break;
