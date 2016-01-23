@@ -73,7 +73,7 @@ class CustomerController extends BaseController{
 			$tmp = $msg;
 			$error = true;
 		} else {
-			$tmp = $formbuilder->GenerateLayout('memberpackage');			
+			$tmp = $formbuilder->GenerateLayout('memberpackage');
 		}
 
         return $this->render('customer/addpackage.html.twig', [
@@ -111,9 +111,9 @@ class CustomerController extends BaseController{
     public function listAction(Request $request){
 		$formbuilder = $this->get('app.formbuilder');
 		$grp = $this->getCustomerSearchForm();
-		
+
 		$form = $formbuilder->GenerateManualSearchControls($grp);
-		
+
         return $this->render('customer/list.html.twig', [
 			'form' => $form,
 			'script' => $formbuilder->mscript
@@ -152,7 +152,7 @@ class CustomerController extends BaseController{
 		$row['colname'] = 'email';
 		$row['pos'] = array('row' => 2, 'col' => 1);
 		$retval[] = $row;
-		
+
 		$row = array();
 		$row['id'] = 'trangthai';
 		$row['label'] = 'Trạng thái';
@@ -172,7 +172,7 @@ class CustomerController extends BaseController{
      * @Route("/edit/{id}", requirements={"id" = "\d+"})
      */
     public function editAction($id, Request $request){
-		$formbuilder = $this->get('app.formbuilder');		
+		$formbuilder = $this->get('app.formbuilder');
 		$request = Request::createFromGlobals();
 
 		$id = (int)$id;
@@ -185,11 +185,11 @@ class CustomerController extends BaseController{
 				$tmp = $formbuilder->LoadDatarowToConfig($row, 'customerform');
 			} else throw $this->createNotFoundException('Không tìm thấy khách hàng này');
 
-			
+
 		} else {
 			throw $this->createNotFoundException('Không tìm thấy trang này');
 		}
-		
+
 
         return $this->render('customer/edit.html.twig', [
 			'form' => $tmp,
@@ -210,13 +210,13 @@ class CustomerController extends BaseController{
 		}
 
 		$op = $request->query->get('op', 'create');
-		
+
 		$formbuilder = $this->get('app.formbuilder');
-		
+
 		$data = array();
-        $em = $this->getDoctrine()->getEntityManager();
+    $em = $this->getDoctrine()->getEntityManager();
 		$connection = $em->getConnection();
-		
+
 		switch($op){
 		    case 'extendfee':
 		        $memberid = $request->query->get('id', 0);
@@ -231,7 +231,7 @@ class CustomerController extends BaseController{
 		                    $day_price = (int)($current_package['price'] / $current_package['maxdays']);
 		                $data['v'] = $extend_days * $day_price;
 		            }
-		            
+
 		        }
 		        break;
 			case 'memberpackage':
@@ -239,16 +239,47 @@ class CustomerController extends BaseController{
 				$memberid = $request->query->get('id', 0);
 				$data['m'] = $action;
 				if('extend' == $action){
-				    
+
 		            $newdate = $request->request->get('effto_extend');
 		            $amount = $formbuilder->getNum($request->request->get('price_extend'));
 		            $validation = $this->get('app.validation');
 		            $validation->extendMemberPackage($memberid, $newdate, $amount);
 		            $data['m'] = 'Đã cập nhật gia hạn tạm thời';
 				}
+        // Gia han goi
 				if ('renew' == $action){
-				    // Gia han goi
-				    
+          $memberid = $request->query->get('id', 0);
+          $validation = $this->get('app.validation');
+          $services = $this->get('app.services');
+          // Get current member_package
+          $statement = $connection->prepare("SELECT * FROM `member_package` WHERE memberid=:memberid AND active=1");
+          $statement->bindParam(':memberid', $memberid);
+          $statement->execute();
+          $rows = $statement->fetchAll();
+				  $member_package = $rows[0];
+          $package = $validation->getMemberPackage($memberid);
+          // Close current package
+          $newdate = $_POST['efffrom_renew'];
+          $effto = (int) ($newdate-86400);
+          $statement = $connection->prepare("UPDATE `member_package` SET active=0, effto=:effto WHERE active = 1 AND memberid=:memberid");
+          $statement->bindParam(':effto', $effto);
+          $statement->bindParam(':memberid', $memberid);
+          $statement->execute();
+          // Add new package
+          $member_package['efffrom'] = $_POST['efffrom_renew'];
+          $member_package['effto'] = $_POST['efffrom_renew'];
+          unset($member_package['id']);
+          $connection->insert('member_package', $member_package);
+          // Update customer activity
+          $log = array(
+             'memberid' => $memberid,
+             'code' => 'giahan',
+             'oldvalue' => $package['packagename'],
+             'newvalue' => $package['packagename'],
+             'createdtime' => time(),
+             'amount' => NULL,
+          );
+          $connection->insert('customer_activity', $log);
 				}
 				if ('change' == $action){
 				    // Doi goi
@@ -258,7 +289,7 @@ class CustomerController extends BaseController{
                         $current_package = $validation->getMemberPackage($memberid);
     					foreach ($dataObj as $table => $postdata){
     						if ($postdata){
-    						    // Disable current package    						    
+    						    // Disable current package
                                 $validation->closedMemberPackage($memberid);
     							$postdata['memberid'] = $memberid;
     							$data['v'] = $connection->insert($table, $postdata);
@@ -300,9 +331,9 @@ class CustomerController extends BaseController{
     					}
     					$data['m'] = 'Thêm thành công';
 			        }
-					
+
 				}
-				
+
 				break;
 			case 'create':
 				$dataObj = $formbuilder->PrepareInsert($_POST, 'customerform');
@@ -327,7 +358,7 @@ class CustomerController extends BaseController{
 					$data['m'] = 'Cập nhật thành công';
 				}
 				break;
-			
+
 			case 'deactivate':
 				$id = $request->request->get('id', 0);
 				if ($id < 1) throw $this->createAccessDeniedException('Invalid parameters');
@@ -361,13 +392,13 @@ class CustomerController extends BaseController{
 						$ret[] = $tmp;
 					}
 					$data = $ret;
-				}				
-				
+				}
+
 				break;
 			default:
 				throw $this->createAccessDeniedException('Invalid operator');
 		}
-		
+
 		$response = new Response(
 			json_encode($data),
 			Response::HTTP_OK,
@@ -375,5 +406,5 @@ class CustomerController extends BaseController{
 		);
 		return $response;
 	}
-    
+
 }

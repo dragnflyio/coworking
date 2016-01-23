@@ -100,4 +100,23 @@ class Services{
     }
     return $members;
   }
+
+  /**
+   * Get package by package id
+   *
+   * @param int $packageid
+   *
+   * @return array $package
+   */
+  function loadPackage($packageid) {
+    $statement = $this->em->prepare("SELECT memberid FROM `package` WHERE id=:packageid");
+    $statement->bindParam(':packageid', $packageid);
+    $statement->execute();
+    $rows = $statement->fetchAll();
+    if (!empty($row)) {
+      return $row[0];
+    } else {
+      return $row;
+    }
+  }
 }
