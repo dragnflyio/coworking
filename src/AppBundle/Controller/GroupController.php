@@ -418,7 +418,7 @@ class GroupController extends Controller
     $services = $this->get('app.services');
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
-    $group = $connection->fetchAssoc('SELECT name FROM groups WHERE id=?', array($id));
+    $group = $connection->fetchAssoc('SELECT * FROM groups WHERE id=?', array($id));
     if (empty ($group)) throw $this->createNotFoundException('Không tìm thấy nhóm.');
     // get active package?
     $row = $connection->fetchAssoc('SELECT packageid FROM group_package WHERE active=1 AND groupid=?', array($id));
@@ -487,8 +487,8 @@ class GroupController extends Controller
         $log = array(
           'memberid' => $groupid,
           'code' => 'giahan',
-          'oldvalue' => $package['packagename'],
-          'newvalue' => $package['packagename'],
+          'oldvalue' => $package['name'],
+          'newvalue' => $package['name'],
           'createdtime' => time(),
           'amount' => NULL,
         );
@@ -497,7 +497,7 @@ class GroupController extends Controller
         break;
 
       case 'change':
-        if ($memberid){
+        if ($groupid){
           $validation = $this->get('app.validation');
           $dataObj = $formbuilder->PrepareInsert($_POST, 'group_package', 'change_');
           $group_package_current = $services->getPackageGroupUsing($groupid);
@@ -508,15 +508,20 @@ class GroupController extends Controller
               $postdata['groupid'] = $groupid;
               $data['v'] = $connection->insert($table, $postdata);
               // Log activity
+              $used_minutes = $services->getUsedHoursInGroup($group_package_current['id']);
+              // Get current package
+              $fee = $group_package_current['price'] / ($group_package_current['maxhours'] * 60) * $used_minutes;
+              // so du
+              $remain = $group_package_current['price'] - $fee;
               $log = array(
                 'groupid' => $groupid,
                 'code' => 'changepackage',
                 'oldvalue' => $group_package_current['packageid'],
                 'newvalue' => $postdata['packageid'],
                 'createdtime' => time(),
-                'amount' => (int)$current_package['remain']
+                'amount' => (int)$remain,
               );
-              $data['v'] = $connection->insert('customer_activity', $log);
+              $data['v'] = $connection->insert('group_activity', $log);
             }
           }
           $data['m'] = 'Đổi gói thành công';
