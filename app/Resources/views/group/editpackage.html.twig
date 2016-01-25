@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-Thay đổi dịch vụ cho khách khách hàng
+Toong - Thay đổi dịch vụ cho nhóm
 {% endblock %}
 {% block stylesheets %}
 <style>
@@ -107,7 +107,7 @@ Thay đổi dịch vụ cho khách khách hàng
           <div class="center-block width200">
             {% if false == error %}<a class="btn btn-primary" href="#" id="btnsave"> Save </a>
             {% endif %}
-            <a class="btn btn-default" href="{{ path('list_customer')}}" id="btnback"> Back </a>
+            <a class="btn btn-default" href="{{ path('group_list')}}" id="btnback"> Back </a>
           </div>
         </div>
       </div>
@@ -117,10 +117,24 @@ Thay đổi dịch vụ cho khách khách hàng
 {% endblock %}
 {% block javascripts %}
   <script>
+    /*validation['efffrom_renew'] = {jsfunction:function(){
+      if (cakefffrom_renew.get() < 1){
+        return "Chọn ngày kết thúc"
+      }
+      if (cakeffto_renew.get() <= cakefffrom_renew.get()) return "Ngày hết hạn không nhỏ hơn ngày bắt đầu";
+      return '';
+    }};*/
+    /*validation['effto_extend'] = {jsfunction:function(){
+      if (cakeffto_extend.get() < 1){
+        return "Chọn ngày kết thúc"
+      }
+      return '';
+    }};*/
     jQuery(function(){
       {{script|raw}}
       {{script_change|raw}}
 
+      cakeffto_extend = new Geekutil.Cal("effto_extend",true,'',0);
       cakefffrom_renew = new Geekutil.Cal("efffrom_renew",true,'',0);
       cakeffto_renew = new Geekutil.Cal("effto_renew",true,'',0);
 

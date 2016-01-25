@@ -119,4 +119,50 @@ class Services{
       return $rows;
     }
   }
+
+  /**
+   * Get package active which group is using.
+   *
+   * @param int $groupid
+   *
+   * @return array $package
+   */
+  function getPackageGroupUsing($groupid){
+    $statement = $this->em->prepare("SELECT * FROM `group_package` WHERE groupid=:groupid AND active = 1");
+    $statement->bindParam(':groupid', $groupid);
+    $statement->execute();
+    $rows = $statement->fetchAll();
+    if (!empty($rows)) {
+      return $rows[0];
+    } else {
+      return $rows;
+    }
+  }
+
+  /**
+   * Close package which group is using
+   *
+   * @param int $groupid
+   */
+  function closedGroupPackage($groupid){
+    $count = $this->em->executeUpdate('UPDATE group_package SET active = 0 WHERE active = 1 AND groupid = ?', array($groupid));
+    return $count;
+  }
+
+  /**
+   * Get used hours of group in a package
+   * @return used hours in minutes
+   */
+  function getUsedHoursInGroup($group_packageid){
+    $retval = 0;
+    $log = $this->em->fetchAll('SELECT checkin, checkout FROM customer_timelog WHERE isvisitor = 0 AND grouppackageid = ?', array($group_packageid));
+    if ($log){
+      foreach($log as $check){
+        if ($check['checkout']){
+          $retval += max(0, $check['checkout'] - $check['checkin']) / 60;// Convert second to minute
+        }
+      }
+    }
+    return $retval;
+  }
 }

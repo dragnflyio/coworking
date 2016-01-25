@@ -99,6 +99,7 @@ class GroupController extends Controller
    */
   public function searchAction(){
     $formbuilder = $this->get('app.formbuilder');
+    $services = $this->get('app.services');
     $grp = $this->getGroupSearchForm();
     $searchData = $formbuilder->GetSearchData($_POST, $grp);
     $filters = $this->getWhereUserSearchCondition($searchData);
@@ -113,6 +114,7 @@ class GroupController extends Controller
       $data['empty'] = 'Không tìm thấy bản ghi nào';
     } else {
       foreach ($all_rows as $row){
+        $packageid = $services->getPackageGroupUsing($row['id']);
         $tmp = array(
           'id' => $row['id'],
           'idx' => ++$idx,
@@ -123,6 +125,7 @@ class GroupController extends Controller
           'taxaddress' => $row['taxaddress'],
           'description' => $row['description'],
           'members' => $row['members'],
+          'packageid' => $packageid,
         );
         $ret[] = $tmp;
       }
@@ -369,7 +372,7 @@ class GroupController extends Controller
       $tmp = $msg;
       $error = true;
     } else {
-      $tmp = $formbuilder->GenerateLayout('memberpackage');
+      $tmp = $formbuilder->GenerateLayout('group_package');
     }
     return $this->render('group/addpackage.html.twig', [
       'form' => $tmp,
@@ -444,15 +447,20 @@ class GroupController extends Controller
    * @Route("/edit-package/ajax", name = "group_edit_package_ajax")
    */
   public function editPackageAjaxAction(Request $request){
+    $formbuilder = $this->get('app.formbuilder');
     $em = $this->getDoctrine()->getEntityManager();
+    $validation = $this->get('app.validation');
+    $services = $this->get('app.services');
     $connection = $em->getConnection();
     $action = $request->query->get('action');
     $groupid = $request->query->get('id', 0);
     $data = array();
     switch ($action) {
       case 'extend':
-
-        # code...
+        $newdate = $request->request->get('effto_extend');
+        $amount = $formbuilder->getNum($request->request->get('price_extend'));
+        $validation->extendGroupPackage($groupid, $newdate, $amount);
+        $data['m'] = 'Đã cập nhật gia hạn tạm thời';
         break;
 
       case 'renew':
@@ -462,6 +470,7 @@ class GroupController extends Controller
         $statement->execute();
         $rows = $statement->fetchAll();
         $group_package = $rows[0];
+        $package = $services->loadPackage($group_package['packageid']);
         // Close current package
         $newdate = $_POST['efffrom_renew'];
         $effto = (int) ($newdate-86400);
@@ -475,20 +484,43 @@ class GroupController extends Controller
         unset($group_package['id']);
         $connection->insert('group_package', $group_package);
         // Update customer activity
-        /*$log = array(
-          'memberid' => $memberid,
+        $log = array(
+          'memberid' => $groupid,
           'code' => 'giahan',
           'oldvalue' => $package['packagename'],
           'newvalue' => $package['packagename'],
           'createdtime' => time(),
           'amount' => NULL,
         );
-        $connection->insert('customer_activity', $log);*/
+        $connection->insert('customer_activity', $log);
         $data['m'] = 'Gia hạn gói thành công';
         break;
 
       case 'change':
-        #code...
+        if ($memberid){
+          $validation = $this->get('app.validation');
+          $dataObj = $formbuilder->PrepareInsert($_POST, 'group_package', 'change_');
+          $group_package_current = $services->getPackageGroupUsing($groupid);
+          foreach ($dataObj as $table => $postdata){
+            if ($postdata){
+              // Disable current package
+              $services->closedGroupPackage($groupid);
+              $postdata['groupid'] = $groupid;
+              $data['v'] = $connection->insert($table, $postdata);
+              // Log activity
+              $log = array(
+                'groupid' => $groupid,
+                'code' => 'changepackage',
+                'oldvalue' => $group_package_current['packageid'],
+                'newvalue' => $postdata['packageid'],
+                'createdtime' => time(),
+                'amount' => (int)$current_package['remain']
+              );
+              $data['v'] = $connection->insert('customer_activity', $log);
+            }
+          }
+          $data['m'] = 'Đổi gói thành công';
+        }
         break;
     }
     $response = new Response(

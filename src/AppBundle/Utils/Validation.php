@@ -54,7 +54,7 @@ class Validation{
 		        $diff = max(0, $today - $row['efffrom'])/ 86400;// convert second to day
 		        $fee = $row['price'] / $row['maxdays'] * $diff;
 		        // so du
-	            $row['remain'] = $row['price'] - $fee;		        
+	            $row['remain'] = $row['price'] - $fee;
 		    }
 			$ret = $row;
 		}
@@ -91,8 +91,30 @@ class Validation{
 	        );
 	        $this->em->insert('customer_activity', $log);
 	    }
-	    
+
 	}
+
+	/**
+   * Extend package for a group.
+	 */
+	function extendGroupPackage($groupid, $extend_day, $amount){
+		$effto = $this->em->fetchAssoc('SELECT effto FROM group_package WHERE groupid = ? AND 1 = active', array($groupid));
+    if (!empty($effto)){
+      // extend
+      $this->em->executeUpdate('UPDATE group_package SET efftoextend = ? WHERE active = 1 AND groupid = ?', array($extend_day, $groupid));
+      // log activity
+      $log = array(
+        'groupid' => $groupid,
+        'code' => 'giahantam',
+        'oldvalue' => $effto['effto'],
+        'newvalue' => $extend_day,
+        'createdtime' => time(),
+        'amount' => (int)$amount
+      );
+      $this->em->insert('group_activity', $log);
+    }
+	}
+
 	/**
 	 * Closed current active package if it has
 	 */
