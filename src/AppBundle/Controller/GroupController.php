@@ -408,6 +408,98 @@ class GroupController extends Controller
   }
 
   /**
+   * @Route("/editpackage/{id}", name = "group_edit_package", requirements={"id" = "\d+"})
+   */
+  public function editPackageFormAction($id){
+    $formbuilder = $this->get('app.formbuilder');
+    $services = $this->get('app.services');
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    $group = $connection->fetchAssoc('SELECT name FROM groups WHERE id=?', array($id));
+    if (empty ($group)) throw $this->createNotFoundException('Không tìm thấy nhóm.');
+    // get active package?
+    $row = $connection->fetchAssoc('SELECT packageid FROM group_package WHERE active=1 AND groupid=?', array($id));
+    if (empty ($row)) throw $this->createNotFoundException('Nhóm này chưa dùng gói nào, bạn cần thêm gói dịch vụ trước.');
+    $current_package = $services->loadPackage($row['packageid']);
+    $error = false;
+    $form_update = $formbuilder->GenerateLayout('group_package', "col_name NOT IN ('packageid','efffrom', 'effto')");
+    $script_update = $formbuilder->mscript;
+
+    $form_change = $formbuilder->GenerateLayout('group_package','','change_');
+    $script_change = $formbuilder->mscript;
+
+    return $this->render('group/editpackage.html.twig', [
+      'error' => $error,
+      'form' => $form_update,
+      'form_change' => $form_change,
+      'group' => $group,
+      'package' => $current_package,
+      'groupid' => $id,
+      'script' => $script_update,
+      'script_change' => $script_change
+    ]);
+  }
+
+  /**
+   * @Route("/edit-package/ajax", name = "group_edit_package_ajax")
+   */
+  public function editPackageAjaxAction(Request $request){
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    $action = $request->query->get('action');
+    $groupid = $request->query->get('id', 0);
+    $data = array();
+    switch ($action) {
+      case 'extend':
+
+        # code...
+        break;
+
+      case 'renew':
+        // Get current package
+        $statement = $connection->prepare("SELECT * FROM `group_package` WHERE groupid=:groupid AND active=1");
+        $statement->bindParam(':groupid', $groupid);
+        $statement->execute();
+        $rows = $statement->fetchAll();
+        $group_package = $rows[0];
+        // Close current package
+        $newdate = $_POST['efffrom_renew'];
+        $effto = (int) ($newdate-86400);
+        $statement = $connection->prepare("UPDATE `group_package` SET active=0, effto=:effto WHERE active = 1 AND groupid=:groupid");
+        $statement->bindParam(':effto', $effto);
+        $statement->bindParam(':groupid', $groupid);
+        $statement->execute();
+        // Add new package for group
+        $group_package['efffrom'] = $_POST['efffrom_renew'];
+        $group_package['effto'] = $_POST['effto_renew'];
+        unset($group_package['id']);
+        $connection->insert('group_package', $group_package);
+        // Update customer activity
+        /*$log = array(
+          'memberid' => $memberid,
+          'code' => 'giahan',
+          'oldvalue' => $package['packagename'],
+          'newvalue' => $package['packagename'],
+          'createdtime' => time(),
+          'amount' => NULL,
+        );
+        $connection->insert('customer_activity', $log);*/
+        $data['m'] = 'Gia hạn gói thành công';
+        break;
+
+      case 'change':
+        #code...
+        break;
+    }
+    $response = new Response(
+      json_encode($data),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
+
+  /**
    * Build search group.
    *
    * @return array $retval

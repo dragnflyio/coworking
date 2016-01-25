@@ -109,14 +109,14 @@ class Services{
    * @return array $package
    */
   function loadPackage($packageid) {
-    $statement = $this->em->prepare("SELECT memberid FROM `package` WHERE id=:packageid");
+    $statement = $this->em->prepare("SELECT * FROM `package` WHERE id=:packageid");
     $statement->bindParam(':packageid', $packageid);
     $statement->execute();
     $rows = $statement->fetchAll();
-    if (!empty($row)) {
-      return $row[0];
+    if (!empty($rows)) {
+      return $rows[0];
     } else {
-      return $row;
+      return $rows;
     }
   }
 }

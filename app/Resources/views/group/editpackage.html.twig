@@ -1,0 +1,146 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+Thay đổi dịch vụ cho khách khách hàng
+{% endblock %}
+{% block stylesheets %}
+<style>
+.pkg-form{
+  display:none;
+}
+</style>
+{% endblock %}
+{% block body %}
+<div id="wrapper">
+
+   <div class="container">
+      <div class="row">
+          <div class="col-md-12">
+            <h2>Thay đổi dịch vụ</h2>
+            <h3>Nhóm: {{group['name']}}</h3>
+            <h3>Dịch vụ đang dùng: {{package['name']}}</h3>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <a class="btn btn-info btn-pkg hidden" data-action="edit">Sửa thông tin</a>
+          <a class="btn btn-info btn-pkg" data-action="extend">Gia hạn tạm thời</a>
+          <a class="btn btn-info btn-pkg" data-action="renew">Gia hạn gói</a>
+          <a class="btn btn-info btn-pkg" data-action="change">Đổi gói</a>
+        </div>
+      </div>
+      <div class="height20"></div>
+      <div class="row pkg-form pkg-form-edit">
+        <div class="col-md-12">
+          {{ form|raw}}
+        </div>
+      </div>
+
+      <div class="row pkg-form pkg-form-extend">
+        <div class="col-md-12">
+          <form class="form-horizontal " method="post">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group ">
+                  <label class="control-label text-nowrap col-md-2">Tính phí?</label>
+                  <div class="col-md-4">
+                    <div>
+                      <label class="radio-inline"><input type="radio" name="tinhphi" value="1">Có</label>
+                      <label class="radio-inline"><input type="radio" name="tinhphi" value="2">Không</label>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control numeric" id="price_extend" name="price_extend" value="">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group ">
+                  <label for="effto_extend_d" class="control-label text-nowrap col-md-2">Gia hạn đến</label>
+                  <div class="col-md-10">
+                    <input type="text" placeholder="day/month/year" autocomplete="off" id="effto_extend_d" name="effto_extend_d" class="form-control col-md-9" maxlength="10">
+                    <input t="d" type="hidden" id="effto_extend" name="effto_extend"><span class="help-inline"><i class="glyphicon glyphicon-calendar click" id="effto_extend_i"></i><i id="effto_extend_r" class="glyphicon glyphicon-erase click"></i></span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row pkg-form pkg-form-renew">
+        <div class="col-md-12">
+          <form class="form-horizontal " method="post">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group ">
+                  <label for="efffrom_renew_d" class="control-label text-nowrap col-md-2">Bắt đầu</label>
+                  <div class="col-md-10">
+                    <input type="text" placeholder="day/month/year" autocomplete="off" id="efffrom_renew_d" name="efffrom_renew_d" class="form-control col-md-9" maxlength="10">
+                    <input t="d" type="hidden" id="efffrom_renew" name="efffrom_renew"><span class="help-inline"><i class="glyphicon glyphicon-calendar click" id="efffrom_renew_i"></i><i id="efffrom_renew_r" class="glyphicon glyphicon-erase click"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group ">
+                  <label for="effto_renew_d" class="control-label text-nowrap col-md-2">Hết hạn</label>
+                  <div class="col-md-10">
+                    <input type="text" placeholder="day/month/year" autocomplete="off" id="effto_renew_d" name="effto_renew_d" class="form-control col-md-9" maxlength="10">
+                    <input t="d" type="hidden" id="effto_renew" name="effto_renew"><span class="help-inline"><i class="glyphicon glyphicon-calendar click" id="effto_renew_i"></i><i id="effto_renew_r" class="glyphicon glyphicon-erase click"></i></span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row pkg-form pkg-form-change">
+        <div class="col-md-12">
+        <!-- Số dư: <span id="balance">{{package['name']}}</span> VND -->
+        </div>
+        <div class="col-md-12">
+          {{ form_change|raw}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="center-block width200">
+            {% if false == error %}<a class="btn btn-primary" href="#" id="btnsave"> Save </a>
+            {% endif %}
+            <a class="btn btn-default" href="{{ path('list_customer')}}" id="btnback"> Back </a>
+          </div>
+        </div>
+      </div>
+
+   </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+  <script>
+    jQuery(function(){
+      {{script|raw}}
+      {{script_change|raw}}
+
+      cakefffrom_renew = new Geekutil.Cal("efffrom_renew",true,'',0);
+      cakeffto_renew = new Geekutil.Cal("effto_renew",true,'',0);
+
+      $('.btn-pkg').click(function(e){
+        $('.pkg-form').hide();
+        $('.btn-pkg').removeClass('btn-selected');
+        $(this).addClass('btn-selected');
+        var action = $(this).data('action');
+        $('.pkg-form-' + action).show();
+      });
+
+      // Save
+      $('#btnsave').click(function(e){
+        e.preventDefault();
+        var action = $('.btn-selected').data('action');
+        var $action = $('.pkg-form-' + action);
+        beforePost() && ajaxPost('/group/edit-package/ajax?id={{groupid}}&action='+action, $action.find('form').serialize(), function(d){
+
+        })
+      });
+    })
+  </script>
+{% endblock %}

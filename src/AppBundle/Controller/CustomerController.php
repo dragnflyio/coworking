@@ -267,17 +267,17 @@ class CustomerController extends BaseController{
           $statement->execute();
           // Add new package
           $member_package['efffrom'] = $_POST['efffrom_renew'];
-          $member_package['effto'] = $_POST['efffrom_renew'];
+          $member_package['effto'] = $_POST['effto_renew'];
           unset($member_package['id']);
           $connection->insert('member_package', $member_package);
           // Update customer activity
           $log = array(
-             'memberid' => $memberid,
-             'code' => 'giahan',
-             'oldvalue' => $package['packagename'],
-             'newvalue' => $package['packagename'],
-             'createdtime' => time(),
-             'amount' => NULL,
+            'memberid' => $memberid,
+            'code' => 'giahan',
+            'oldvalue' => $package['packagename'],
+            'newvalue' => $package['packagename'],
+            'createdtime' => time(),
+            'amount' => NULL,
           );
           $connection->insert('customer_activity', $log);
 				}
