@@ -240,7 +240,7 @@ class CheckingController extends Controller
     $data['packagename'] = $package['name'];
     $data['maxhours'] = $package['maxhours'];
     $data['maxdays'] = $package['maxdays'];
-    $data['price_hour'] = $package['price'] / $package['maxhours'];
+    $data['price_hour'] = 0 < $package['maxhours'] ? $package['price'] / $package['maxhours'] : 0;
     // Get effective from datetime start using package
     $statement = $connection->prepare("SELECT efffrom FROM `member_package`
     WHERE memberid=:memberid and active=1 and packageid=:packageid");
