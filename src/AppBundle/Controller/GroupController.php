@@ -224,8 +224,9 @@ class GroupController extends Controller
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
     foreach ($members as $mid) {
-      $statement = $connection->prepare("SELECT * FROM group_member where memberid =:memberid ");
+      $statement = $connection->prepare("SELECT * FROM group_member where memberid =:memberid AND groupid=:groupid");
       $statement->bindParam(':memberid', $mid);
+      $statement->bindParam(':groupid', $gid);
       $statement->execute();
       $rows = $statement->fetchAll();
       if (!empty($rows)) {
