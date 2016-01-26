@@ -240,6 +240,8 @@ class GroupController extends Controller
       $statement->execute();
     }
     $data['m'] = 'Đã thêm thành viên vào nhóm!';
+    $data['rdr'] = $this->generateUrl('group_list');
+
     $response = new Response(
       json_encode($data),
       Response::HTTP_OK,
@@ -253,12 +255,13 @@ class GroupController extends Controller
    *
    * Get members not in any groups.
    */
-  public function memberJsonNotInGroupAction(){
+  public function memberJsonNotInGroupAction(Request $request){
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
     $statement = $connection->prepare("SELECT memberid FROM group_member where isdeleted = 0");
     $statement->execute();
     $rows = $statement->fetchAll();
+    $txt_search = $request->query->get('search');
     // Statement with members table.
     if (empty($rows)) {
       $statement2 = $connection->prepare("SELECT * FROM member");
@@ -269,7 +272,9 @@ class GroupController extends Controller
         $mids[] = $value['memberid'];
       }
       $membersInGroup = implode(', ', $mids);
-      $statement2 = $connection->prepare("SELECT * FROM member WHERE id NOT IN ($membersInGroup) ");
+      $statement2 = $connection->prepare("SELECT * FROM member WHERE id NOT IN ($membersInGroup) AND name LIKE :name LIMIT 30");
+      $txt_search = "%" . $txt_search . "%";
+      $statement2->bindParam(':name', $txt_search);
     }
     $statement2->execute();
     $rows2 = $statement2->fetchAll();

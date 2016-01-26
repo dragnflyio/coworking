@@ -1,0 +1,90 @@
+{% extends "::base.html.twig" %}
+{% block title %}Toong - Phòng họp{% endblock %}
+{% block body %}
+  <div class = "container">
+    <div class = "row">
+      <div class = "col-md-12">
+        <h1 class = "page-title">Danh sách phòng họp</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <form class="form-horizontal" method="post" id="f_roomsearch">
+          {{form|raw}}
+        </form>
+      </div>
+      <div class="col-md-12">
+        <div class="center-block width200">
+          <a class="btn btn-info" href="#" id="btnsearch"> Tìm kiếm </a>
+        </div>
+      </div>
+    </div>
+    <div class="row"><div class="height20"></div></div>
+    <div class = "row">
+      <div class = "col-md-12">
+        <table class = "table table-bordered">
+          <thead>
+            <th>#</th>
+            <th>Tên phòng</th>
+            <th>Mã</th>
+            <th>Ghi chú</th>
+            <th>Loại</th>
+            <th>Trạng thái</th>
+            <th></th>
+          </thead>
+          <tbody id = "list-room">
+            <th colspan="7" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+  <script id="template_table" type="text/x-handlebars-template">
+    <%#list%>
+      <tr>
+      <th><%idx%></th>
+      <td><%name%></td>
+      <td><%code%></td>
+      <td><%note%></td>
+      <td><%type%></td>
+      <td><%status%></td>
+      <td>
+        <a href="/room/<%id%>/edit">Sửa</a>
+      </td>
+      </tr>
+    <%/list%>
+  </script>
+
+  <script>
+
+  </script>
+
+  <script src="{{asset ('js/handlebars.min.js')}}"></script>
+  <script>
+    jQuery(function(){
+
+      // Search room
+      function doSearch(){
+        ajaxPost('/room/search', $('#f_roomsearch').serialize(), function(data){
+          if (!data.empty){
+            console.log(data);
+            $('#list-room').html(mr( $('#template_table').html(), {list:data}))
+          } else {
+            $('#list-room').html('<tr><th colspan="6" scope="row" class="text-center">'+ data.empty + '</th></tr>');
+          }
+        });
+      }
+
+      doSearch();
+
+      $('#btnsearch').click(function(e){
+        e.preventDefault();
+        $('#list-room').html('<tr><th colspan="7" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
+        doSearch();
+      })
+    })
+  </script>
+{% endblock %}
+
