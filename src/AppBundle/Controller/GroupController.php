@@ -188,17 +188,26 @@ class GroupController extends Controller
   }
 
   /**
-   * @Route("/add-member", name = "group_add_member_form")
+   * @Route("/{id}/add-member", name = "group_add_member_form", requirements={"id" = "\d+"})
    *
    * Render form for user add member into group
    */
-  public function addmemberformAction(){
+  public function addmemberformAction($id){
     $formbuilder = $this->get('app.formbuilder');
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT * FROM `groups` WHERE 1=status AND id =:id");
+    $statement->bindParam(':id', $id);
+    $statement->execute();
+    $rows = $statement->fetchAll();
+    if (empty ($rows)) throw $this->createNotFoundException('Không tìm thấy nhóm!');
     $tmp = $formbuilder->GenerateLayout('group_member');
     return $this->render('group/formaddmember.html.twig', [
       'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
       'form' => $tmp,
-      'script' => $formbuilder->mscript
+      'script' => $formbuilder->mscript,
+      'id' => $id,
+      'group' => $rows[0],
     ]);
   }
 
@@ -208,22 +217,30 @@ class GroupController extends Controller
    * Using ajax to add member into groups.
    */
   public function addmemberajaxAction(){
-    $gid = $_POST['gid'];
+    $gid = $_POST['groupid'];
     $members = $_POST['members'];
     $members = explode(',', $members);
 
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
     foreach ($members as $mid) {
-      $statement = $connection->prepare("INSERT INTO `group_member` (groupid, memberid, isdeleted)
+      $statement = $connection->prepare("SELECT * FROM group_member where memberid =:memberid ");
+      $statement->bindParam(':memberid', $mid);
+      $statement->execute();
+      $rows = $statement->fetchAll();
+      if (!empty($rows)) {
+        $statement = $connection->prepare("UPDATE group_member SET isdeleted = 0 where memberid=:mid");
+      } else {
+        $statement = $connection->prepare("INSERT INTO `group_member` (groupid, memberid, isdeleted)
       VALUES (:gid, :mid, 0)");
-      $statement->bindParam(':gid', $gid);
+        $statement->bindParam(':gid', $gid);
+      }
       $statement->bindParam(':mid', $mid);
       $statement->execute();
     }
-    $message = 'Đã thêm thành viên vào nhóm!';
+    $data['m'] = 'Đã thêm thành viên vào nhóm!';
     $response = new Response(
-      json_encode(array('message' => $message)),
+      json_encode($data),
       Response::HTTP_OK,
       array('content-type' => 'application/json')
     );
@@ -238,7 +255,7 @@ class GroupController extends Controller
   public function memberJsonNotInGroupAction(){
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT memberid FROM group_member");
+    $statement = $connection->prepare("SELECT memberid FROM group_member where isdeleted = 0");
     $statement->execute();
     $rows = $statement->fetchAll();
     // Statement with members table.
@@ -294,8 +311,8 @@ class GroupController extends Controller
    * @Route("/load-member", name = "group_load_member")
    */
   public function loadMembersInGroupAction(){
-    if (isset($_POST['gid'])) {
-      $gid = $_POST['gid'];
+    if (isset($_POST['groupid'])) {
+      $gid = $_POST['groupid'];
       $em = $this->getDoctrine()->getManager();
       $connection = $em->getConnection();
       $statement = $connection->prepare("SELECT memberid FROM group_member where groupid=:gid AND isdeleted = 0");
@@ -348,8 +365,9 @@ class GroupController extends Controller
     $statement = $connection->prepare("UPDATE group_member SET isdeleted = 1 where memberid=:id");
     $statement->bindParam(':id', $id);
     $statement->execute();
+    $data['m'] = 'Đã xóa thành viên.';
     $response = new Response(
-      json_encode(array('message')),
+      json_encode($data),
       Response::HTTP_OK,
       array('content-type' => 'application/json')
     );

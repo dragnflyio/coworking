@@ -65,9 +65,8 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'customerform', 'member', 'name', 'name', 'Tên', 'text', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 16:40:22', NULL, NULL);
 
 DELETE FROM ddfields WHERE table_name = 'group_member' AND object_name = 'group_member';
-
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
-(null, 'group_member', 'group_member', 'gid', 'gid', 'Nhóm', 'SELECT', '/group/json', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 07:59:06', NULL, NULL),
+(null, 'group_member', 'group_member', 'groupid', 'groupid', 'Nhóm', 'hidden', '', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 02:31:17', NULL, NULL),
 (null, 'group_member', 'group_member', 'members', 'members', 'Thành viên', 'TEXT_MULTI', '/group/member-json', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 07:42:23', NULL, NULL);
 
 

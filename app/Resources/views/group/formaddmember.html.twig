@@ -4,11 +4,16 @@
   <div class = "container">
     <div class="row">
       <div class="col-md-12">
-        <h1 class = "page-title">Thêm</h1>
+        <h1 class = "page-title">Thêm thành viên</h1>
       </div>
     </div>
     <div class="row">
       <div class="col-md-6">
+        <ul class="list-group">
+          <li class="list-group-item list-group-item-info">Tên nhóm: {{group['name']}}</li>
+          <li class="list-group-item list-group-item-info">Số thành viên: {{group['members']}}</li>
+          <li class="list-group-item list-group-item-info">Địa chỉ: {{group['address']}}</li>
+        </ul>
         {{ form|raw}}
         <div class="center-block width200">
           <a href = "#" class = "btn btn-primary btn-add-member">Add member</a>
@@ -54,12 +59,8 @@
   <script>
     jQuery(function(){
       // Validation form add
-      // validation['members'] = {minlength:1, message: 'Chọn ít nhất một thành viên!'};
-      validation['gid'] = {jsfunction: function(){
-        if ($('#gid').val() == -1) return "Chọn một nhóm cho thành viên!";
-        return '';
-      }};
-
+      validation['members'] = {minlength:1, message: 'Chọn ít nhất một thành viên!'};
+      $('#groupid').val({{id}});
       // Script build form
       {{script|raw}}
 
@@ -76,12 +77,12 @@
 
       // Add member into group
       function addMember(){
-        ajaxPost('/group/add-member-ajax', $('#f_group_member').serialize(), function(data){
-          alert(data['message']);
-        });
+        ajaxPost('/group/add-member-ajax', $('#f_group_member').serialize(), function(data){});
       }
 
       loadMember();
+
+      // Delete member.
       $('#list-members').click(function(e){
         var $el = $(e.target);
         if ($el.parent().hasClass('deleterow')){
@@ -93,6 +94,8 @@
         }
         return false;
       })
+
+      // Action add member
       $('.btn-add-member').click(function(e){
         e.preventDefault();
         $('#list-members').html('<tr><th colspan="6" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
