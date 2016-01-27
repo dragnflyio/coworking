@@ -63,9 +63,9 @@ class Validation{
 	/**
 	 * Get used visitor hours of a member in a package
 	 */
-	function getVisitorHours($memberid){
+	function getVisitorHours($memberpackageid){
 	  // group by day
-	  $log = $this->em->fetchAll('SELECT DATE(FROM_UNIXTIME(checkin)) AS datecheckin, checkin, checkout FROM customer_timelog WHERE isvisitor = 1 AND memberid = ? ORDER BY checkin', array($memberid));
+	  $log = $this->em->fetchAll('SELECT DATE(FROM_UNIXTIME(checkin)) AS datecheckin, checkin, checkout FROM customer_timelog WHERE 1=status AND isvisitor = 1 AND memberpackageid = ? ORDER BY checkin', array($memberpackageid));
 	  $max_hour = 3;
 	  $max_visitor = 2;
 	  $retval = $log_data = array();
@@ -84,16 +84,113 @@ class Validation{
           $all_segments[] = $check[0];
           $all_segments[] = $check[1];
         }
+        $all_segments = array_unique($all_segments);
         sort($all_segments, SORT_NUMERIC);
         $count = count($all_segments);
+        $retval[$date] = array();
         for($ii = 0; $ii < $count; $ii++){
           if ($ii < $count - 1){
             $start = $all_segments[$ii];
-            $end = $all_segments[$ii+1];
+            $end = $all_segments[$ii + 1];
+            $key = $start.'-'.$end;
+            $retval[$date][$key] = 0;
+            // Tinh tat ca cac doan thoi gian, dem so khach voi tung doan
+            foreach ($day_log as $check){
+              if($check[0] <= $start && $start <= $check[1] && $check[0] <= $end && $end <= $check[1]){
+                $retval[$date][$key]++;
+              }
+            }
           }
         }
-      }
+      }// End for log_data      
     }
+    // Summarize
+    $quota = $max_hour * $max_visitor;// quota per day
+    $date_visitor_minutes = array();
+    foreach ($retval as $date => $visitor_data){
+      $total_visitor = 0;
+      $over = $charge = 0;
+      foreach ($visitor_data as $time_range => $number_visitor){
+        $arr = explode('-', $time_range);
+        $time = ceil(((int)$arr[1] - (int)$arr[0]) / 60);
+        if ($max_visitor < $number_visitor){
+          // Vuot qua so khach cho phep
+          $total_visitor += $max_visitor * $time;
+          $over += ($number_visitor - $max_visitor) * $time;
+        } else {
+          $total_visitor += $number_visitor * $time;
+        }
+      }
+      $date_visitor_minutes[$date] = array('visit' => $total_visitor, 'over' => $over);
+    }
+    return $date_visitor_minutes;
+    // return $retval;
+	}
+	/**
+	 * Get used visitor hours of all members of a group in a package
+	 */
+	function getVisitorHoursOfGroup($grouppackageid){
+	  // group by day
+	  $log = $this->em->fetchAll('SELECT DATE(FROM_UNIXTIME(checkin)) AS datecheckin, checkin, checkout FROM customer_timelog WHERE 1=status AND isvisitor = 1 AND grouppackageid = ? ORDER BY checkin', array($grouppackageid));
+	  
+	  $retval = $log_data = array();
+    if ($log){
+      foreach($log as $check){
+        if ($check['checkout']){
+          $date = $check['datecheckin'];
+          if (false == isset($log_data[$date])) $log_data[$date] = array();
+          $log_data[$date][] = array($check['checkin'], $check['checkout']);
+        }
+      }
+      foreach ($log_data as $date => $day_log){
+        // moi ngay, tinh thoi gian visitor
+        $all_segments = array();
+        foreach ($day_log as $check){
+          $all_segments[] = $check[0];
+          $all_segments[] = $check[1];
+        }
+        $all_segments = array_unique($all_segments);
+        sort($all_segments, SORT_NUMERIC);
+        $count = count($all_segments);
+        $retval[$date] = array();
+        for($ii = 0; $ii < $count; $ii++){
+          if ($ii < $count - 1){
+            $start = $all_segments[$ii];
+            $end = $all_segments[$ii + 1];
+            $key = $start.'-'.$end;
+            $retval[$date][$key] = 0;
+            // Tinh tat ca cac doan thoi gian, dem so khach voi tung doan
+            foreach ($day_log as $check){
+              if($check[0] <= $start && $start <= $check[1] && $check[0] <= $end && $end <= $check[1]){
+                $retval[$date][$key]++;
+              }
+            }
+          }
+        }
+      }// End for log_data      
+    }
+    // Summarize
+    $group_package = $this->em->fetchAssoc('SELECT maxvisitors,visitorprice FROM group_package WHERE id = ?', array($grouppackageid));
+    $quota = (int)$group_package['maxvisitors'] * 60;// quota per day, minute x visitor
+    $over_price_visitor = (int)$group_package['visitorprice'];// price over visitor per hour
+    $date_visitor_minutes = array();
+    foreach ($retval as $date => $visitor_data){
+      $total_visitor = 0;
+      $over = $charge = 0;
+      foreach ($visitor_data as $time_range => $number_visitor){
+        $arr = explode('-', $time_range);
+        $time = ceil(((int)$arr[1] - (int)$arr[0]) / 60);        
+        $total_visitor += $number_visitor * $time;        
+      }
+      if ($quota < $total_visitor){
+        $over = $total_visitor - $quota;
+        $charge = $over * $over_price_visitor;
+      }
+      
+      $date_visitor_minutes[$date] = array('visit' => $total_visitor, 'over' => $over, 'charge' => $charge);
+    }
+    return $date_visitor_minutes;
+	  
 	}
 	/**
 	 * Get used hours of member in a package
@@ -101,7 +198,7 @@ class Validation{
 	 */
 	function getUsedHours($member_packageid){
 	    $retval = 0;
-	    $log = $this->em->fetchAll('SELECT checkin, checkout FROM customer_timelog WHERE isvisitor = 0 AND memberpackageid = ?', array($member_packageid));
+	    $log = $this->em->fetchAll('SELECT checkin, checkout FROM customer_timelog WHERE 1=status AND isvisitor = 0 AND memberpackageid = ?', array($member_packageid));
 	    if ($log){
 	        foreach($log as $check){
 	            if ($check['checkout']){

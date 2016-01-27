@@ -656,7 +656,7 @@ $.TextboxList.Autocomplete = function(textboxlist, _options){
 		//Reach to maximum allowed number of values?
 		var x = textboxlist.getOptions().max;
 		if(x && x <= textboxlist.getValues().length) return;
-		if ((options.queryRemote && txtsearch.length<3) || txtsearch.length < options.minLength) return;
+		if ((options.queryRemote && txtsearch.length<2) || txtsearch.length < options.minLength) return;
 		if (options.queryRemote){
 			if (searchValues[txtsearch]){
 				values = searchValues[txtsearch];

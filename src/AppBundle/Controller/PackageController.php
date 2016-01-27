@@ -20,6 +20,7 @@ class PackageController extends BaseController{
      */
     public function listAction(Request $request){
 		$formbuilder = $this->get('app.formbuilder');
+		$validation = $this->get('app.validation');
 		$grp = $this->getPackageSearchForm();
 
 		$form = $formbuilder->GenerateManualSearchControls($grp);
