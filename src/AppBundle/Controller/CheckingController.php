@@ -256,6 +256,7 @@ class CheckingController extends Controller
       $statement->bindParam(':packageid', $package['id']);
       $statement->execute();
       $group_package = $statement->fetchAll();
+      if (empty($group_package)) throw $this->createNotFoundException('Thành viên thuộc nhóm không dùng gói nào.');
       $efffrom = $group_package[0]['efffrom'];
       $members = $services->getMembersInGroup($group['groupid']);
     } else {
@@ -293,7 +294,84 @@ class CheckingController extends Controller
     $data['money'] = $totalHoursOver * $data['price_hour']/60;
     $data['logs'] = $logs;
     $data['efffrom'] = $efffrom;
+    $data['memberid'] = $id;
     return $this->render('checking/customerhistory.html.twig', [
+      'data' => $data,
+    ]);
+  }
+
+  /**
+   * @Route("/customer/{id}/print-history", name = "customer_print_history")
+   */
+  public function printHistoryAction($id){
+    $services = $this->get('app.services');
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT name, phone FROM `member` WHERE id=:id and active=1");
+    $statement->bindParam(':id', $id);
+    $statement->execute();
+    $member = $statement->fetchAll();
+    $data = array();
+    if (empty($member)) throw $this->createNotFoundException('Không tìm thấy thành viên hoặc thành viên này ngừng hoạt động.');
+    $data['name'] = $member[0]['name'];
+    $data['phone'] = $member[0]['phone'];
+    // Get package.
+    $package = $services->getPackageByMemberId($id);
+    $data['packagename'] = $package['name'];
+    $data['maxhours'] = $package['maxhours'];
+    $data['maxdays'] = $package['maxdays'];
+    $data['price_hour'] = 0 < $package['maxhours'] ? $package['price'] / $package['maxhours'] : 0;
+    // Get effective from datetime start using package
+    $statement = $connection->prepare("SELECT efffrom FROM `member_package`
+    WHERE memberid=:memberid and active=1 and packageid=:packageid");
+    $statement->bindParam(':memberid', $id);
+    $statement->bindParam(':packageid', $package['id']);
+    $statement->execute();
+    $member_package = $statement->fetchAll();
+    if (empty($member_package)) {
+      $group = $services->getGroupByMemberId($id);
+      $statement = $connection->prepare("SELECT efffrom FROM `group_package`
+      WHERE groupid=:groupid and active=1 and packageid=:packageid");
+      $statement->bindParam(':groupid', $group['groupid']);
+      $statement->bindParam(':packageid', $package['id']);
+      $statement->execute();
+      $group_package = $statement->fetchAll();
+      if (empty($group_package)) throw $this->createNotFoundException('Thành viên thuộc nhóm không dùng gói nào.');
+      $efffrom = $group_package[0]['efffrom'];
+      $members = $services->getMembersInGroup($group['groupid']);
+    } else {
+      $members = array($id);
+      $efffrom = $member_package[0]['efffrom'];
+    }
+    // Get total hour is used.
+    $tmp = implode(', ', $members);
+    $statement = $connection->prepare("SELECT * FROM `customer_timelog`
+    WHERE memberid IN ($tmp) AND $efffrom <= checkin  AND visitorname IS NULL");//Why dont use isvisitor
+    $statement->execute();
+    $timelogs = $statement->fetchAll();
+    $totalMinutes = null;
+    $idx = 0;
+    foreach ($timelogs as $timelog) {
+      if (null == $timelog['checkout']) {
+        $current_log = ceil((time() - $timelog['checkin']) / 60);
+        $totalMinutes += $current_log;
+      } else {
+        $totalMinutes += $timelog['visitedhours'];
+      }
+    }
+    $totalHours = ceil($totalMinutes/60);// Need to calculate by minutes
+    // if ($totalHours > $package['maxhours']) {
+    if ($totalMinutes > 60*$package['maxhours']) {
+      // $totalHoursOver = abs($package['maxhours'] - $totalHours);
+      $totalHoursOver = abs($package['maxhours']*60 - $totalMinutes);
+    } else {
+      $totalHoursOver = 0;
+    }
+    $data['totalhours'] = $totalMinutes;
+    $data['totalhoursover'] = $totalHoursOver;
+    $data['money'] = $totalHoursOver * $data['price_hour']/60;
+    $data['efffrom'] = $efffrom;
+    return $this->render('checking/print.html.twig', [
       'data' => $data,
     ]);
   }
@@ -395,10 +473,13 @@ class CheckingController extends Controller
   /**
    * @Route("/get-members", name = "get_members")
    */
-  public function getMembersAction(){
+  public function getMembersAction(Request $request){
+    $txt_search = $request->query->get('search');
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `member` WHERE active = 1");
+    $statement = $connection->prepare("SELECT * FROM `member` WHERE active = 1 AND name like :name");
+    $txt_search = "%" . $txt_search . "%";
+    $statement->bindParam(':name', $txt_search);
     $statement->execute();
     $rows = $statement->fetchAll();
     $members = array();
@@ -434,7 +515,7 @@ class CheckingController extends Controller
     $row['pos'] = array('row' => 2, 'col' => 0);
     $row['colname'] = 'memberid';
     $row['pop'] = 'M';
-    $row['ds'] = '/get-members';
+    $row['ds'] = '@/get-members';
     $row['value_maxlength'] = 1;
     $retval[] = $row;
     return $retval;

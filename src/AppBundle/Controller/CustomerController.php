@@ -260,9 +260,9 @@ class CustomerController extends BaseController{
           $package = $validation->getMemberPackage($memberid);
           // Close current package
           $newdate = $_POST['efffrom_renew'];
-          $effto = (int) ($newdate-86400);
-          $statement = $connection->prepare("UPDATE `member_package` SET active=0, effto=:effto WHERE active = 1 AND memberid=:memberid");
-          $statement->bindParam(':effto', $effto);
+          /*$effto = (int) ($newdate-86400);*/
+          $statement = $connection->prepare("UPDATE `member_package` SET active=0 WHERE active = 1 AND memberid=:memberid");
+          // $statement->bindParam(':effto', $effto);
           $statement->bindParam(':memberid', $memberid);
           $statement->execute();
           // Add new package

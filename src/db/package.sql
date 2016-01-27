@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `package`;
 CREATE TABLE `package` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
