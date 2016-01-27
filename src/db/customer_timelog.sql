@@ -1,4 +1,4 @@
-DROP TABLE `customer_timelog` IF EXISTS `customer_timelog`;
+DROP TABLE IF EXISTS `customer_timelog`;
 CREATE TABLE IF NOT EXISTS `customer_timelog` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `memberid` int(11) NOT NULL,
