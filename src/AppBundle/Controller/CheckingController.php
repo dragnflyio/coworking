@@ -61,7 +61,7 @@ class CheckingController extends Controller
     $op = $request->query->get('op');
     switch ($op) {
       case 'checkin':
-        $tmp = $formbuilder->GenerateLayout('memberchecking', "col_name NOT IN ('checkout')");
+        $tmp = $formbuilder->GenerateLayout('memberchecking', "col_name NOT IN ('checkout', 'printedpapers')");
         $op = 'Check in';
         break;
 
@@ -97,7 +97,7 @@ class CheckingController extends Controller
     $op = $request->query->get('op', 'member');
     switch ($op) {
       case 'checkin':
-        $tmp = $formbuilder->GenerateLayout('visitorchecking', "col_name NOT IN ('checkout')");
+        $tmp = $formbuilder->GenerateLayout('visitorchecking', "col_name NOT IN ('checkout', 'printedpapers')");
         $op = 'Check in';
         break;
 
@@ -270,7 +270,7 @@ class CheckingController extends Controller
     // Get total hour is used.
     $tmp = implode(', ', $members);
     $statement = $connection->prepare("SELECT * FROM `customer_timelog`
-    WHERE memberid IN ($tmp) AND $efffrom <= checkin  AND visitorname IS NULL");//Why dont use isvisitor
+    WHERE memberid IN ($tmp) AND $efffrom <= checkin  AND 0=isvisitor AND 1=status");
     $statement->execute();
     $timelogs = $statement->fetchAll();
     $totalMinutes = null;
