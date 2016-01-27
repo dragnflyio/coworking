@@ -1,4 +1,4 @@
-DROP TABLE `group_member`;
+DROP TABLE `group_member` IF EXISTS `customer_timelog`;
 
 CREATE TABLE IF NOT EXISTS `group_member` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

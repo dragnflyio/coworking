@@ -1,4 +1,4 @@
-DROP TABLE `ddfields` IF EXISTS;
+DROP TABLE `ddfields` IF EXISTS `ddfields`;
 CREATE TABLE IF NOT EXISTS `ddfields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `object_name` varchar(15) NOT NULL,
