@@ -58,7 +58,7 @@ class CheckingController extends Controller
     // Get form builder.
     $formbuilder = $this->get('app.formbuilder');
 
-    $op = $request->query->get('op', 'member');
+    $op = $request->query->get('op');
     switch ($op) {
       case 'checkin':
         $tmp = $formbuilder->GenerateLayout('memberchecking', "col_name NOT IN ('checkout')");
@@ -481,7 +481,7 @@ class CheckingController extends Controller
     $txt_search = $request->query->get('search');
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `member` WHERE active = 1 AND name like :name");
+    $statement = $connection->prepare("SELECT * FROM `member` WHERE active = 1 AND name like :name LIMIT 30");
     $txt_search = "%" . $txt_search . "%";
     $statement->bindParam(':name', $txt_search);
     $statement->execute();
