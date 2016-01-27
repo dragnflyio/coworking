@@ -1,3 +1,28 @@
+DROP TABLE `ddfields` IF EXISTS;
+CREATE TABLE IF NOT EXISTS `ddfields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `object_name` varchar(15) NOT NULL,
+  `table_name` varchar(20) DEFAULT NULL,
+  `col_name` varchar(20) NOT NULL,
+  `col_code` varchar(20) NOT NULL,
+  `col_label` varchar(100) NOT NULL,
+  `data_type` varchar(10) NOT NULL,
+  `data_source` varchar(1000) NOT NULL,
+  `value_default` int(11) DEFAULT NULL,
+  `col_position` int(11) NOT NULL,
+  `value_readonly` tinyint(4) DEFAULT NULL,
+  `trigger_url` varchar(500) DEFAULT NULL,
+  `trigger_target` varchar(500) DEFAULT NULL,
+  `value_maxlength` int(11) DEFAULT NULL,
+  `col_active` tinyint(4) NOT NULL DEFAULT '1',
+  `search_opt` varchar(500) DEFAULT NULL,
+  `zero` varchar(500) DEFAULT NULL,
+  `sysdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `hidden` tinyint(4) DEFAULT NULL,
+  `attributes` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=154 ;
+
 ALTER TABLE `ddfields` CHANGE `data_type` `data_type` VARCHAR(20) NULL DEFAULT NULL;
 ALTER TABLE `ddfields` CHANGE `value_default` `value_default` VARCHAR(255) NULL DEFAULT NULL;
 
