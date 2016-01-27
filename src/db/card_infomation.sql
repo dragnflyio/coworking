@@ -1,3 +1,4 @@
+DROP TABLE `card_infomation` IF EXISTS;
 CREATE TABLE `card_infomation` (
   `id` int(11) NOT NULL,
   `cardid` varchar(1000) DEFAULT NULL,

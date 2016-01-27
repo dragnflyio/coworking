@@ -1,4 +1,4 @@
-
+DROP TABLE `customer_activity` IF EXISTS;
 CREATE TABLE `customer_activity` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `memberid` int(10) UNSIGNED NOT NULL,

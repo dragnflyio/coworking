@@ -1,4 +1,4 @@
-DROP TABLE `product`;
+DROP TABLE `product` IF EXISTS;
 
 CREATE TABLE IF NOT EXISTS `product` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
