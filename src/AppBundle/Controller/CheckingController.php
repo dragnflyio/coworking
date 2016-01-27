@@ -473,10 +473,13 @@ class CheckingController extends Controller
   /**
    * @Route("/get-members", name = "get_members")
    */
-  public function getMembersAction(){
+  public function getMembersAction(Request $request){
+    $txt_search = $request->query->get('search');
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `member` WHERE active = 1");
+    $statement = $connection->prepare("SELECT * FROM `member` WHERE active = 1 AND name like :name");
+    $txt_search = "%" . $txt_search . "%";
+    $statement->bindParam(':name', $txt_search);
     $statement->execute();
     $rows = $statement->fetchAll();
     $members = array();
@@ -512,7 +515,7 @@ class CheckingController extends Controller
     $row['pos'] = array('row' => 2, 'col' => 0);
     $row['colname'] = 'memberid';
     $row['pop'] = 'M';
-    $row['ds'] = '/get-members';
+    $row['ds'] = '@/get-members';
     $row['value_maxlength'] = 1;
     $retval[] = $row;
     return $retval;
