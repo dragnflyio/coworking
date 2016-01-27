@@ -240,7 +240,6 @@ class GroupController extends Controller
       $statement->execute();
     }
     $data['m'] = 'Đã thêm thành viên vào nhóm!';
-    $data['rdr'] = $this->generateUrl('group_list');
 
     $response = new Response(
       json_encode($data),

@@ -22,7 +22,6 @@ class RoomController extends Controller
     $search_form = $this->getSearchForm();
     $form = $formbuilder->GenerateManualSearchControls($search_form);
     return $this->render('room/index.html.twig', [
-      // 'groups' => $groups,
       'form' => $form,
       'script' => $formbuilder->mscript,
     ]);

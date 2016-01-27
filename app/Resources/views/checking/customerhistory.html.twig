@@ -49,9 +49,11 @@
               <li class = "list-group-item list-group-item-info">Số giờ vượt quá: {{data['totalhoursover']}} phút</li>
               <li class = "list-group-item list-group-item-info">Thành tiền: {{data['money']|number_format(2, '.', ',')}} VND</li>
             </ul>
+            <a href = "{{ path('customer_print_history', {'id': data['memberid']}) }}" class = "btn btn-default pull-right"><span class = "glyphicon glyphicon-print"></span></a>
           </div>
         </div>
       </div>
     </div>
   </div>
 {% endblock %}
+

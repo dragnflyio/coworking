@@ -1,0 +1,15 @@
+<ul class="list-group">
+  <li class = "list-group-item list-group-item-info">Tên thành viên: {{data['name']}}</li>
+  <li class = "list-group-item list-group-item-info">Điện thoại: {{data['phone']}}</li>
+  <li class = "list-group-item list-group-item-info">Gói đang dùng: {{data['packagename']}}</li>
+  <li class = "list-group-item list-group-item-info">Ngày đăng ký dùng gói: {{data['efffrom']|date("d/m/Y")}}</li>
+  <li class = "list-group-item list-group-item-info">Số giờ trong gói: {{data['maxhours']}}  giờ</li>
+  <li class = "list-group-item list-group-item-info">Số giờ đã dùng: {{data['totalhours']}}  phút</li>
+  <li class = "list-group-item list-group-item-info">Số giờ vượt quá: {{data['totalhoursover']}} phút</li>
+  <li class = "list-group-item list-group-item-info">Thành tiền: {{data['money']|number_format(2, '.', ',')}} VND</li>
+</ul>
+{% block javascripts %}
+  <script>
+    window.print();
+  </script>
+{% endblock %}
