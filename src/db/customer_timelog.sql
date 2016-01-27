@@ -17,9 +17,8 @@ CREATE TABLE IF NOT EXISTS `customer_timelog` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-ALTER TABLE `customer_timelog`  ADD `printedpapers` MEDIUMINT NULL DEFAULT '0';
-ALTER TABLE `customer_timelog`  ADD `status` TINYINT NOT NULL DEFAULT '1';
-
 ALTER TABLE `customer_timelog`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `customer_timelog`  ADD `regionid` INT NULL DEFAULT NULL ;
+ALTER TABLE `customer_timelog`  ADD `printedpapers` MEDIUMINT NULL DEFAULT '0';
+ALTER TABLE `customer_timelog`  ADD `status` TINYINT NOT NULL DEFAULT '1';

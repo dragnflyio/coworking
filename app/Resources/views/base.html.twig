@@ -50,11 +50,14 @@
             <li><a href="{{path('checking_list')}}">Theo dõi thành viên/khách</a></li>
             <li><a href="{{ path('member_checking') }}?op=checkin">Check in thành viên</a></li>
             <li><a href="{{ path('visitor_checking') }}?op=checkin">Check in khách</a></li>
+						<li role="separator" class="divider"></li>
+            <li><a href="{{ path('room_list') }}">Danh sách phòng họp</a></li>
+            <li><a href="{{ path('room_add') }}">Thêm phòng họp</a></li>
           </ul>
         </li>
 				<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hệ thống <span class="caret"></span></a>
-          <ul class="dropdown-menu">
+          <!-- <ul class="dropdown-menu">
             <li><a href="{{ path('unit') }}">KB đơn vị hàng hóa</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="{{ path('product_add') }}">Thêm sản phẩm</a></li>
@@ -62,10 +65,8 @@
             <li><a href="{{ path('product_import') }}">Nhập sản phẩm từ excel</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="{{ path('category') }}">PL hàng hóa</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="{{ path('room_list') }}">Danh sách phòng họp</a></li>
-            <li><a href="{{ path('room_add') }}">Thêm phòng họp</a></li>
-          </ul>
+          </ul> -->
+
         </li>
 				<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Bar <span class="caret"></span></a>
