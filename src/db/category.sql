@@ -1,4 +1,4 @@
-DROP TABLE `product_category` IF EXISTS;
+DROP TABLE `product_category` IF EXISTS `product_category`;
 CREATE TABLE IF NOT EXISTS `product_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
