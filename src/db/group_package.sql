@@ -1,4 +1,4 @@
-DROP TABLE `group_package` IF EXISTS `group_package`;
+DROP TABLE IF EXISTS `group_package`;
 CREATE TABLE `group_package` (
   `id` int(11) NOT NULL,
   `packageid` int(50) NOT NULL,
