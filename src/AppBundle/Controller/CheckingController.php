@@ -150,12 +150,16 @@ class CheckingController extends Controller
               if (!empty($group)) {
                 $postdata['grouppackageid'] = $package['grouppackageid'];
               } else {
-                $postdata['memberpackageid'] = $package['memberpackageid'];
+                if (!empty($package)) {
+                  $postdata['memberpackageid'] = $package['memberpackageid'];
+                  $data['v'] = $connection->insert($table, $postdata);
+                } else {
+                  $data['e'] = 'Thành viên này chưa dùng gói nào.';
+                }
               }
-              $data['v'] = $connection->insert($table, $postdata);
             }
           }
-          $data['m'] = 'Thêm thành công';
+          $data['m'] = 'Thêm thành công.';
         } else {
           $formbuilder->setUpdateMode(true);
           $dataObj = $formbuilder->PrepareInsert($_POST, 'memberchecking');

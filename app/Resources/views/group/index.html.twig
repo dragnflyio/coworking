@@ -90,7 +90,7 @@
             console.log(data);
             $('#list-group').html(mr( $('#template_table').html(), {list:data}))
           } else {
-            $('#list-group').html('<tr><th colspan="6" scope="row" class="text-center">'+ data.empty + '</th></tr>');
+            $('#list-group').html('<tr><th colspan="9" scope="row" class="text-center">'+ data.empty + '</th></tr>');
           }
         });
       }
@@ -100,7 +100,7 @@
 
       $('#btnsearch').click(function(e){
         e.preventDefault();
-        $('#list-group').html('<tr><th colspan="6" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
+        $('#list-group').html('<tr><th colspan="9" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
         doSearch();
       })
 

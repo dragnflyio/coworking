@@ -15,7 +15,7 @@ CREATE TABLE `member` (
   `sysdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `administrators` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+ALTER TABLE `member`  ADD `regionid` INT NULL DEFAULT NULL ;
 --
 -- Table structure for table `member_package`
 --

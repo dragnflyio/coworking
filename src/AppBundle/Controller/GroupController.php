@@ -154,31 +154,31 @@ class GroupController extends Controller
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
     if (!empty($_POST['id'])) {
-      $statement = $connection->prepare("UPDATE `groups`
-        SET name = :name,
-        address = :address,
-        phone = :phone,
-        taxcode = :taxcode,
-        taxaddress = :taxaddress,
-        description = :description,
-        members = :members
-        where id =:id");
-      $statement->bindParam(':id', $_POST['id']);
-      $data['m'] = "Bạn đã cập nhật nhóm thành công";
+      $group = array(
+        'name' => $name,
+        'address' => $address,
+        'phone' => $phone,
+        'taxcode' => $taxcode,
+        'taxaddress' => $taxaddress,
+        'description' => $description,
+        'members' => $members
+      );
+      $data['v'] = $connection->update('groups', $group, array('id' => $_POST['id']));
+      $data['m'] = 'Đã sửa thông tin nhóm.';
     }
     else {
-      $statement = $connection->prepare("INSERT INTO `groups` (name, address, phone, taxcode, taxaddress, description, members, status)
-      VALUES (:name, :address, :phone, :taxcode, :taxaddress, :description, :members, 1)");
-      $data['m'] = "Bạn đã thêm mới nhóm thành công";
+      $group = array(
+        'name' => $name,
+        'address' => $address,
+        'phone' => $phone,
+        'taxcode' => $taxcode,
+        'taxaddress' => $taxaddress,
+        'description' => $description,
+        'members' => $members
+      );
+      $data['v'] = $connection->insert('groups', $group);
+      $data['m'] = 'Bạn đã thêm mới nhóm thành công';
     }
-    $statement->bindParam(':name', $name);
-    $statement->bindParam(':address', $address);
-    $statement->bindParam(':phone', $phone);
-    $statement->bindParam(':taxcode', $taxcode);
-    $statement->bindParam(':taxaddress', $taxaddress);
-    $statement->bindParam(':description', $description);
-    $statement->bindParam(':members', $members);
-    $statement->execute();
     $response = new Response(
       json_encode($data),
       Response::HTTP_OK,
