@@ -368,6 +368,7 @@ class CustomerController extends BaseController{
 				}
 				break;
 			case 'search':
+        $services = $this->get('app.services');
 				$grp = $this->getCustomerSearchForm();
 				$searchData = $formbuilder->GetSearchData($_POST, $grp);
 				$filters = $this->getWhereUserSearchCondition($searchData);
@@ -380,10 +381,13 @@ class CustomerController extends BaseController{
 					$data['empty'] = 'Không tìm thấy bản ghi nào';
 				} else {
 					foreach ($all_rows as $row){
+            $region = $services->getRegionbyId($row['regionid']);
+            $region_name = (!empty($region) ? $region['name'] : '');
 						$tmp = array(
 							'id' => $row['id'],
 							'idx' => ++$idx,
 							'name' => $row['name'],
+              'region' => $region_name,
 							'price' => $row['email'],
 							'description' => $row['phone'],
 							'createdname' => 'Admin',

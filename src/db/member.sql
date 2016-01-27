@@ -15,7 +15,7 @@ CREATE TABLE `member` (
   `sysdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `administrators` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+ALTER TABLE `member`  ADD `regionid` INT NULL DEFAULT NULL ;
 --
 -- Table structure for table `member_package`
 --
@@ -57,3 +57,4 @@ ALTER TABLE `member_package`
 ALTER TABLE `member_package`  ADD `visitorprice` INT NULL DEFAULT NULL ;
 ALTER TABLE `member_package`  ADD `efftoextend` INT NULL DEFAULT NULL ;
 ALTER TABLE `member_package`  ADD `printedpapers` INT NULL DEFAULT NULL  AFTER `efftoextend`;
+

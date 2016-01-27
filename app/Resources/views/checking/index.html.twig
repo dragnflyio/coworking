@@ -34,6 +34,7 @@
             <th>Tên khách</th>
             <th>Giờ check in</th>
             <th>Giờ check out</th>
+            <th>Địa điểm</th>
             <th>Thao tác</th>
           </thead>
           <tbody id = "list-checking">
@@ -49,6 +50,7 @@
               {% else %}
                 <td></td>
               {% endif %}
+              <td>Tràng thi</td>
               <td>
               {% if 0 == timelog.checkout %}
                 {% if '' !=  timelog.visitorname %}
@@ -76,6 +78,7 @@
     <td><%visitorname%></td>
     <td><%checkin%></td>
     <td><%checkout%></td>
+    <td>Tràng thi</td>
     <td>
       <%#if checkout.length %>
       <%else%>

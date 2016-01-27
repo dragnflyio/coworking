@@ -165,4 +165,23 @@ class Services{
     }
     return $retval;
   }
+
+  /**
+   * Get region info by region id
+   *
+   * @param int $regionid
+   *
+   * @return array $region
+   */
+  function getRegionbyId($regionid){
+    $statement = $this->em->prepare("SELECT * FROM `region` WHERE id=:id");
+    $statement->bindParam(':id', $regionid);
+    $statement->execute();
+    $rows = $statement->fetchAll();
+    if (!empty($rows)) {
+      return $rows[0];
+    } else {
+      return $rows;
+    }
+  }
 }

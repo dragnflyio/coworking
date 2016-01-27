@@ -58,10 +58,10 @@ class CheckingController extends Controller
     // Get form builder.
     $formbuilder = $this->get('app.formbuilder');
 
-    $op = $request->query->get('op', 'member');
+    $op = $request->query->get('op');
     switch ($op) {
       case 'checkin':
-        $tmp = $formbuilder->GenerateLayout('memberchecking', "col_name NOT IN ('checkout')");
+        $tmp = $formbuilder->GenerateLayout('memberchecking', "col_name NOT IN ('checkout', 'printedpapers')");
         $op = 'Check in';
         break;
 
@@ -97,7 +97,7 @@ class CheckingController extends Controller
     $op = $request->query->get('op', 'member');
     switch ($op) {
       case 'checkin':
-        $tmp = $formbuilder->GenerateLayout('visitorchecking', "col_name NOT IN ('checkout')");
+        $tmp = $formbuilder->GenerateLayout('visitorchecking', "col_name NOT IN ('checkout', 'printedpapers')");
         $op = 'Check in';
         break;
 
@@ -150,12 +150,16 @@ class CheckingController extends Controller
               if (!empty($group)) {
                 $postdata['grouppackageid'] = $package['grouppackageid'];
               } else {
-                $postdata['memberpackageid'] = $package['memberpackageid'];
+                if (!empty($package)) {
+                  $postdata['memberpackageid'] = $package['memberpackageid'];
+                  $data['v'] = $connection->insert($table, $postdata);
+                } else {
+                  $data['e'] = 'Thành viên này chưa dùng gói nào.';
+                }
               }
-              $data['v'] = $connection->insert($table, $postdata);
             }
           }
-          $data['m'] = 'Thêm thành công';
+          $data['m'] = 'Thêm thành công.';
         } else {
           $formbuilder->setUpdateMode(true);
           $dataObj = $formbuilder->PrepareInsert($_POST, 'memberchecking');
@@ -266,7 +270,7 @@ class CheckingController extends Controller
     // Get total hour is used.
     $tmp = implode(', ', $members);
     $statement = $connection->prepare("SELECT * FROM `customer_timelog`
-    WHERE memberid IN ($tmp) AND $efffrom <= checkin  AND visitorname IS NULL");//Why dont use isvisitor
+    WHERE memberid IN ($tmp) AND $efffrom <= checkin  AND 0=isvisitor AND 1=status");
     $statement->execute();
     $timelogs = $statement->fetchAll();
     $totalMinutes = null;
@@ -477,7 +481,7 @@ class CheckingController extends Controller
     $txt_search = $request->query->get('search');
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT * FROM `member` WHERE active = 1 AND name like :name");
+    $statement = $connection->prepare("SELECT * FROM `member` WHERE active = 1 AND name like :name LIMIT 30");
     $txt_search = "%" . $txt_search . "%";
     $statement->bindParam(':name', $txt_search);
     $statement->execute();
