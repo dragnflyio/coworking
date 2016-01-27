@@ -28,3 +28,4 @@ ALTER TABLE `group_package`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `group_package`  ADD `visitorprice` INT NULL DEFAULT NULL ;
 ALTER TABLE `group_package`  ADD `efftoextend` INT NULL DEFAULT NULL ;
+ALTER TABLE `group_package`  ADD `printedpapers` INT NULL DEFAULT NULL ;

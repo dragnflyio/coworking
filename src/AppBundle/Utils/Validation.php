@@ -61,6 +61,41 @@ class Validation{
 		return $ret;
 	}
 	/**
+	 * Get used visitor hours of a member in a package
+	 */
+	function getVisitorHours($memberid){
+	  // group by day
+	  $log = $this->em->fetchAll('SELECT DATE(FROM_UNIXTIME(checkin)) AS datecheckin, checkin, checkout FROM customer_timelog WHERE isvisitor = 1 AND memberid = ? ORDER BY checkin', array($memberid));
+	  $max_hour = 3;
+	  $max_visitor = 2;
+	  $retval = $log_data = array();
+    if ($log){
+      foreach($log as $check){
+        if ($check['checkout']){
+          $date = $check['datecheckin'];
+          if (false == isset($log_data[$date])) $log_data[$date] = array();
+          $log_data[$date][] = array($check['checkin'], $check['checkout']);
+        }
+      }
+      foreach ($log_data as $date => $day_log){
+        // moi ngay, tinh thoi gian visitor
+        $all_segments = array();
+        foreach ($day_log as $check){
+          $all_segments[] = $check[0];
+          $all_segments[] = $check[1];
+        }
+        sort($all_segments, SORT_NUMERIC);
+        $count = count($all_segments);
+        for($ii = 0; $ii < $count; $ii++){
+          if ($ii < $count - 1){
+            $start = $all_segments[$ii];
+            $end = $all_segments[$ii+1];
+          }
+        }
+      }
+    }
+	}
+	/**
 	 * Get used hours of member in a package
 	 * @return used hours in minutes
 	 */

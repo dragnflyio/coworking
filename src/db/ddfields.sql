@@ -79,7 +79,7 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'memberpackage', 'member_package', 'maxprintpapers', 'maxprintpapers', 'Số tờ in', 'numeric', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 09:40:22', NULL, NULL),
 (null, 'memberpackage', 'member_package', 'maxmeetinghours', 'maxmeetinghours', 'Số giờ họp', 'numeric', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 09:40:22', NULL, NULL),
 (null, 'memberpackage', 'member_package', 'allowcredit', 'allowcredit', 'Cho phép nợ', 'radio', '{"label":["Có", "Không"],"value":[1,2],"sameline":1}', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
-(null, 'memberpackage', 'member_package', 'locker', 'locker', 'locker', 'radio', '{"label":["Có", "Không"],"value":[1,2],"sameline":1}', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'locker', 'locker', 'Locker', 'radio', '{"label":["Có", "Không"],"value":[1,2],"sameline":1}', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
 (null, 'memberpackage', 'member_package', 'discountbar', 'discountbar', 'Giảm giá bar', 'percentage', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
 (null, 'memberpackage', 'member_package', 'price', 'price', 'Price', 'money', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
 (null, 'memberpackage', 'member_package', 'efffrom', 'efffrom', 'Bắt đầu', 'date', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
