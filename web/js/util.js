@@ -437,15 +437,14 @@ wd.ajaxGet=function (url, callBack, block){
       }
     },
     success: function(res){
-			if(res && res.rdr) {wd.location.href = res.rdr;return}
-      if(res && res.e){
+			if(res && res.e){
 				msgInfo(res.e, 1, res._t)
 				return
       }
-			
 			if(res && res.m){
 				msgInfo(res.m, 0, res._t);				
 			}
+			if(res && res.rdr) {wd.location.href = res.rdr;return}
 			var t = 0;
 			if(res && res._t) t = 1000*res._t;
 			if(0<t){
@@ -492,8 +491,7 @@ wd.ajaxPostBlock=function (url, data, callBack, block, msgblock, sync){
         $(block).block()
       }
     },
-    success: function(res){
-			if(res && res.rdr) {wd.location.href = res.rdr;return}
+    success: function(res){			
     	if(res && res.e) {
 				msgInfo(res.e, 1, res._t)
 	      return
@@ -501,6 +499,7 @@ wd.ajaxPostBlock=function (url, data, callBack, block, msgblock, sync){
 			if(res && res.m){
 				msgInfo(res.m, 0, res._t);
 			}
+			if(res && res.rdr) {wd.location.href = res.rdr;return}
 			var t = 0;
 			if(res && res._t) t = 1000*res._t;
 			if(0<t){

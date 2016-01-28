@@ -246,40 +246,40 @@ class CustomerController extends BaseController{
 		            $validation->extendMemberPackage($memberid, $newdate, $amount);
 		            $data['m'] = 'Đã cập nhật gia hạn tạm thời';
 				}
-        // Gia han goi
-				if ('renew' == $action){
-          $memberid = $request->query->get('id', 0);
-          $validation = $this->get('app.validation');
-          $services = $this->get('app.services');
-          // Get current member_package
-          $statement = $connection->prepare("SELECT * FROM `member_package` WHERE memberid=:memberid AND active=1");
-          $statement->bindParam(':memberid', $memberid);
-          $statement->execute();
-          $rows = $statement->fetchAll();
-				  $member_package = $rows[0];
-          $package = $validation->getMemberPackage($memberid);
-          // Close current package
-          $newdate = $_POST['efffrom_renew'];
-          /*$effto = (int) ($newdate-86400);*/
-          $statement = $connection->prepare("UPDATE `member_package` SET active=0 WHERE active = 1 AND memberid=:memberid");
-          // $statement->bindParam(':effto', $effto);
-          $statement->bindParam(':memberid', $memberid);
-          $statement->execute();
-          // Add new package
-          $member_package['efffrom'] = $_POST['efffrom_renew'];
-          $member_package['effto'] = $_POST['effto_renew'];
-          unset($member_package['id']);
-          $connection->insert('member_package', $member_package);
-          // Update customer activity
-          $log = array(
-            'memberid' => $memberid,
-            'code' => 'giahan',
-            'oldvalue' => $package['packagename'],
-            'newvalue' => $package['packagename'],
-            'createdtime' => time(),
-            'amount' => NULL,
-          );
-          $connection->insert('customer_activity', $log);
+                // Gia han goi
+                if ('renew' == $action){
+                    $memberid = $request->query->get('id', 0);
+                    $validation = $this->get('app.validation');
+                    $services = $this->get('app.services');
+                    // Get current member_package
+                    $statement = $connection->prepare("SELECT * FROM `member_package` WHERE memberid=:memberid AND active=1");
+                    $statement->bindParam(':memberid', $memberid);
+                    $statement->execute();
+                    $rows = $statement->fetchAll();
+                    $member_package = $rows[0];
+                    $package = $validation->getMemberPackage($memberid);
+                    // Close current package
+                    $newdate = $_POST['efffrom_renew'];
+                    /*$effto = (int) ($newdate-86400);*/
+                    $statement = $connection->prepare("UPDATE `member_package` SET active=0 WHERE active = 1 AND memberid=:memberid");
+                    // $statement->bindParam(':effto', $effto);
+                    $statement->bindParam(':memberid', $memberid);
+                    $statement->execute();
+                    // Add new package
+                    $member_package['efffrom'] = $_POST['efffrom_renew'];
+                    $member_package['effto'] = $_POST['effto_renew'];
+                    unset($member_package['id']);
+                    $connection->insert('member_package', $member_package);
+                    // Update customer activity
+                    $log = array(
+                        'memberid' => $memberid,
+                        'code' => 'giahan',
+                        'oldvalue' => $package['packagename'],
+                        'newvalue' => $package['packagename'],
+                        'createdtime' => time(),
+                        'amount' => NULL,
+                        );
+                    $connection->insert('customer_activity', $log);
 				}
 				if ('change' == $action){
 				    // Doi goi
@@ -293,6 +293,8 @@ class CustomerController extends BaseController{
                                 $validation->closedMemberPackage($memberid);
     							$postdata['memberid'] = $memberid;
     							$data['v'] = $connection->insert($table, $postdata);
+    							// TODO: Update ALL checkin but not check out session to new package
+    							
     							// Log activity
                     	        $log = array(
                     	           'memberid' => $memberid,

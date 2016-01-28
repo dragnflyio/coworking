@@ -34,27 +34,7 @@ class PackageController extends BaseController{
 	private function getPackageSearchForm(){
 
 		$retval = array();
-		// ten app
-		/*$row = array();
-		$row['id'] = 'appname';
-		$row['label'] = 'Tên App';
-		$row['type'] = 'text_multi';
-		$row['pos'] = array('row' => 1, 'col' => 1);
-		$row['colname'] = 'applicationId';
-		$row['pop'] = 'M';
-		$row['ds'] = 'admin/cheatax/axhandler?op=lstapplk';
-		$retval[] = $row;
-		// partner
-		$row = array();
-		$row['id'] = 'partnername';
-		$row['label'] = 'Partner';
-		$row['type'] = 'text_multi';
-		$row['pos'] = array('row' => 2, 'col' => 1);
-		$row['colname'] = 'partnerId';
-		$row['pop'] = 'M';
-		$row['ds'] = 'admin/cheatax/axhandler?op=lstpartnerlk';
-		$retval[] = $row; */
-		// Ip
+
 		$row = array();
 		$row['id'] = 'packagename';
 		$row['label'] = 'Tên gói';
@@ -62,13 +42,7 @@ class PackageController extends BaseController{
 		$row['colname'] = 'name';
 		$row['pos'] = array('row' => 1, 'col' => 1);
 		$retval[] = $row;
-		/* nguon ip
-		$row = array();
-		$row['id'] = 'ipsource';
-		$row['label'] = 'Chung nguồn IP';
-		$row['type'] = 'check';
-		$row['pos'] = array('row' => 1, 'col' => 2);
-		$retval[] = $row;*/
+
 		//ngay tao
         $row = array();
         $row['id'] = 'ngaytao';
@@ -115,17 +89,6 @@ class PackageController extends BaseController{
 		$row['pos'] = array('row' => 2, 'col' => 2);
 		$row['colname'] = 'price';
 		$retval[] = $row;
-
-		/*$row = array();
-		$row['id'] = 'cvirate';
-		$row['type'] = 'numeric';
-		$row['isNumeric'] = 1;
-		$row['lblfrom'] = 'Tỉ lệ cài đặt từ';
-		$row['lblto'] = ' đến ';
-		$row['pos'] = array('row' => 4, 'col' => 2);
-		$row['suffix'] = '%';
-		$row['colname'] = 'rate';
-		$retval[] = $row;*/
 
 		return $retval;
 	}

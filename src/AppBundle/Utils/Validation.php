@@ -104,7 +104,9 @@ class Validation{
         }
       }// End for log_data      
     }
-    // Summarize
+    // Summarize 
+    $member_package = $this->em->fetchAssoc('SELECT maxvisitors,visitorprice FROM member_package WHERE id = ?', array($memberpackageid));
+    $over_price_visitor = (int)$member_package['visitorprice'];// price over visitor per hour
     $quota = $max_hour * $max_visitor;// quota per day
     $date_visitor_minutes = array();
     foreach ($retval as $date => $visitor_data){
@@ -121,7 +123,8 @@ class Validation{
           $total_visitor += $number_visitor * $time;
         }
       }
-      $date_visitor_minutes[$date] = array('visit' => $total_visitor, 'over' => $over);
+      $charge = $over * $over_price_visitor;
+      $date_visitor_minutes[$date] = array('visit' => $total_visitor, 'over' => $over, 'charge' => $charge);
     }
     return $date_visitor_minutes;
     // return $retval;
