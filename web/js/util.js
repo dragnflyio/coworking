@@ -36,7 +36,7 @@ return g;
 }
 
 wd.mr=function (tpl, d, delim){
-	if (!delim) tpl = tpl.replace(/<%%/g, '{{}{').replace(/%%>/g, '}}}').replace(/<%/g, '{{').replace(/%>/g, '}}');
+	if (!delim) tpl = tpl.replace(/<%%/g, '{{{').replace(/%%>/g, '}}}').replace(/<%/g, '{{').replace(/%>/g, '}}');
 	var template = Handlebars.compile(tpl);	
   if(!d) return template({});
 	return template(d);
