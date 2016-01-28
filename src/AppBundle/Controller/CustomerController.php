@@ -372,10 +372,11 @@ class CustomerController extends BaseController{
 				break;
 			case 'search':
         $services = $this->get('app.services');
+        $validation = $this->get('app.validation');
 				$grp = $this->getCustomerSearchForm();
 				$searchData = $formbuilder->GetSearchData($_POST, $grp);
 				$filters = $this->getWhereUserSearchCondition($searchData);
-				$statement = $connection->prepare("SELECT m.*, p.name AS packagename FROM member m LEFT JOIN member_package mp ON m.id = mp.memberid LEFT JOIN package p ON p.id = mp.packageid WHERE 1 $filters");
+				$statement = $connection->prepare("SELECT * FROM member WHERE 1 $filters");
 				$statement->execute();
 				$all_rows = $statement->fetchAll();
 				$ret = array();
@@ -386,15 +387,22 @@ class CustomerController extends BaseController{
 					foreach ($all_rows as $row){
             $region = $services->getRegionbyId($row['regionid']);
             $region_name = (!empty($region) ? $region['name'] : '');
+            $current_package = $validation->getMemberPackage($row['id']);
+            $usage = '';
+            if ($current_package){
+              $usage = $current_package['packagename'];
+              $usage .= '<br>'.date('d/M/Y', $current_package['efffrom']);
+              $usage .= ' - '.date('d/M/Y', $current_package['effto']);
+            }
 						$tmp = array(
 							'id' => $row['id'],
 							'idx' => ++$idx,
 							'name' => $row['name'],
               'region' => $region_name,
-							'price' => $row['email'],
+							'email' => $row['email'],
 							'description' => $row['phone'],
 							'createdname' => 'Admin',
-							'package' => $row['packagename']
+							'package' => $usage,
 						);
 						$ret[] = $tmp;
 					}

@@ -96,7 +96,8 @@ Thay đổi dịch vụ cho khách khách hàng
 		  </div>
 		  <div class="row pkg-form pkg-form-change">
 				<div class="col-md-12">
-				Số dư: <span id="balance">{{package['remain'] | number_format(0, '.', ',') }}</span> VND
+				Số dư: <span id="balance">{{package['remain'] | number_format(0, '.', ',') }}</span> VND <br>
+				Số tờ in: <span id="printed">{{package['print'] | number_format(0, '.', ',')}}</span>
 				</div>
 				<div class="col-md-12">
 					{{ form_change|raw}}

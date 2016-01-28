@@ -44,6 +44,7 @@ class Validation{
 		if ($row = $this->em->fetchAssoc('SELECT mp.id, mp.efftoextend,mp.price, mp.maxhours, mp.maxdays, packageid, p.name AS packagename, mp.efffrom, mp.effto FROM member_package mp LEFT JOIN package p ON mp.packageid = p.id WHERE memberid = ? AND 1 = mp.active', array($memberid))){
 		    // remainder, so tien con du?
         $row['remain'] = $row['price'];
+        $row['print'] = $this->getPrintedPaper($row['id']);
 		    if (0 < $row['maxhours']){
 		        // Goi tinh gio, se tinh toan so gio da dung
 		        $used_minutes = $this->getUsedHours($row['id']);
@@ -211,6 +212,22 @@ class Validation{
 	        foreach($log as $check){
 	            if ($check['checkout']){
 	                $retval += max(0, $check['checkout'] - $check['checkin']) / 60;// Convert second to minute
+	            }
+	        }
+	    }
+	    return $retval;
+	}
+	/**
+	 * Get printed papers of member in a package
+	 * @return int
+	 */
+	function getPrintedPaper($member_packageid){
+	    $retval = 0;
+	    $log = $this->em->fetchAll('SELECT printedpapers FROM customer_timelog WHERE 1=status AND isvisitor = 0 AND memberpackageid = ?', array($member_packageid));
+	    if ($log){
+	        foreach($log as $check){
+	            if ($check['printedpapers']){
+	                $retval += max(0, $check['printedpapers']);// Convert second to minute
 	            }
 	        }
 	    }
