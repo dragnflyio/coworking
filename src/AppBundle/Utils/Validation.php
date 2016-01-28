@@ -31,17 +31,22 @@ class Validation{
 		return '';
 	}
 	/**
+	 * Update new member package to opening checked in session
+	 */
+	function updateSessionNewPackage($old_memberpackageid, $new_memberpackageid){
+	  return $this->em->executeUpdate('UPDATE customer_timelog SET memberpackageid = ? WHERE memberpackageid = ? AND 1 = status', array($new_memberpackageid, $old_memberpackageid));
+	}
+	/**
 	 * Get current active package for a member
 	 */
 	function getMemberPackage($memberid){
 		$ret = array();
 		if ($row = $this->em->fetchAssoc('SELECT mp.id, mp.efftoextend,mp.price, mp.maxhours, mp.maxdays, packageid, p.name AS packagename, mp.efffrom, mp.effto FROM member_package mp LEFT JOIN package p ON mp.packageid = p.id WHERE memberid = ? AND 1 = mp.active', array($memberid))){
 		    // remainder, so tien con du?
-		    $row['remain'] = 0;
+        $row['remain'] = $row['price'];
 		    if (0 < $row['maxhours']){
 		        // Goi tinh gio, se tinh toan so gio da dung
 		        $used_minutes = $this->getUsedHours($row['id']);
-
 		        if ($used_minutes) {
 		            // so tien tuong ung
 		            $fee = $row['price'] / ($row['maxhours'] * 60) * $used_minutes;
@@ -54,7 +59,7 @@ class Validation{
 		        $diff = max(0, $today - $row['efffrom'])/ 86400;// convert second to day
 		        $fee = $row['price'] / $row['maxdays'] * $diff;
 		        // so du
-	            $row['remain'] = $row['price'] - $fee;
+	          $row['remain'] = $row['price'] - $fee;
 		    }
 			$ret = $row;
 		}

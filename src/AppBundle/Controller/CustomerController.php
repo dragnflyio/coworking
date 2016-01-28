@@ -218,123 +218,124 @@ class CustomerController extends BaseController{
 		$connection = $em->getConnection();
 
 		switch($op){
-		    case 'extendfee':
-		        $memberid = $request->query->get('id', 0);
-		        $newdate = $request->query->get('d');
-		        if ($memberid){
-		            $validation = $this->get('app.validation');
-		            if ($current_package = $validation->getMemberPackage($memberid)){
-		                $extend_days = ((int)$newdate - (int)$current_package['effto'])/86400;
-		                // rate per day
-		                $day_price = 0;
-		                if ($current_package['maxdays'])
-		                    $day_price = (int)($current_package['price'] / $current_package['maxdays']);
-		                $data['v'] = $extend_days * $day_price;
-		            }
+      case 'extendfee':
+        $memberid = $request->query->get('id', 0);
+        $newdate = $request->query->get('d');
+        if ($memberid){
+          $validation = $this->get('app.validation');
+          if ($current_package = $validation->getMemberPackage($memberid)){
+            $extend_days = ((int)$newdate - (int)$current_package['effto'])/86400;
+            // rate per day
+            $day_price = 0;
+            if ($current_package['maxdays'])
+              $day_price = (int)($current_package['price'] / $current_package['maxdays']);
+            $data['v'] = $extend_days * $day_price;
+          }
 
-		        }
-		        break;
+        }
+        break;
 			case 'memberpackage':
-				$action = $request->query->get('action');
-				$memberid = $request->query->get('id', 0);
-				$data['m'] = $action;
-				if('extend' == $action){
+        $action = $request->query->get('action');
+        $memberid = $request->query->get('id', 0);
+        $data['m'] = $action;
+        if('extend' == $action){
 
-		            $newdate = $request->request->get('effto_extend');
-		            $amount = $formbuilder->getNum($request->request->get('price_extend'));
-		            $validation = $this->get('app.validation');
-		            $validation->extendMemberPackage($memberid, $newdate, $amount);
-		            $data['m'] = 'Đã cập nhật gia hạn tạm thời';
-				}
-                // Gia han goi
-                if ('renew' == $action){
-                    $memberid = $request->query->get('id', 0);
-                    $validation = $this->get('app.validation');
-                    $services = $this->get('app.services');
-                    // Get current member_package
-                    $statement = $connection->prepare("SELECT * FROM `member_package` WHERE memberid=:memberid AND active=1");
-                    $statement->bindParam(':memberid', $memberid);
-                    $statement->execute();
-                    $rows = $statement->fetchAll();
-                    $member_package = $rows[0];
-                    $package = $validation->getMemberPackage($memberid);
-                    // Close current package
-                    $newdate = $_POST['efffrom_renew'];
-                    /*$effto = (int) ($newdate-86400);*/
-                    $statement = $connection->prepare("UPDATE `member_package` SET active=0 WHERE active = 1 AND memberid=:memberid");
-                    // $statement->bindParam(':effto', $effto);
-                    $statement->bindParam(':memberid', $memberid);
-                    $statement->execute();
-                    // Add new package
-                    $member_package['efffrom'] = $_POST['efffrom_renew'];
-                    $member_package['effto'] = $_POST['effto_renew'];
-                    unset($member_package['id']);
-                    $connection->insert('member_package', $member_package);
-                    // Update customer activity
-                    $log = array(
-                        'memberid' => $memberid,
-                        'code' => 'giahan',
-                        'oldvalue' => $package['packagename'],
-                        'newvalue' => $package['packagename'],
-                        'createdtime' => time(),
-                        'amount' => NULL,
-                        );
-                    $connection->insert('customer_activity', $log);
-				}
-				if ('change' == $action){
-				    // Doi goi
-				    if ($memberid){
-				        $validation = $this->get('app.validation');
-				        $dataObj = $formbuilder->PrepareInsert($_POST, 'memberpackage', 'change_');
-                        $current_package = $validation->getMemberPackage($memberid);
-    					foreach ($dataObj as $table => $postdata){
-    						if ($postdata){
-    						    // Disable current package
-                                $validation->closedMemberPackage($memberid);
-    							$postdata['memberid'] = $memberid;
-    							$data['v'] = $connection->insert($table, $postdata);
-    							// TODO: Update ALL checkin but not check out session to new package
-    							
-    							// Log activity
-                    	        $log = array(
-                    	           'memberid' => $memberid,
-                    	           'code' => 'changepackage',
-                    	           'oldvalue' => $current_package['packageid'],
-                    	           'newvalue' => $postdata['packageid'],
-                    	           'createdtime' => time(),
-                    	           'amount' => (int)$current_package['remain']
-                    	        );
-                    	        $data['v'] = $connection->insert('customer_activity', $log);
-    						}
-    					}
-    					$data['m'] = 'Đổi gói thành công';
-				    }
-				}
+          $newdate = $request->request->get('effto_extend');
+          $amount = $formbuilder->getNum($request->request->get('price_extend'));
+          $validation = $this->get('app.validation');
+          $validation->extendMemberPackage($memberid, $newdate, $amount);
+          $data['m'] = 'Đã cập nhật gia hạn tạm thời';
+        }
+        // Gia han goi
+        if ('renew' == $action){
+          $memberid = $request->query->get('id', 0);
+          $validation = $this->get('app.validation');
+          $services = $this->get('app.services');
+          // Get current member_package
+          $statement = $connection->prepare("SELECT * FROM `member_package` WHERE memberid=:memberid AND active=1");
+          $statement->bindParam(':memberid', $memberid);
+          $statement->execute();
+          $rows = $statement->fetchAll();
+          $member_package = $rows[0];
+          $package = $validation->getMemberPackage($memberid);
+          // Close current package
+          $newdate = $_POST['efffrom_renew'];
+          /*$effto = (int) ($newdate-86400);*/
+          $statement = $connection->prepare("UPDATE `member_package` SET active=0 WHERE active = 1 AND memberid=:memberid");
+          // $statement->bindParam(':effto', $effto);
+          $statement->bindParam(':memberid', $memberid);
+          $statement->execute();
+          // Add new package
+          $member_package['efffrom'] = $_POST['efffrom_renew'];
+          $member_package['effto'] = $_POST['effto_renew'];
+          unset($member_package['id']);
+          $connection->insert('member_package', $member_package);
+          // Update customer activity
+          $log = array(
+            'memberid' => $memberid,
+            'code' => 'giahan',
+            'oldvalue' => $package['packagename'],
+            'newvalue' => $package['packagename'],
+            'createdtime' => time(),
+            'amount' => NULL,
+            );
+          $connection->insert('customer_activity', $log);
+        }
+        if ('change' == $action){
+          // Doi goi
+          if ($memberid){
+            $validation = $this->get('app.validation');
+            $dataObj = $formbuilder->PrepareInsert($_POST, 'memberpackage', 'change_');
+            $current_package = $validation->getMemberPackage($memberid);
+            foreach ($dataObj as $table => $postdata){
+              if ($postdata){
+                // Disable current package
+                $validation->closedMemberPackage($memberid);
+                $postdata['memberid'] = $memberid;
+                $connection->insert($table, $postdata);
+                $data['v'] = $connection->lastInsertId();
+                // TODO: Update ALL check in but not check out session to new package
+                $validation->updateSessionNewPackage($current_package['id'], $data['v']);
+                // Log activity
+                $log = array(
+                  'memberid' => $memberid,
+                  'code' => 'changepackage',
+                  'oldvalue' => $current_package['packageid'],
+                  'newvalue' => $postdata['packageid'],
+                  'createdtime' => time(),
+                  'amount' => (int)$current_package['remain']
+                  );
+                $data['v'] = $connection->insert('customer_activity', $log);
+              }
+            }
+            $data['m'] = 'Đổi gói thành công';
+          }
+        }
 				break;
 			case 'addpackage':
-				$customerid = $request->query->get('id', 0);
-				// TODO check if this customer added package?
-				// or belong to a group which added package
-				// if not, do add package
-				if ($customerid){
-				    $validation = $this->get('app.validation');
-				    if ($msg = $validation->checkMemberPackage($customerid)){
-				        $data['e'] = $msg;
-			        } else {
-			            $dataObj = $formbuilder->PrepareInsert($_POST, 'memberpackage');
-    					foreach ($dataObj as $table => $postdata){
-    						if ($postdata){
-    						    // Disable current package
-                                // $validation = $this->get('app.validation');
-                                // $validation->closedMemberPackage($customerid);
-    							$postdata['memberid'] = $customerid;
-    							$data['v'] = $connection->insert($table, $postdata);
-    						}
-    					}
-    					$data['m'] = 'Thêm thành công';
-			        }
+        $customerid = $request->query->get('id', 0);
+        // TODO check if this customer added package?
+        // or belong to a group which added package
+        // if not, do add package
+        if ($customerid){
+          $validation = $this->get('app.validation');
+          if ($msg = $validation->checkMemberPackage($customerid)){
+            $data['e'] = $msg;
+          } else {
+            $dataObj = $formbuilder->PrepareInsert($_POST, 'memberpackage');
+            foreach ($dataObj as $table => $postdata){
+              if ($postdata){
+                // Disable current package
+                // $validation = $this->get('app.validation');
+                // $validation->closedMemberPackage($customerid);
+                $postdata['memberid'] = $customerid;
+                $data['v'] = $connection->insert($table, $postdata);
+              }
+            }
+            $data['m'] = 'Thêm thành công';
+          }
 
-				}
+        }
 
 				break;
 			case 'create':

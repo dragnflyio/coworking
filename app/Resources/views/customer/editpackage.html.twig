@@ -24,7 +24,7 @@ Thay đổi dịch vụ cho khách khách hàng
 				<div class="col-md-12">
 					<a class="btn btn-info btn-pkg hidden" data-action="edit">Sửa thông tin</a>
 					<a class="btn btn-info btn-pkg" data-action="extend">Gia hạn tạm thời</a>
-					<a class="btn btn-info btn-pkg" data-action="renew">Gia hạn gói</a>
+					<a class="btn btn-info btn-pkg" data-action="renew">Gia hạn gói hiện tại</a>
 					<a class="btn btn-info btn-pkg" data-action="change">Đổi gói</a>
 				</div>
 			</div>
@@ -96,7 +96,7 @@ Thay đổi dịch vụ cho khách khách hàng
 		  </div>
 		  <div class="row pkg-form pkg-form-change">
 				<div class="col-md-12">
-				Số dư: <span id="balance">{{package['remain']}}</span> VND
+				Số dư: <span id="balance">{{package['remain'] | number_format(0, '.', ',') }}</span> VND
 				</div>
 				<div class="col-md-12">
 					{{ form_change|raw}}
@@ -130,6 +130,10 @@ jQuery(function(){
 	cakeffto_extend=new Geekutil.Cal("effto_extend",true,'{{package['effto']}}',0);
 	cakefffrom_renew=new Geekutil.Cal("efffrom_renew",true,'',0);
 	cakeffto_renew=new Geekutil.Cal("effto_renew",true,'',0);
+	if(window.cakchange_efffrom) 
+		cakchange_efffrom.change = function(d){
+			d && cakchange_effto.set ( d.getTime()/1000 + ( $('#change_maxdays').val() - 1)*86400 ) 
+		}
 	$('.numeric').intOnly();
 
 	window.tkchange_packageid && tkchange_packageid.callback(function(){

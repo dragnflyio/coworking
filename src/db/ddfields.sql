@@ -45,7 +45,7 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'packageform', 'package', 'price', 'price', 'Giá', 'numeric', '', NULL, 4105, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-13 02:30:40', NULL, NULL),
 (null, 'packageform', 'package', 'maxprintpapers', 'maxprintpapers', 'Số tờ in', 'numeric', '', NULL, 4106, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-13 02:30:40', NULL, NULL),
 (null, 'packageform', 'package', 'maxmeetinghours', 'maxmeetinghours', 'Giờ phòng họp', 'numeric', '', NULL, 4107, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-13 02:30:40', NULL, NULL),
-(null, 'packageform', 'package', 'visitorprice', 'visitorprice', 'Giá khách/giờ', 'numeric', '', NULL, 4107, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-13 02:30:40', NULL, NULL),
+(null, 'packageform', 'package', 'visitorprice', 'visitorprice', 'Giá khách/h', 'numeric', '', NULL, 4107, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-13 02:30:40', NULL, NULL),
 (null, 'packageform', 'package', 'allowcredit', 'allowcredit', 'Cho phép nợ', 'radio', '{"label":["Có", "Không"],"value":[1,2],"sameline":1}', 1, 4109, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 16:40:22', NULL, NULL),
 (null, 'packageform', 'package', 'discountbar', 'discountbar', 'Giảm giá bar', 'percentage', '', NULL, 4110, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 04:43:28', NULL, NULL),
 (null, 'packageform', 'package', 'locker', 'locker', 'Locker', 'radio', '{"label":["Có", "Không"],"value":[1,2],"sameline":1}', '2', '4110', NULL, NULL, NULL, NULL, '1', NULL, NULL, '2016-01-14 23:40:22', NULL, NULL);
@@ -112,7 +112,7 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'memberpackage', 'member_package', 'price', 'price', 'Price', 'money', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
 (null, 'memberpackage', 'member_package', 'efffrom', 'efffrom', 'Bắt đầu', 'date', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
 (null, 'memberpackage', 'member_package', 'effto', 'effto', 'Hết hạn', 'date', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
-(null, 'memberpackage', 'member_package', 'visitorprice', 'visitorprice', 'Giá khách ngoài', 'money', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL);
+(null, 'memberpackage', 'member_package', 'visitorprice', 'visitorprice', 'Giá khách/h', 'money', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL);
 
 DELETE FROM ddfields WHERE table_name = 'group_package' AND object_name = 'group_package';
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
@@ -128,7 +128,7 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'group_package', 'group_package', 'locker', 'locker', 'Locker', 'radio', '{"label":["Có", "Không"],"value":[1,2],"sameline":1}', 2, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 16:40:22', NULL, NULL),
 (null, 'group_package', 'group_package', 'efffrom', 'efffrom', 'Ngày bắt đầu', 'date', '', 0, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-15 00:53:33', NULL, NULL),
 (null, 'group_package', 'group_package', 'effto', 'effto', 'Ngày hết hạn', 'date', '', 0, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-15 00:53:33', NULL, NULL),
-(null, 'group_package', 'group_package', 'visitorprice', 'visitorprice', 'Giá khách ngoài', 'money', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-19 04:03:17', NULL, NULL);
+(null, 'group_package', 'group_package', 'visitorprice', 'visitorprice', 'Giá khách/h', 'money', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-19 04:03:17', NULL, NULL);
 
 DELETE FROM ddfields WHERE table_name = 'customer_timelog' AND object_name IN ('memberchecking', 'visitorchecking');
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
