@@ -97,7 +97,7 @@ class CheckingController extends Controller
     $op = $request->query->get('op', 'member');
     switch ($op) {
       case 'checkin':
-        $tmp = $formbuilder->GenerateLayout('visitorchecking', "col_name NOT IN ('checkout', 'printedpapers')");
+        $tmp = $formbuilder->GenerateLayout('visitorchecking', "col_name NOT IN ('checkout')");
         $op = 'Check in';
         break;
 
@@ -149,6 +149,7 @@ class CheckingController extends Controller
               $group = $services->getGroupByMemberId($postdata['memberid']);
               if (!empty($group)) {
                 $postdata['grouppackageid'] = $package['grouppackageid'];
+                $data['v'] = $connection->insert($table, $postdata);
               } else {
                 if (!empty($package)) {
                   $postdata['memberpackageid'] = $package['memberpackageid'];
@@ -178,12 +179,12 @@ class CheckingController extends Controller
           $dataObj = $formbuilder->PrepareInsert($_POST, 'visitorchecking');
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
-              $package = $services->getPackageByMemberId($postdata['memberid']);
+              $package = $services->getPackageByMemberId_alt($postdata['memberid']);
               $group = $services->getGroupByMemberId($postdata['memberid']);
               if (!empty($group)) {
-                $postdata['grouppackageid'] = $package['id'];
+                $postdata['grouppackageid'] = $package['grouppackageid'];
               } else {
-                $postdata['memberpackageid'] = $package['id'];
+                $postdata['memberpackageid'] = $package['memberpackageid'];
               }
               $postdata['isvisitor'] = 1;
               $data['v'] = $connection->insert($table, $postdata);
@@ -228,17 +229,18 @@ class CheckingController extends Controller
    * @Route("/customer/{id}/history", name = "customer_history")
    */
   public function customerHistoryAction($id){
+    // Get services.
     $services = $this->get('app.services');
+    $validation = $this->get('app.validation');
+    // Get connection.
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT name, phone FROM `member` WHERE id=:id and active=1");
-    $statement->bindParam(':id', $id);
-    $statement->execute();
-    $member = $statement->fetchAll();
+    //  Get member by id.
+    $member = $services->loadMember($id);
     $data = array();
     if (empty($member)) throw $this->createNotFoundException('Không tìm thấy thành viên hoặc thành viên này ngừng hoạt động.');
-    $data['name'] = $member[0]['name'];
-    $data['phone'] = $member[0]['phone'];
+    $data['name'] = $member['name'];
+    $data['phone'] = $member['phone'];
     // Get package.
     $package = $services->getPackageByMemberId($id);
     $data['packagename'] = $package['name'];
@@ -246,15 +248,16 @@ class CheckingController extends Controller
     $data['maxdays'] = $package['maxdays'];
     $data['price_hour'] = 0 < $package['maxhours'] ? $package['price'] / $package['maxhours'] : 0;
     // Get effective from datetime start using package
-    $statement = $connection->prepare("SELECT efffrom FROM `member_package`
+    $statement = $connection->prepare("SELECT * FROM `member_package`
     WHERE memberid=:memberid and active=1 and packageid=:packageid");
     $statement->bindParam(':memberid', $id);
     $statement->bindParam(':packageid', $package['id']);
     $statement->execute();
     $member_package = $statement->fetchAll();
+
     if (empty($member_package)) {
       $group = $services->getGroupByMemberId($id);
-      $statement = $connection->prepare("SELECT efffrom FROM `group_package`
+      $statement = $connection->prepare("SELECT * FROM `group_package`
       WHERE groupid=:groupid and active=1 and packageid=:packageid");
       $statement->bindParam(':groupid', $group['groupid']);
       $statement->bindParam(':packageid', $package['id']);
@@ -262,10 +265,17 @@ class CheckingController extends Controller
       $group_package = $statement->fetchAll();
       if (empty($group_package)) throw $this->createNotFoundException('Thành viên thuộc nhóm không dùng gói nào.');
       $efffrom = $group_package[0]['efffrom'];
+      $max_printedpaper = $group_package[0]['maxprintpapers'];
       $members = $services->getMembersInGroup($group['groupid']);
+      $visitor_hours = $validation->getVisitorHoursOfGroup($group_package[0]['id']);
+      $data['group_name'] = $group['name'];
+      $price = $group_package[0]['price'];
     } else {
       $members = array($id);
+      $max_printedpaper = $member_package[0]['maxprintpapers'];
       $efffrom = $member_package[0]['efffrom'];
+      $visitor_hours = $validation->getVisitorHours($member_package[0]['id']);
+      $price = $member_package[0]['price'];
     }
     // Get total hour is used.
     $tmp = implode(', ', $members);
@@ -274,15 +284,19 @@ class CheckingController extends Controller
     $statement->execute();
     $timelogs = $statement->fetchAll();
     $totalMinutes = null;
+    $totalPritedPaper = null;
     $logs = array();
     $idx = 0;
     foreach ($timelogs as $timelog) {
+      $tmp = $services->loadMember($timelog['memberid']);
       if (null == $timelog['checkout']) {
         $current_log = ceil((time() - $timelog['checkin']) / 60);
         $totalMinutes += $current_log;
       } else {
         $totalMinutes += $timelog['visitedhours'];
       }
+      $totalPritedPaper += $timelog['printedpapers'];
+      $timelog['member_name'] = $tmp['name'];
       $logs[++$idx] = $timelog;
     }
     $totalHours = ceil($totalMinutes/60);// Need to calculate by minutes
@@ -293,9 +307,23 @@ class CheckingController extends Controller
     } else {
       $totalHoursOver = 0;
     }
+    // Printed paper.
+    $data['price'] = $price;
+    $data['maxprintpapers'] = $max_printedpaper;
+    $data['used_pritedpapers'] = $totalPritedPaper;
+    $data['over_printedpapers'] = abs(min(0, $max_printedpaper - $totalPritedPaper));
+    $data['money_printedpaper'] = $data['over_printedpapers'] * 1000;
+    // Total hours that member used.
     $data['totalhours'] = $totalMinutes;
     $data['totalhoursover'] = $totalHoursOver;
-    $data['money'] = $totalHoursOver * $data['price_hour']/60;
+    // Total hours of visitors.
+    $totalvisitorhours = null;
+    foreach ($visitor_hours as $value) {
+      $totalvisitorhours += $value['visit'];
+    }
+    $data['visitor_hours'] = max(0, $totalvisitorhours);
+
+    $data['money'] = $price + $totalHoursOver * $data['price_hour']/60 + $data['money_printedpaper'];
     $data['logs'] = $logs;
     $data['efffrom'] = $efffrom;
     $data['memberid'] = $id;
@@ -497,14 +525,6 @@ class CheckingController extends Controller
     );
     return $response;
   }
-
-  /**
-   * @Route("/get-member-ischeckin", name = "get_member_ischeckin")
-   *
-   * Get member is check in, not yet checkout.
-   */
-  /*public function getMemberIsCheckinAction(){
-  }*/
 
   /**
    * Get search form.

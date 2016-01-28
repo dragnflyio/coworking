@@ -143,8 +143,7 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'visitorchecking', 'customer_timelog', 'checkout', 'checkout', 'Check out', 'datetime', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-19 20:50:59', NULL, NULL),
 (null, 'memberchecking', 'customer_timelog', 'id', 'id', '', 'hidden', '', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-13 03:57:27', NULL, NULL),
 (null, 'visitorchecking', 'customer_timelog', 'id', 'id', '', 'hidden', '', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-13 03:57:27', NULL, NULL),
-(null, 'memberchecking', 'customer_timelog', 'printedpapers', 'printedpapers', 'Số tờ in', 'numeric', '', NULL, 4102, NULL, NULL, NULL, 1, 1, NULL, NULL, '2016-01-27 09:09:26', NULL, NULL),
-(null, 'visitorchecking', 'customer_timelog', 'printedpapers', 'printedpapers', 'Số tờ in', 'numeric', '', NULL, 4102, NULL, NULL, NULL, 1, 1, NULL, NULL, '2016-01-27 09:09:26', NULL, NULL);
+(null, 'memberchecking', 'customer_timelog', 'printedpapers', 'printedpapers', 'Số tờ in', 'numeric', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-27 09:09:26', NULL, NULL);
 
 DELETE FROM ddfields WHERE table_name = 'room' AND object_name = 'room';
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES

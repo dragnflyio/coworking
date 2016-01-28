@@ -11,6 +11,9 @@
       <div class="col-md-12">
         <form class="form-horizontal" method="post" id="f_roomsearch">
           {{form|raw}}
+          <div class="row">
+          <input type="submit" class="invisible" value="submit">
+          </div>
         </form>
       </div>
       <div class="col-md-12">
@@ -78,7 +81,10 @@
       }
 
       doSearch();
-
+      $('#f_roomsearch').submit(function(e){
+        e.preventDefault();
+         $('#btnsearch').click();
+      })
       $('#btnsearch').click(function(e){
         e.preventDefault();
         $('#list-room').html('<tr><th colspan="7" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');

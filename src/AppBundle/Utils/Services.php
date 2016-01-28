@@ -70,7 +70,7 @@ class Services{
    * @return array $group
    */
   function getGroupByMemberId($memberid){
-    $statement = $this->em->prepare("SELECT groupid FROM `group_member` WHERE memberid=:memberid");
+    $statement = $this->em->prepare("SELECT groups.*, group_member.groupid FROM `group_member` LEFT JOIN groups ON groups.id = group_member.groupid WHERE memberid=:memberid");
     $statement->bindParam(':memberid', $memberid);
     $statement->execute();
     $group_member = $statement->fetchAll();
@@ -183,5 +183,21 @@ class Services{
     } else {
       return $rows;
     }
+  }
+
+  /**
+   * Load member by id
+   *
+   * @param int $memberid
+   *
+   * @return array $member
+   */
+  function loadMember($memberid){
+    $statement = $this->em->prepare("SELECT * FROM `member` WHERE id=:id and active=1");
+    $statement->bindParam(':id', $memberid);
+    $statement->execute();
+    $rows = $statement->fetchAll();
+    $member = (empty($rows) ? $rows : $rows[0]);
+    return $member;
   }
 }
