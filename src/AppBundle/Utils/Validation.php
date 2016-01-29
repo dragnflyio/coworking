@@ -36,6 +36,14 @@ class Validation{
 	function updateSessionNewPackage($old_memberpackageid, $new_memberpackageid){
 	  return $this->em->executeUpdate('UPDATE customer_timelog SET memberpackageid = ? WHERE memberpackageid = ? AND 1 = status', array($new_memberpackageid, $old_memberpackageid));
 	}
+
+  /**
+   * Update new member package to opening checked in session
+   */
+  function updateSessionNewPackageForGroup($old_grouppackageid, $new_grouppackageid){
+    return $this->em->executeUpdate('UPDATE customer_timelog SET grouppackageid = ? WHERE grouppackageid = ? AND 1 = status', array($new_grouppackageid, $old_grouppackageid));
+  }
+
 	/**
 	 * Get current active package for a member
 	 */
@@ -108,9 +116,9 @@ class Validation{
             }
           }
         }
-      }// End for log_data      
+      }// End for log_data
     }
-    // Summarize 
+    // Summarize
     $member_package = $this->em->fetchAssoc('SELECT maxvisitors,visitorprice FROM member_package WHERE id = ?', array($memberpackageid));
     $over_price_visitor = (int)$member_package['visitorprice'];// price over visitor per hour
     $quota = $max_hour * $max_visitor;// quota per day
@@ -141,7 +149,7 @@ class Validation{
 	function getVisitorHoursOfGroup($grouppackageid){
 	  // group by day
 	  $log = $this->em->fetchAll('SELECT DATE(FROM_UNIXTIME(checkin)) AS datecheckin, checkin, checkout FROM customer_timelog WHERE 1=status AND isvisitor = 1 AND grouppackageid = ? ORDER BY checkin', array($grouppackageid));
-	  
+
 	  $retval = $log_data = array();
     if ($log){
       foreach($log as $check){
@@ -176,7 +184,7 @@ class Validation{
             }
           }
         }
-      }// End for log_data      
+      }// End for log_data
     }
     // Summarize
     $group_package = $this->em->fetchAssoc('SELECT maxvisitors,visitorprice FROM group_package WHERE id = ?', array($grouppackageid));
@@ -188,18 +196,18 @@ class Validation{
       $over = $charge = 0;
       foreach ($visitor_data as $time_range => $number_visitor){
         $arr = explode('-', $time_range);
-        $time = ceil(((int)$arr[1] - (int)$arr[0]) / 60);        
-        $total_visitor += $number_visitor * $time;        
+        $time = ceil(((int)$arr[1] - (int)$arr[0]) / 60);
+        $total_visitor += $number_visitor * $time;
       }
       if ($quota < $total_visitor){
         $over = $total_visitor - $quota;
         $charge = $over * $over_price_visitor;
       }
-      
+
       $date_visitor_minutes[$date] = array('visit' => $total_visitor, 'over' => $over, 'charge' => $charge);
     }
     return $date_visitor_minutes;
-	  
+
 	}
 	/**
 	 * Get used hours of member in a package

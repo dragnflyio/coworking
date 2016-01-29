@@ -529,13 +529,16 @@ class GroupController extends Controller
               // Disable current package
               $services->closedGroupPackage($groupid);
               $postdata['groupid'] = $groupid;
-              $data['v'] = $connection->insert($table, $postdata);
+              $connection->insert($table, $postdata);
+              $data['v'] = $connection->lastInsertId();
               // Log activity
               $used_minutes = $services->getUsedHoursInGroup($group_package_current['id']);
               // Get current package
               $fee = $group_package_current['price'] / ($group_package_current['maxhours'] * 60) * $used_minutes;
               // so du
               $remain = $group_package_current['price'] - $fee;
+              // TODO: Update ALL check in but not check out session to new package
+              $validation->updateSessionNewPackageForGroup($group_package_current['id'], $data['v']);
               $log = array(
                 'groupid' => $groupid,
                 'code' => 'changepackage',
