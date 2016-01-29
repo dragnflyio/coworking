@@ -336,17 +336,18 @@ class CheckingController extends Controller
    * @Route("/customer/{id}/print-history", name = "customer_print_history")
    */
   public function printHistoryAction($id){
+    // Get services.
     $services = $this->get('app.services');
+    $validation = $this->get('app.validation');
+    // Get connection.
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    $statement = $connection->prepare("SELECT name, phone FROM `member` WHERE id=:id and active=1");
-    $statement->bindParam(':id', $id);
-    $statement->execute();
-    $member = $statement->fetchAll();
+    //  Get member by id.
+    $member = $services->loadMember($id);
     $data = array();
     if (empty($member)) throw $this->createNotFoundException('Không tìm thấy thành viên hoặc thành viên này ngừng hoạt động.');
-    $data['name'] = $member[0]['name'];
-    $data['phone'] = $member[0]['phone'];
+    $data['name'] = $member['name'];
+    $data['phone'] = $member['phone'];
     // Get package.
     $package = $services->getPackageByMemberId($id);
     $data['packagename'] = $package['name'];
@@ -354,15 +355,16 @@ class CheckingController extends Controller
     $data['maxdays'] = $package['maxdays'];
     $data['price_hour'] = 0 < $package['maxhours'] ? $package['price'] / $package['maxhours'] : 0;
     // Get effective from datetime start using package
-    $statement = $connection->prepare("SELECT efffrom FROM `member_package`
+    $statement = $connection->prepare("SELECT * FROM `member_package`
     WHERE memberid=:memberid and active=1 and packageid=:packageid");
     $statement->bindParam(':memberid', $id);
     $statement->bindParam(':packageid', $package['id']);
     $statement->execute();
     $member_package = $statement->fetchAll();
+
     if (empty($member_package)) {
       $group = $services->getGroupByMemberId($id);
-      $statement = $connection->prepare("SELECT efffrom FROM `group_package`
+      $statement = $connection->prepare("SELECT * FROM `group_package`
       WHERE groupid=:groupid and active=1 and packageid=:packageid");
       $statement->bindParam(':groupid', $group['groupid']);
       $statement->bindParam(':packageid', $package['id']);
@@ -370,26 +372,37 @@ class CheckingController extends Controller
       $group_package = $statement->fetchAll();
       if (empty($group_package)) throw $this->createNotFoundException('Thành viên thuộc nhóm không dùng gói nào.');
       $efffrom = $group_package[0]['efffrom'];
+      $max_printedpaper = $group_package[0]['maxprintpapers'];
       $members = $services->getMembersInGroup($group['groupid']);
+      $visitor_hours = $validation->getVisitorHoursOfGroup($group_package[0]['id']);
+      $data['group_name'] = $group['name'];
+      $price = $group_package[0]['price'];
     } else {
       $members = array($id);
+      $max_printedpaper = $member_package[0]['maxprintpapers'];
       $efffrom = $member_package[0]['efffrom'];
+      $visitor_hours = $validation->getVisitorHours($member_package[0]['id']);
+      $price = $member_package[0]['price'];
     }
     // Get total hour is used.
     $tmp = implode(', ', $members);
     $statement = $connection->prepare("SELECT * FROM `customer_timelog`
-    WHERE memberid IN ($tmp) AND $efffrom <= checkin  AND visitorname IS NULL");//Why dont use isvisitor
+    WHERE memberid IN ($tmp) AND $efffrom <= checkin  AND 0=isvisitor AND 1=status");
     $statement->execute();
     $timelogs = $statement->fetchAll();
     $totalMinutes = null;
+    $totalPritedPaper = null;
     $idx = 0;
     foreach ($timelogs as $timelog) {
+      $tmp = $services->loadMember($timelog['memberid']);
       if (null == $timelog['checkout']) {
         $current_log = ceil((time() - $timelog['checkin']) / 60);
         $totalMinutes += $current_log;
       } else {
         $totalMinutes += $timelog['visitedhours'];
       }
+      $totalPritedPaper += $timelog['printedpapers'];
+      $timelog['member_name'] = $tmp['name'];
     }
     $totalHours = ceil($totalMinutes/60);// Need to calculate by minutes
     // if ($totalHours > $package['maxhours']) {
@@ -399,13 +412,71 @@ class CheckingController extends Controller
     } else {
       $totalHoursOver = 0;
     }
+    // Printed paper.
+    $data['price'] = $price;
+    $data['maxprintpapers'] = $max_printedpaper;
+    $data['used_pritedpapers'] = $totalPritedPaper;
+    $data['over_printedpapers'] = abs(min(0, $max_printedpaper - $totalPritedPaper));
+    $data['money_printedpaper'] = $data['over_printedpapers'] * 1000;
+    // Total hours that member used.
     $data['totalhours'] = $totalMinutes;
     $data['totalhoursover'] = $totalHoursOver;
-    $data['money'] = $totalHoursOver * $data['price_hour']/60;
+    // Total hours of visitors.
+    $totalvisitorhours = null;
+    foreach ($visitor_hours as $value) {
+      $totalvisitorhours += $value['visit'];
+    }
+    $data['visitor_hours'] = max(0, $totalvisitorhours);
+
+    $data['money'] = $price + $totalHoursOver * $data['price_hour']/60 + $data['money_printedpaper'];
     $data['efffrom'] = $efffrom;
+    $data['memberid'] = $id;
     return $this->render('checking/print.html.twig', [
       'data' => $data,
     ]);
+  }
+
+  /**
+   * @Route("/customer/{id}/payment", name = "customer_payment")
+   */
+  public function customerPaymentAction($id){
+    $services = $this->get('app.services');
+    $validation = $this->get('app.validation');
+    // Get connection.
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+
+    $group = $services->getGroupByMemberId($id);
+    if (!empty($group)){
+      $members = $services->getMembersInGroup($group['groupid']);
+      $tmp = implode(', ', $members);
+      $statement = $connection->prepare("SELECT * FROM `customer_timelog`
+      WHERE memberid IN ($tmp) AND 0=isvisitor AND 1=status");
+      $statement->execute();
+      $timelogs = $statement->fetchAll();
+      foreach ($timelogs as $log) {
+        $log['status'] = 2;
+        $data['v'] = $connection->update('customer_timelog', $log, array('id' => $log['id']));
+      }
+      $data['m'] = 'Đã thanh toán thành công';
+    } else {
+      $statement = $connection->prepare("SELECT * FROM `customer_timelog`
+      WHERE memberid = $id AND 0=isvisitor AND 1=status");
+      $statement->execute();
+      $timelogs = $statement->fetchAll();
+      foreach ($timelogs as $log) {
+        $log['status'] = 2;
+        $data['v'] = $connection->update('customer_timelog', $log, array('id' => $log['id']));
+      }
+      $data['m'] = 'Đã thanh toán thành công';
+    }
+
+    $response = new Response(
+      json_encode($data),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
   }
 
   /**

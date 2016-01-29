@@ -1,15 +1,33 @@
 <ul class="list-group">
-  <li class = "list-group-item list-group-item-info">Tên thành viên: {{data['name']}}</li>
+  <li class = "list-group-item list-group-item-info">Tên thành viên: {{data['name']}}
+    {% if data['group_name'] is defined %}
+      - Nhóm: {{data['group_name']}}</li>
+    {% endif %}
+  </li>
+
   <li class = "list-group-item list-group-item-info">Điện thoại: {{data['phone']}}</li>
   <li class = "list-group-item list-group-item-info">Gói đang dùng: {{data['packagename']}}</li>
+  <li class = "list-group-item list-group-item-info">Gía: {{data['price']|number_format(0, '.', ',')}} VND</li>
   <li class = "list-group-item list-group-item-info">Ngày đăng ký dùng gói: {{data['efffrom']|date("d/m/Y")}}</li>
-  <li class = "list-group-item list-group-item-info">Số giờ trong gói: {{data['maxhours']}}  giờ</li>
+  <li class = "list-group-item list-group-item-info">Số giờ trong gói: {{data['maxhours']}} giờ</li>
+  <li class = "list-group-item list-group-item-info">Số tờ in trong gói: {{data['maxprintpapers']}} tờ</li>
   <li class = "list-group-item list-group-item-info">Số giờ đã dùng: {{data['totalhours']}}  phút</li>
   <li class = "list-group-item list-group-item-info">Số giờ vượt quá: {{data['totalhoursover']}} phút</li>
-  <li class = "list-group-item list-group-item-info">Thành tiền: {{data['money']|number_format(2, '.', ',')}} VND</li>
+  <li class = "list-group-item list-group-item-info">Số giờ khách: {{data['visitor_hours']}} phút</li>
+  <li class = "list-group-item list-group-item-info">Số tờ đã in: {{data['used_pritedpapers']}} tờ</li>
+  <li class = "list-group-item list-group-item-info">Số tờ in vượt quá: {{data['over_printedpapers']}} tờ</li>
+  <li class = "list-group-item list-group-item-info">Tiền tờ in: {{data['money_printedpaper']|number_format(0, '.', ',')}} VND</li>
+  <li class = "list-group-item list-group-item-info">Thành tiền: {{data['money']|number_format(0, '.', ',')}} VND</li>
 </ul>
 {% block javascripts %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="{{ asset('js/util.js') }}"></script>
   <script>
     window.print();
+  </script>
+  <script>
+    jQuery(function(){
+      ajaxPost('/customer/{{data['memberid']}}/payment', {}, function(d){});
+    })
   </script>
 {% endblock %}
