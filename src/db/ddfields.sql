@@ -77,7 +77,7 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'group', 'groups', 'address', 'address', 'Địa chỉ', 'text', '', NULL, 4102, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-27 07:40:28', NULL, NULL),
 (null, 'group', 'groups', 'phone', 'phone', 'Điện thoại', 'text', '', NULL, 4101, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-27 07:40:33', NULL, NULL),
 (null, 'group', 'groups', 'name', 'name', 'Tên', 'text', '', NULL, 4101, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-27 07:40:35', NULL, NULL),
-(null, 'group', 'groups', 'regionid', 'regionid', 'Địa điểm', 'TEXT_MULTI', '@/region/get-json', NULL, 4101, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-27 07:40:35', NULL, NULL);
+(null, 'group', 'groups', 'regionid', 'regionid', 'Địa điểm', 'SELECT', '/region/get-json', NULL, 4101, NULL, NULL, NULL, 255, 1, NULL, NULL, '2016-01-27 07:40:35', NULL, NULL);
 
 
 DELETE FROM ddfields WHERE table_name = 'member' AND object_name = 'customerform';
@@ -90,7 +90,7 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'customerform', 'member', 'email', 'email', 'Email', 'TEXT_MULTI', '', NULL, 4105, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-16 08:41:41', NULL, NULL),
 (null, 'customerform', 'member', 'idno', 'idcardnumber', 'CMND', 'text', '', NULL, 4102, NULL, NULL, NULL, 20, 1, NULL, NULL, '2016-01-17 09:17:14', NULL, NULL),
 (null, 'customerform', 'member', 'name', 'name', 'Tên', 'text', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-14 09:40:22', NULL, NULL),
-(null, 'customerform', 'member', 'regionid', 'regionid', 'Địa điểm', 'TEXT_MULTI', '@/region/get-json', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-27 07:14:28', NULL, NULL);
+(null, 'customerform', 'member', 'regionid', 'regionid', 'Địa điểm', 'SELECT', '/region/get-json', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-27 07:14:28', NULL, NULL);
 
 DELETE FROM ddfields WHERE table_name = 'group_member' AND object_name = 'group_member';
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
