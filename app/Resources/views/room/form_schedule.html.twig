@@ -1,0 +1,50 @@
+{% extends "::base.html.twig" %}
+{% block title %}Toong - Đặt phòng{% endblock %}
+{% block body %}
+  <div class = "container">
+    <div class = "row">
+      <div class = "col-md-12">
+        <h1 class = "page-title">Đặt phòng</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        {{ form|raw}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="center-block width200">
+          <a href = "#" class = "btn btn-primary btn-submit">Save</a>
+          <a href = "{{ path('room_schedule') }}" class = "btn btn-default">Back</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+  <script>
+  {{script|raw}}
+  </script>
+
+  <script>
+    jQuery(function(){
+      // Validation room
+      validation['roomid'] = {minlength:1, message: 'Chọn một phòng!'};
+      validation['relatedusers'] = {minlength:1, message: 'Chọn thành viên!'};
+      // Add/Update group.
+      $('.btn-submit').click(function(e){
+        var action;
+        if ($('#id').val() == '') {
+          action = 'schedule';
+        } else {
+          action = 'change_schedule';
+        }
+        e.preventDefault();
+        if (beforePost() == true) {
+          ajaxPost('/room/update?action=' + action, $('#f_room_schedule').serialize(), function(d){})
+        }
+      });
+    })
+  </script>
+{% endblock %}
