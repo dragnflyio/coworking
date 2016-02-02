@@ -422,4 +422,36 @@ class CustomerController extends BaseController{
 		return $response;
 	}
 
+  /**
+   * @Route("/json", name = "member_json")
+   */
+  public function jsonAction(Request $request){
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $txt_search = $request->query->get('search', '');
+
+    if (empty($txt_search)) {
+      $statement = $connection->prepare("SELECT * FROM member where active = 1 LIMIT 30");
+    } else {
+      $statement = $connection->prepare("SELECT * FROM member where active = 1 and name LIKE :name LIMIT 30");
+      $txt_search = "%" . $txt_search . "%";
+      $statement->bindParam(':name', $txt_search);
+    }
+    $statement->execute();
+    $rows = $statement->fetchAll();
+
+    // Statement with members table.
+    $members = array();
+    foreach ($rows as $member) {
+      $members[] = array($member['id'], $member['name']);
+    }
+
+    $response = new Response(
+      json_encode($members),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
+
 }

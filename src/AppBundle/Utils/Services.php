@@ -200,4 +200,20 @@ class Services{
     $member = (empty($rows) ? $rows : $rows[0]);
     return $member;
   }
+
+  /**
+   * Load room by id
+   *
+   * @param int $roomid
+   *
+   * @return array $room
+   */
+  function loadRoom($roomid){
+    $statement = $this->em->prepare("SELECT * FROM `room` WHERE id=:id");
+    $statement->bindParam(':id', $roomid);
+    $statement->execute();
+    $rows = $statement->fetchAll();
+    $room = (empty($rows) ? $rows : $rows[0]);
+    return $room;
+  }
 }

@@ -36,10 +36,10 @@ class PackageController extends BaseController{
 		$retval = array();
 
 		$row = array();
-		$row['id'] = 'packagename';
-		$row['label'] = 'Tên gói';
-		$row['type'] = 'text';
-		$row['colname'] = 'name';
+		$row['id'] = 'roomid';
+		$row['label'] = 'Phòng';
+		$row['type'] = 'select';
+		$row['colname'] = 'roomid';
 		$row['pos'] = array('row' => 1, 'col' => 1);
 		$retval[] = $row;
 
@@ -198,7 +198,7 @@ class PackageController extends BaseController{
 			case 'getpackage':
 				$id = $request->query->get('id', 0);
 				if ($row = $connection->fetchAssoc("SELECT * FROM package WHERE id = ?", array($id))){
-					$data = $row;					
+					$data = $row;
 				}
 				break;
 			case 'testsearch':
