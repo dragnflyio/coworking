@@ -278,7 +278,7 @@ class CustomerController extends BaseController{
             'newvalue' => $package['packagename'],
             'createdtime' => time(),
             'amount' => NULL,
-            );
+          );
           $connection->insert('customer_activity', $log);
         }
         if ('change' == $action){
