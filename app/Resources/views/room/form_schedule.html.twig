@@ -32,6 +32,16 @@
       // Validation room
       validation['roomid'] = {minlength:1, message: 'Chọn một phòng!'};
       validation['relatedusers'] = {minlength:1, message: 'Chọn thành viên!'};
+      validation['fromtime'] = {jsfunction:function(){
+        if (cakfromtime.get() < 1){
+          return "Nhập thời gian đăng ký vào!"
+        }
+        return '';
+      }};
+      validation['totime'] = {jsfunction:function(){
+        if (caktotime.get() <= cakfromtime.get()) return "Thời gian kết thúc phải lớn hơn thời gian bắt đầu";
+        return '';
+      }};
       // Add/Update group.
       $('.btn-submit').click(function(e){
         var action;
