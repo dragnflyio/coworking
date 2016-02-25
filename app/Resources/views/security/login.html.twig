@@ -1,30 +1,54 @@
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}Toong - Đăng nhập{% endblock %}</title>
+  {% block stylesheets %}{% endblock %}
+  <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}" />
+</head>
 {% block body %}
-  {% if error %}
-    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-  {% endif %}
+  <div class = "container">
+    <div class = "row">
+      <div class = "col-md-12">
+        <h1 class = "text-center">Đăng nhập</h1>
+        {% if error %}
+          <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
 
-  <form action="{{ path('login_check') }}" method="post">
-    <div class = "form-item">
-      <label for="username">Tên tài khoản:</label>
-      <input type="text" id="username" name="_username" value="{{ last_username }}" />
+        <form action="{{ path('login_check') }}" method="post" class = "form-horizontal">
+          <div class = "form-group">
+            <label for="username" class = "col-sm-2 control-label">Tên tài khoản:</label>
+            <div class="col-sm-10">
+              <input type="text" class = "form-control" id="username" name="_username" value="{{ last_username }}" />
+            </div>
+          </div>
+          <div class = "form-group">
+            <label for="password" class = "col-sm-2 control-label">Mật khẩu:</label>
+            <div class = "col-sm-10">
+              <input type="password" id="password" name="_password" class="form-control" />
+            </div>
+          </div>
+          <div class = "form-group">
+            <label for="password" class = "col-sm-2 control-label">Địa điểm:</label>
+            <div class = "col-sm-10">
+              <select name = "_location" class = "form-control">
+                <option value="1">Tràng thi</option>
+                <option value="2">Tô Ngọc Vân</option>
+              </select>
+            </div>
+          </div>
+          {#
+              If you want to control the URL the user
+              is redirected to on success (more details below)
+              <input type="hidden" name="_target_path" value="/account" />
+          #}
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class = "btn btn-default">Đăng nhập</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
-    <div class = "form-item">
-      <label for="password">Mật khẩu:</label>
-      <input type="password" id="password" name="_password" />
-    </div>
-    <div class = "form-item">
-      <label for="password">Địa điểm:</label>
-      <select name = "_location">
-        <option value="1">Tràng thi</option>
-        <option value="2">Tô Ngọc Vân</option>
-      </select>
-    </div>
-    {#
-        If you want to control the URL the user
-        is redirected to on success (more details below)
-        <input type="hidden" name="_target_path" value="/account" />
-    #}
-
-    <button type="submit">Đăng nhập</button>
-  </form>
+  </div>
 {% endblock %}
