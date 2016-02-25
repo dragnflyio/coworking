@@ -14,6 +14,9 @@ class CategoryController extends Controller
    * @Route("/category", name="category")
    */
   public function indexAction(){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
     $statement = $connection->prepare("SELECT * FROM product_category");
@@ -32,6 +35,9 @@ class CategoryController extends Controller
    * @Route("/category/add", name = "category_add")
    */
   public function addAction(){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $formbuilder = $this->get('app.formbuilder');
     $tmp = $formbuilder->GenerateLayout('category');
     return $this->render('category/form.html.twig', [
@@ -45,6 +51,9 @@ class CategoryController extends Controller
    * @Route("/category/update", name = "category_update")
    */
   public function updateAction() {
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $formbuilder = $this->get('app.formbuilder');
     $request = Request::createFromGlobals();
     $id = $request->query->get('id', 0);

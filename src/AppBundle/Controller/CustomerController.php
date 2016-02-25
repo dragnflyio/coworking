@@ -19,18 +19,24 @@ class CustomerController extends BaseController{
      * @Route("/add", name="add_customer")
      */
     public function addAction(Request $request){
-		$formbuilder = $this->get('app.formbuilder');
-		$tmp = $formbuilder->GenerateLayout('customerform');
+      if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+        throw $this->createAccessDeniedException();
+      }
+  		$formbuilder = $this->get('app.formbuilder');
+  		$tmp = $formbuilder->GenerateLayout('customerform');
 
-        return $this->render('customer/add.html.twig', [
-			'form' => $tmp,
-			'script' => $formbuilder->mscript
-        ]);
+          return $this->render('customer/add.html.twig', [
+  			'form' => $tmp,
+  			'script' => $formbuilder->mscript
+          ]);
     }
 	/**
      * @Route("/editpackage/{id}", name="edit_customer_package", requirements={"id" = "\d+"})
      */
 	public function editpackageAction($id){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
 		$formbuilder = $this->get('app.formbuilder');
 		$validation = $this->get('app.validation');
 		$em = $this->getDoctrine()->getEntityManager();
@@ -62,6 +68,9 @@ class CustomerController extends BaseController{
      * @Route("/addpackage/{id}", name="add_customer_package", requirements={"id" = "\d+"})
      */
 	public function addpackageAction($id){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
 		$formbuilder = $this->get('app.formbuilder');
 		$validation = $this->get('app.validation');
 		$em = $this->getDoctrine()->getEntityManager();
@@ -109,6 +118,9 @@ class CustomerController extends BaseController{
 	 * @Route("/", name="list_customer")
      */
     public function listAction(Request $request){
+      if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+        throw $this->createAccessDeniedException();
+      }
 		$formbuilder = $this->get('app.formbuilder');
 		$grp = $this->getCustomerSearchForm();
 

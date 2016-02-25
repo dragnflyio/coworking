@@ -15,3 +15,6 @@ services:
     app.services:
         class: AppBundle\Utils\Services
         arguments: ["@doctrine.orm.entity_manager"]
+    app.login_success_handler:
+        class: AppBundle\Utils\LoginSuccessHandler
+        arguments: ["@doctrine.orm.entity_manager"]

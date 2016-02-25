@@ -15,22 +15,24 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class PackageController extends BaseController{
 
 	/**
-     * @Route("/list", name="list_package")
-	 * @Route("/", name="list_package")
-     */
-    public function listAction(Request $request){
+    * @Route("/list", name="list_package")
+    * @Route("/", name="list_package")
+    */
+  public function listAction(Request $request){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
 		$formbuilder = $this->get('app.formbuilder');
 		$validation = $this->get('app.validation');
 		$grp = $this->getPackageSearchForm();
 
 		$form = $formbuilder->GenerateManualSearchControls($grp);
 
-        return $this->render('package/list.html.twig', [
-			'form' => $form,
-			'script' => $formbuilder->mscript
-        ]);
-
-    }
+    return $this->render('package/list.html.twig', [
+  		'form' => $form,
+  		'script' => $formbuilder->mscript
+    ]);
+  }
 	private function getPackageSearchForm(){
 
 		$retval = array();
@@ -112,14 +114,16 @@ class PackageController extends BaseController{
      * @Route("/add", name="add_package")
      */
     public function addAction(Request $request){
-		$formbuilder = $this->get('app.formbuilder');
-		$tmp = $formbuilder->GenerateLayout('packageform');
+      if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+        throw $this->createAccessDeniedException();
+      }
+  		$formbuilder = $this->get('app.formbuilder');
+  		$tmp = $formbuilder->GenerateLayout('packageform');
 
-        return $this->render('package/add.html.twig', [
-			'form' => $tmp,
-			'script' => $formbuilder->mscript
-        ]);
-
+      return $this->render('package/add.html.twig', [
+    		'form' => $tmp,
+    		'script' => $formbuilder->mscript
+      ]);
     }
 	/**
      * @Route("/edit/{id}", requirements={"id" = "\d+"})

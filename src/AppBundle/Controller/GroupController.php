@@ -21,6 +21,9 @@ class GroupController extends Controller
    * @Route("/", name = "group_list")
    */
   public function indexAction(Request $request){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     // Get form builder.
     $formbuilder = $this->get('app.formbuilder');
     $search_form = $this->getGroupSearchForm();
@@ -46,6 +49,9 @@ class GroupController extends Controller
    * @Route("/add", name ="group_add")
    */
   public function addAction(){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $formbuilder = $this->get('app.formbuilder');
     $tmp = $formbuilder->GenerateLayout('group');
     return $this->render('group/form.html.twig', [
@@ -59,6 +65,9 @@ class GroupController extends Controller
    * @Route("/edit/{id}", requirements={"id" = "\d+"}, name = "group_edit")
    */
   public function editAction($id, Request $request){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $formbuilder = $this->get('app.formbuilder');
     $request = Request::createFromGlobals();
     $gid = (int)$id;
@@ -193,6 +202,9 @@ class GroupController extends Controller
    * Render form for user add member into group
    */
   public function addmemberformAction($id){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $formbuilder = $this->get('app.formbuilder');
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
@@ -383,6 +395,9 @@ class GroupController extends Controller
    * @Route("/addpackage/{id}", name = "group_add_package")
    */
   public function addPackageFormAction($id){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $formbuilder = $this->get('app.formbuilder');
     $validation = $this->get('app.validation');
     $tmp = $formbuilder->GenerateLayout('group_package');

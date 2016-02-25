@@ -18,6 +18,9 @@ class CheckingController extends Controller
    * @Route("/checking", name = "checking_list")
    */
   public function indexAction(){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $services = $this->get('app.services');
     // Get form builder.
     $formbuilder = $this->get('app.formbuilder');
@@ -52,6 +55,9 @@ class CheckingController extends Controller
    * @Route("/member/checking", name = "member_checking")
    */
   public function memberCheckingAction(Request $request){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     // Get connection.
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
@@ -89,6 +95,9 @@ class CheckingController extends Controller
    * @Route("/visitor/checking", name = "visitor_checking")
    */
   public function visitorCheckinAction(Request $request){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     // Get connection.
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
@@ -229,6 +238,9 @@ class CheckingController extends Controller
    * @Route("/customer/{id}/history", name = "customer_history")
    */
   public function customerHistoryAction($id){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     // Get services.
     $services = $this->get('app.services');
     $validation = $this->get('app.validation');
@@ -336,6 +348,9 @@ class CheckingController extends Controller
    * @Route("/customer/{id}/print-history", name = "customer_print_history")
    */
   public function printHistoryAction($id){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     // Get services.
     $services = $this->get('app.services');
     $validation = $this->get('app.validation');
