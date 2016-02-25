@@ -32,6 +32,9 @@ Danh sách khách hàng
 						 	<tr>
 								<th class="width50">#</th>
 								<th>Tên</th>
+								<th>Công ty</th>
+								<th>Nghề nghiệp</th>
+								<th>Địa chỉ bưu phẩm</th>
 								<th>Địa điểm</th>
 								<th>Email</th>
 								<th>Điện thoại</th>
@@ -41,7 +44,7 @@ Danh sách khách hàng
 						</thead>
 						<tbody id="listcustomer">
 						 	<tr>
-						 		<th colspan="7" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
+						 		<th colspan="10" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
 							</tr>
 						</tbody>
 					</table>
@@ -70,6 +73,9 @@ Danh sách khách hàng
 	<p><a href='#'>Dùng <%% package %%></a></p>
 	<%/if%>
 	</td>
+	<td><%company%></td>
+	<td><%job%></td>
+	<td><%postaladdress%></td>
 	<td><%region%></td>
 	<td><%email%></td>
 	<td><%description%></td>
@@ -80,7 +86,7 @@ Danh sách khách hàng
 	<%else%>
 	<a href="/customer/addpackage/<%id%>">Thêm gói</a>
 	<%/if%>
-	| <a href="#" class="deleterow" data-id="<%id%>"> Vô hiệu </a></td>
+	<a href="#" class="deleterow invisible" data-id="<%id%>"> Vô hiệu </a></td>
 	</tr>
 	<%/list%>
 </script>
@@ -95,7 +101,7 @@ jQuery(function(){
 			if (!data.empty){
 				$('#listcustomer').html(mr( $('#template_table').html(), {list:data}))
 			} else {
-				$('#listcustomer').html('<tr><th colspan="7" scope="row" class="text-center">'+ data.empty + '</th></tr>');
+				$('#listcustomer').html('<tr><th colspan="10" scope="row" class="text-center">'+ data.empty + '</th></tr>');
 			}
 		});
 
@@ -114,7 +120,7 @@ jQuery(function(){
 	})
 	$('#btnsearch').click(function(e){
 		e.preventDefault();
-		$('#listcustomer').html('<tr><th colspan="7" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
+		$('#listcustomer').html('<tr><th colspan="10" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
 		doSearch();
 	})
 })

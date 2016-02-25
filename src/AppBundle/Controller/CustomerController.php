@@ -16,23 +16,23 @@ use AppBundle\Utils\Validation;
  */
 class CustomerController extends BaseController{
 	/**
-     * @Route("/add", name="add_customer")
-     */
-    public function addAction(Request $request){
-      if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-        throw $this->createAccessDeniedException();
-      }
-  		$formbuilder = $this->get('app.formbuilder');
-  		$tmp = $formbuilder->GenerateLayout('customerform');
-
-          return $this->render('customer/add.html.twig', [
-  			'form' => $tmp,
-  			'script' => $formbuilder->mscript
-          ]);
+   * @Route("/add", name="add_customer")
+   */
+  public function addAction(Request $request){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
     }
+		$formbuilder = $this->get('app.formbuilder');
+		$tmp = $formbuilder->GenerateLayout('customerform');
+
+    return $this->render('customer/add.html.twig', [
+	    'form' => $tmp,
+	    'script' => $formbuilder->mscript
+    ]);
+  }
 	/**
-     * @Route("/editpackage/{id}", name="edit_customer_package", requirements={"id" = "\d+"})
-     */
+   * @Route("/editpackage/{id}", name="edit_customer_package", requirements={"id" = "\d+"})
+   */
 	public function editpackageAction($id){
     if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
       throw $this->createAccessDeniedException();
@@ -53,20 +53,20 @@ class CustomerController extends BaseController{
 		$form_change = $formbuilder->GenerateLayout('memberpackage','','change_');
 		$script_change = $formbuilder->mscript;
 
-        return $this->render('customer/editpackage.html.twig', [
-			'error' => $error,
-			'form' => $form_update,
-			'form_change' => $form_change,
-			'row' => $row,
-			'package' => $current_package,
-			'memberid' => $id,
-			'script' => $script_update,
-			'script_change' => $script_change
-        ]);
+    return $this->render('customer/editpackage.html.twig', [
+    	'error' => $error,
+    	'form' => $form_update,
+    	'form_change' => $form_change,
+    	'row' => $row,
+    	'package' => $current_package,
+    	'memberid' => $id,
+    	'script' => $script_update,
+    	'script_change' => $script_change
+    ]);
 	}
 	/**
-     * @Route("/addpackage/{id}", name="add_customer_package", requirements={"id" = "\d+"})
-     */
+   * @Route("/addpackage/{id}", name="add_customer_package", requirements={"id" = "\d+"})
+   */
 	public function addpackageAction($id){
     if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
       throw $this->createAccessDeniedException();
@@ -85,17 +85,17 @@ class CustomerController extends BaseController{
 			$tmp = $formbuilder->GenerateLayout('memberpackage');
 		}
 
-        return $this->render('customer/addpackage.html.twig', [
-			'error' => $error,
-			'form' => $tmp,
-			'row' => $row,
-			'id' => $id,
-			'script' => $formbuilder->mscript
-        ]);
+    return $this->render('customer/addpackage.html.twig', [
+    	'error' => $error,
+    	'form' => $tmp,
+    	'row' => $row,
+    	'id' => $id,
+    	'script' => $formbuilder->mscript
+    ]);
 	}
 	/**
-     * @Route("/getpackages")
-     */
+   * @Route("/getpackages")
+   */
 	public function getpackagesAction(){
 		$em = $this->getDoctrine()->getEntityManager();
 		$connection = $em->getConnection();
@@ -108,46 +108,44 @@ class CustomerController extends BaseController{
 			json_encode($data),
 			Response::HTTP_OK,
 			array('content-type' => 'application/json')
-	   	);
-
+	  );
 
 		return $response;
 	}
 	/**
-     * @Route("/list", name="list_customer")
+   * @Route("/list", name="list_customer")
 	 * @Route("/", name="list_customer")
-     */
-    public function listAction(Request $request){
-      if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-        throw $this->createAccessDeniedException();
-      }
-		$formbuilder = $this->get('app.formbuilder');
-		$grp = $this->getCustomerSearchForm();
-
-		$form = $formbuilder->GenerateManualSearchControls($grp);
-
-        return $this->render('customer/list.html.twig', [
-			'form' => $form,
-			'script' => $formbuilder->mscript
-        ]);
-
+   */
+  public function listAction(Request $request){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
     }
+  	$formbuilder = $this->get('app.formbuilder');
+  	$grp = $this->getCustomerSearchForm();
+
+  	$form = $formbuilder->GenerateManualSearchControls($grp);
+
+    return $this->render('customer/list.html.twig', [
+  		'form' => $form,
+  		'script' => $formbuilder->mscript
+    ]);
+  }
 	/**
 	 * Where search for user search
 	 */
 	private function getWhereUserSearchCondition($searchData) {
-		$formbuilder = $this->get('app.formbuilder');
-        $where = '';
-        foreach ($searchData as $data) {
-            // normal fields - colname already there and differ from 'x'
-            if ($data['colname'] != 'x') {
-                $where .= $formbuilder->buildSingleCondition($data);
-            } else {
-				// do yourself
-			}
-        }
-        return $where;
+  	$formbuilder = $this->get('app.formbuilder');
+    $where = '';
+    foreach ($searchData as $data) {
+      // normal fields - colname already there and differ from 'x'
+      if ($data['colname'] != 'x') {
+        $where .= $formbuilder->buildSingleCondition($data);
+      } else {
+		    // do yourself
+      }
     }
+    return $where;
+  }
 	private function getCustomerSearchForm(){
 		$retval = array();
 		$row = array();
@@ -162,10 +160,10 @@ class CustomerController extends BaseController{
 		$row['label'] = 'Email';
 		$row['type'] = 'text';
 		$row['colname'] = 'email';
-		$row['pos'] = array('row' => 2, 'col' => 1);
+		$row['pos'] = array('row' => 1, 'col' => 2);
 		$retval[] = $row;
 
-		$row = array();
+		/*$row = array();
 		$row['id'] = 'trangthai';
 		$row['label'] = 'Trạng thái';
 		$row['colname'] = 'active';
@@ -174,16 +172,16 @@ class CustomerController extends BaseController{
             'sameline' => 1,
             'label' => array('Hoạt động', 'Ngừng hoạt động'),
             'value' => array(1, 2)
-        );
-        $row['ds'] = json_encode($arr);
+          );
+    $row['ds'] = json_encode($arr);
 		$row['pos'] = array('row' => 1, 'col' => 2);
-		$retval[] = $row;
+		$retval[] = $row;*/
 		return $retval;
 	}
 	/**
-     * @Route("/edit/{id}", requirements={"id" = "\d+"})
-     */
-    public function editAction($id, Request $request){
+   * @Route("/edit/{id}", requirements={"id" = "\d+"})
+   */
+  public function editAction($id, Request $request){
 		$formbuilder = $this->get('app.formbuilder');
 		$request = Request::createFromGlobals();
 
@@ -196,20 +194,16 @@ class CustomerController extends BaseController{
 			if ($row = $connection->fetchAssoc("SELECT * FROM member WHERE id = $id")){
 				$tmp = $formbuilder->LoadDatarowToConfig($row, 'customerform');
 			} else throw $this->createNotFoundException('Không tìm thấy khách hàng này');
-
-
 		} else {
 			throw $this->createNotFoundException('Không tìm thấy trang này');
 		}
+    return $this->render('customer/edit.html.twig', [
+    	'form' => $tmp,
+    	'id' => $id,
+    	'script' => $formbuilder->mscript
+    ]);
 
-
-        return $this->render('customer/edit.html.twig', [
-			'form' => $tmp,
-			'id' => $id,
-			'script' => $formbuilder->mscript
-        ]);
-
-    }
+  }
 	/**
 	 * @Route("/formapi")
 	 */
@@ -410,6 +404,9 @@ class CustomerController extends BaseController{
 							'id' => $row['id'],
 							'idx' => ++$idx,
 							'name' => $row['name'],
+              'company' => $row['company'],
+              'job' => $row['job'],
+              'postaladdress' => $row['postaladdress'],
               'region' => $region_name,
 							'email' => $row['email'],
 							'description' => $row['phone'],
