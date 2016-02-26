@@ -41,6 +41,10 @@ class CheckingController extends Controller
       // Get package.
       $package = $services->getPackageByMemberId($memberid);
       $timelog['packagename'] = $package['name'];
+      // Get Region
+      $region = $services->getRegionbyId($timelog['regionid']);
+      $regionname = !empty($region) ? $region['name'] : '';
+      $timelog['regionname'] = $regionname;
       $idx = ++$idx;
       $timelogs[$idx] = (object) $timelog;
     }
@@ -145,6 +149,9 @@ class CheckingController extends Controller
     $connection = $em->getConnection();
     // Get form builder.
     $formbuilder = $this->get('app.formbuilder');
+    // Get current location
+    $user = $this->getUser();
+    $regionid = $user->getLoggedregionId();
 
     $op = $request->query->get('type', 'member');
     switch ($op) {
@@ -153,6 +160,7 @@ class CheckingController extends Controller
           $dataObj = $formbuilder->PrepareInsert($_POST, 'memberchecking');
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
+              $postdata['regionid'] = $regionid;
               // $package = $services->getPackageByMemberId($postdata['memberid']);
               $package = $services->getPackageByMemberId_alt($postdata['memberid']);
               $group = $services->getGroupByMemberId($postdata['memberid']);
@@ -176,6 +184,7 @@ class CheckingController extends Controller
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
               $postdata['visitedhours'] = ($postdata['checkout'] - $postdata['checkin']) / 60;
+              $postdata['regionid'] = $regionid;
               $data['v'] = $connection->update($table, $postdata, array('id' => $_POST['id']));
             }
           }
@@ -188,6 +197,7 @@ class CheckingController extends Controller
           $dataObj = $formbuilder->PrepareInsert($_POST, 'visitorchecking');
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
+              $postdata['regionid'] = $regionid;
               $package = $services->getPackageByMemberId_alt($postdata['memberid']);
               $group = $services->getGroupByMemberId($postdata['memberid']);
               if (!empty($group)) {
@@ -205,6 +215,7 @@ class CheckingController extends Controller
           $dataObj = $formbuilder->PrepareInsert($_POST, 'visitorchecking');
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
+              $postdata['regionid'] = $regionid;
               $postdata['visitedhours'] = ($postdata['checkout'] - $postdata['checkin']) / 60;
               $data['v'] = $connection->update($table, $postdata, array('id' => $_POST['id']));
             }
@@ -553,6 +564,8 @@ class CheckingController extends Controller
       foreach ($rows as $row){
         $memberid = $row['memberid'];
         $package = $services->getPackageByMemberId($memberid);
+        $region = $services->getRegionbyId($row['regionid']);
+        $regionname = !empty($region) ? $region['name'] : '';
         $type = '';
         if (empty($row['visitorname'])) {
           $type = 'member';
@@ -575,6 +588,7 @@ class CheckingController extends Controller
           'checkout' => $checkout,
           'packagename' => $package['name'],
           'type' => $type,
+          'regionname' => $regionname,
         );
         $ret[] = $tmp;
       }
