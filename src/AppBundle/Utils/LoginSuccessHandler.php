@@ -17,7 +17,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     $currenttime = time();
     $regionid = $_POST['_location'];
     $redirect_url = $request->headers->get('host');
-    $count = $this->em->executeUpdate('UPDATE `users` SET lastlogintime = ' . $currenttime . ', regionid = ' . $regionid . ' WHERE username = ?', array($_POST['_username']));
+    $count = $this->em->executeUpdate('UPDATE `users` SET lastlogintime = ' . $currenttime . ', loggedregionid = ' . $regionid . ' WHERE username = ?', array($_POST['_username']));
     $response = new RedirectResponse('/');
     return $response;
   }
