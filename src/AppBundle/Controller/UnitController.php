@@ -15,7 +15,9 @@ class UnitController extends Controller
    * @Route("/unit", name="unit")
    */
   public function unitAction(Request $request){
-    // this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Unable to access this page!');
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $pageUnit = new PageUnit();
     $pageUnitOld = new PageUnit();
     $em = $this->getDoctrine()->getManager();

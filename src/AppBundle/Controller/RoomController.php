@@ -17,6 +17,9 @@ class RoomController extends Controller
    * @Route("/", name = "room_list")
    */
   public function indexAction(){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     // Get form builder.
     $formbuilder = $this->get('app.formbuilder');
     $search_form = $this->getSearchForm();
@@ -31,6 +34,9 @@ class RoomController extends Controller
    * @Route("/add", name = "room_add")
    */
   public function addFormAction(){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $formbuilder = $this->get('app.formbuilder');
     $tmp = $formbuilder->GenerateLayout('room');
     return $this->render('room/form.html.twig', [
@@ -44,6 +50,9 @@ class RoomController extends Controller
    * @Route("/{id}/edit", name = "room_edit", requirements={"id" = "\d+"})
    */
   public function editFormAction($id){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $formbuilder = $this->get('app.formbuilder');
     $request = Request::createFromGlobals();
     $em = $this->getDoctrine()->getEntityManager();
@@ -184,6 +193,9 @@ class RoomController extends Controller
    * @Route("/schedule", name = "room_schedule")
    */
   public function scheduleAction(){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     // Get form builder.
     $formbuilder = $this->get('app.formbuilder');
     $search_form = $this->getSearchRoomScheduleForm();
@@ -247,6 +259,9 @@ class RoomController extends Controller
    * @Route("/schedule/add", name = "room_schedule_add")
    */
   public function scheduleAddAction() {
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
     $formbuilder = $this->get('app.formbuilder');
     $tmp = $formbuilder->GenerateLayout('room_schedule');
     return $this->render('room/form_schedule.html.twig', [
