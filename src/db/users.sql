@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `UNIQ_1483A5E9E7927C74` (`email`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
+ALTER TABLE `users` CHANGE regionid loggedregionid INT
 --
 -- Dumping data for table `users`
 --
