@@ -50,7 +50,7 @@
               {% else %}
                 <td></td>
               {% endif %}
-              <td>Tràng thi</td>
+              <td>{{timelog.regionname}}</td>
               <td>
               {% if 0 == timelog.checkout %}
                 {% if '' !=  timelog.visitorname %}
@@ -78,7 +78,7 @@
     <td><%visitorname%></td>
     <td><%checkin%></td>
     <td><%checkout%></td>
-    <td>Tràng thi</td>
+    <td><%regionname%></td>
     <td>
       <%#if checkout.length %>
       <%else%>

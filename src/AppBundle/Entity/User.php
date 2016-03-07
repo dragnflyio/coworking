@@ -34,6 +34,11 @@ class User implements UserInterface, \Serializable
     private $email;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $loggedregionid;
+
+    /**
      * @ORM\Column(name="is_active", type="boolean")
      */
     private $isActive;
@@ -48,6 +53,11 @@ class User implements UserInterface, \Serializable
     public function getUsername()
     {
         return $this->username;
+    }
+
+    public function getLoggedregionId()
+    {
+        return $this->loggedregionid;
     }
 
     public function getSalt()
