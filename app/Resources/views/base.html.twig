@@ -30,7 +30,12 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Logged in as Admin</a></li>
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        <li><a href="#">Logged as {{app.user.username}}</a></li>
+        <li><a class="link" href="{{ path('logout') }}">Logout</a></li>
+        {% else %}
+        <li><a class="link" href="{{ path('login_route') }}">Login</a></li>
+        {% endif %}
 
       </ul>
 

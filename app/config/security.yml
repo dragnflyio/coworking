@@ -35,7 +35,11 @@ security:
             form_login:
                 login_path: /login
                 check_path: /login_check
+                failure_path: /login
                 success_handler: app.login_success_handler
+            logout:
+                path:   /logout
+                target: /
             # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

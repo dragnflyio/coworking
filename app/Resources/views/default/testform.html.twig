@@ -1,4 +1,25 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+<style>
+	.one-row{
+
+		position:relative;
+		background-color:#ccc;
+		height:24px;
+	}
+	.booked{
+		position: absolute;
+		height:20px;
+		background-color:blue;
+	}
+	.locked{
+		position: absolute;
+		height:20px;
+		background-color:red;
+	}
+	
+</style>
+{% endblock %}
 
 {% block body %}
     <div id="wrapper">
@@ -31,6 +52,16 @@
 								</div>
 								</form>
                 <a href = "#" class = "btn btn-default">Submit</a>
+								</div>
+								<div class="col-md-12">
+									<div class="one-row">
+										<div class="booked" style="top:2px;left:0%; width:20%"></div>
+										<div class="booked" style="top:2px;left:31%; width:10%"></div>
+									</div>
+									<div class="one-row">
+										<div class="booked" style="top:2px;left:1%; width:20%"></div>
+										<div class="locked" style="top:2px;left:41%; width:10%"></div>
+									</div>
 								</div>
             </div>
 {% endblock %}

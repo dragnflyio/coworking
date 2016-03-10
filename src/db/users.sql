@@ -13,15 +13,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `UNIQ_1483A5E9E7927C74` (`email`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
-ALTER TABLE `users` CHANGE regionid loggedregionid INT
---
--- Dumping data for table `users`
---
+ALTER TABLE `users` CHANGE regionid loggedregionid INT;
 
-INSERT INTO `users` (`id`, `username`, `password`, `email`, `is_active`, `avatar`, `createdtime`, `lastlogintime`, `regionid`) VALUES
+
+INSERT INTO `users` (`id`, `username`, `password`, `email`, `is_active`, `avatar`, `createdtime`, `lastlogintime`, `loggedregionid`) VALUES
 (1, 'admin', '$2a$08$jHZj/wJfcVKlIwr5AvR78euJxYK7Ku5kURNhNx.7.CSIJ3Pq6LEPC', 'admin@webmaster.com', 1, NULL, 0, 1456387257, 1),
 (2, 'vananh', '$2a$08$jHZj/wJfcVKlIwr5AvR78euJxYK7Ku5kURNhNx.7.CSIJ3Pq6LEPC', 'vananh@webmaster.com', 1, NULL, 0, 0, 0);
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
