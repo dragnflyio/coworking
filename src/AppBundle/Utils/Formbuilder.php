@@ -797,7 +797,7 @@ class Formbuilder {
             //TODO make another control mimic this
         }
         $allEnterNew = ($allowNew) ? 'true' : 'false';
-		$retVal = '<div class="col-md-10">';
+		$retVal = '<div class="col-md-9">';
         $retVal .= '<input t="tm" type="text" id="' . $id . '" name="' . $id . '" class="col-md-10 form-control '.$class.'" ' . $this->buildAttributeForControl() . '/>';
 
         $retVal .= '<span class="help-inline">';
@@ -868,7 +868,7 @@ class Formbuilder {
             }
         }
 		if(!$timestamp) $timestamp = '0';
-		$retVal = '<div class="col-md-10">';
+		$retVal = '<div class="col-md-9">';
         if ($showTime) {
             $retVal .= '<input type="text" placeholder="' . $plh . '" autocomplete="off" id="' . $id . '_d" name="' . $id . '_d" maxlength="10"';
             $retVal .= 'class="col-md-4 form-control ' . $class2 . '"';
@@ -916,7 +916,7 @@ class Formbuilder {
             $month = $defaultValue['month'];
         if ($defaultValue && $defaultValue['year'])
             $year = $defaultValue['year'];
-		$retVal = '<div class="col-md-10">';
+		$retVal = '<div class="col-md-9">';
         $retVal .= '<div class="col-md-3 pad-right0 pad-left0"><select class="form-control" id="d' . $id . '" name="d' . $id . '">';
         $retVal .= '<option value="0">' . _S_C_NGAY. '</option>';
         for ($ii = 1; $ii < 32; $ii++) {
@@ -963,7 +963,7 @@ class Formbuilder {
     function BuildInputText($id, $label, $required = false, $maxlength = null, $defaultValue = null, $readonly = false, $isNumeric = false, $suffix = null) {
         if ($defaultValue && $isNumeric)
             $defaultValue = $this->formatNum($defaultValue);
-        $retVal = '<div class="col-md-10">';
+        $retVal = '<div class="col-md-9">';
         if ($suffix)
             $retVal .= '<div class="input-group">';
         $retVal .= '<input type="text" autocomplete="off" id="' . $id . '" name="' . $id . '" class="form-control' . ($isNumeric ? ' numeric' : '') . '"';
@@ -989,7 +989,7 @@ class Formbuilder {
     }
 
     function BuildInputCheck($id, $label, $defaultValue = null, $readonly = false) {
-        $retVal = '<div class="col-md-10"><div class="checkbox">';
+        $retVal = '<div class="col-md-9"><div class="checkbox">';
 		$retVal .= '<label><input type="checkbox" id="' . $id . '" name="' . $id . '" value="1"';
         if ($defaultValue && strtolower($defaultValue) != 'n')
             $retVal .= 'checked';
@@ -1001,7 +1001,7 @@ class Formbuilder {
     function BuildInputTextArea($id, $label, $required = false, $rows = 3, $defaultValue = null, $readonly = false, $isNumeric = false, $class = 'form-control') {
         if ($defaultValue && $isNumeric)
             $defaultValue = $this->formatNum($defaultValue);
-		$retVal = '<div class="col-md-10">';
+		$retVal = '<div class="col-md-9">';
         $retVal .= '<textarea id="' . $id . '" name="' . $id . '" class="' . $class . ($isNumeric ? ' numeric' : '') . '"';
         if ($rows)
             $retVal.= ' rows="' . $rows . '"';
@@ -1018,7 +1018,7 @@ class Formbuilder {
 
     function BuildInputRadio($id, $labelArr, $valueArr, $inline = true, $defaultValue = null, $url) {
         if (is_array($labelArr)) {
-			$retVal = '<div class="col-md-10">';
+			$retVal = '<div class="col-md-9">';
 			if($inline){
 				$retVal .= '<div>';
 				for ($i = 0; $i < count($labelArr); $i++) {
@@ -1077,7 +1077,7 @@ class Formbuilder {
         $nameM = '';
         if ($multiple)
             $nameM = '[]';
-		$retVal = '<div class="col-md-10">';
+		$retVal = '<div class="col-md-9">';
         if (is_array($labelArr)) {
             $retVal .= '<select class="form-control" name="' . $id . $nameM . '" id="' . $id . '"';
             if ($multiple)
@@ -1134,12 +1134,12 @@ class Formbuilder {
 		if(isset($options['hiddenGrp']) && $options['hiddenGrp']) $hiddenClass = 'hidden';
         $id = $this->_prefixID . $id;
         if ($inputType == Self::DATETIME || $inputType == Self::CURR_DATE || $inputType == Self::CURR_DATE_CREATE || $inputType == Self::CURR_DATETIME) {
-            $retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '_d" class="control-label text-nowrap col-md-2">' . $label . '</label>';
+            $retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '_d" class="control-label text-nowrap col-md-3">' . $label . '</label>';
         } else {
 			if($inputType == Self::RADIO){
-				$retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '_1" class="control-label text-nowrap col-md-2">' . $label . '</label>';
+				$retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '_1" class="control-label text-nowrap col-md-3">' . $label . '</label>';
 			}else
-            	$retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '" class="control-label text-nowrap col-md-2">' . $label . '</label>';
+            	$retVal = '<div class="form-group ' . $hiddenClass . '"><label for="' . $id . '" class="control-label text-nowrap col-md-3">' . $label . '</label>';
         }
 
         $required = false;

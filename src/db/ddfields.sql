@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `ddfields` (
   `hidden` tinyint(4) DEFAULT NULL,
   `attributes` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=154 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 ALTER TABLE `ddfields` CHANGE `data_type` `data_type` VARCHAR(20) NULL DEFAULT NULL;
 ALTER TABLE `ddfields` CHANGE `value_default` `value_default` VARCHAR(255) NULL DEFAULT NULL;
@@ -155,8 +155,9 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'room', 'room', 'name', 'name', 'Tên', 'text', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:53:46', NULL, NULL),
 (null, 'room', 'room', 'code', 'code', 'Mã', 'text', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:54:05', NULL, NULL),
 (null, 'room', 'room', 'note', 'note', 'Ghi chú', 'textarea', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:54:29', NULL, NULL),
-(null, 'room', 'room', 'type', 'type', 'Loại', 'RADIO', '{\r\n  "value":["meeting_room","event_room"],\r\n  "label":["Phòng họp", "Phòng sự kiện"],\r\n  "sameline": 1\r\n}', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:58:12', NULL, NULL),
-(null, 'room', 'room', 'status', 'status', 'Trạng thái', 'RADIO', '{\r\n  "value":["1","0"],\r\n  "label":["Đang hoạt động", "Ngừng hoạt động"],\r\n  "sameline": 1\r\n}', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:58:12', NULL, NULL);
+(null, 'room', 'room', 'type', 'type', 'Loại', 'RADIO', '{"value":["meeting_room","event_room"],"label":["Phòng họp", "Phòng sự kiện"],"sameline": 1}', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:58:12', NULL, NULL);
+
+-- (null, 'room', 'room', 'status', 'status', 'Trạng thái', 'RADIO', '{\r\n  "value":["1","0"],\r\n  "label":["Đang hoạt động", "Ngừng hoạt động"],\r\n  "sameline": 1\r\n}', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:58:12', NULL, NULL);
 
 DELETE FROM ddfields WHERE table_name = 'room_schedule' AND object_name = 'room_schedule';
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
@@ -164,6 +165,7 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'room_schedule', 'room_schedule', 'relatedusers', 'relatedusers', 'Thành viên', 'TEXT_MULTI', '/customer/json', NULL, 4102, NULL, NULL, NULL, 1, 1, NULL, NULL, '2016-02-01 10:23:23', NULL, NULL),
 (null, 'room_schedule', 'room_schedule', 'fromtime', 'fromtime', 'Thời gian bắt đầu', 'datetime', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-02-01 08:24:28', NULL, NULL),
 (null, 'room_schedule', 'room_schedule', 'totime', 'totime', 'Thời gian kết thúc', 'datetime', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-02-01 08:24:30', NULL, NULL),
-(null, 'room_schedule', 'room_schedule', 'state', 'state', 'Trạng thái', 'RADIO', '{\r\n  "value":["1","2"],\r\n  "label":["Đã đặt cọc", "Đã đặt chỗ"],\r\n  "sameline": 1\r\n}', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:58:12', NULL, NULL),
+(null, 'room_schedule', 'room_schedule', 'state', 'state', 'Trạng thái', 'RADIO', '{"value":["1","2","3"],"label":["Đã đặt cọc", "Đã đặt chỗ", "Huỷ đặt phòng"],"sameline": 1}', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:58:12', NULL, NULL),
 (null, 'room_schedule', 'room_schedule', 'note', 'note', 'Ghi chú', 'textarea', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:54:29', NULL, NULL),
-(null, 'room_schedule', 'room_schedule', 'id', 'id', 'id', 'hidden', '', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:54:29', NULL, NULL);
+(null, 'room_schedule', 'room_schedule', 'id', 'id', 'id', 'hidden', '', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:54:29', NULL, NULL),
+(null, 'room_schedule', 'room_schedule', 'deposit', 'deposit', 'Đặt cọc', 'numeric', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:54:29', NULL, NULL);

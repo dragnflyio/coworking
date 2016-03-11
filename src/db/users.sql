@@ -1,4 +1,5 @@
-CREATE TABLE IF NOT EXISTS `users` (
+DROP TABLE users;
+CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
@@ -14,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
 ALTER TABLE `users` CHANGE regionid loggedregionid INT;
+ALTER TABLE `users` ADD `roles` LONGTEXT NULL;
 
 
 INSERT INTO `users` (`id`, `username`, `password`, `email`, `is_active`, `avatar`, `createdtime`, `lastlogintime`, `loggedregionid`) VALUES

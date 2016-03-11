@@ -85,7 +85,7 @@ class RoomController extends Controller
           'code' => $_POST['code'],
           'note' => $_POST['note'],
           'type' => $_POST['type'],
-          'status' => $_POST['status'],
+          'status' => 1//$_POST['status'],
         );
         $data['v'] = $connection->insert('room', $room);
         $data['m'] = 'Thêm thành công phòng';
@@ -97,7 +97,7 @@ class RoomController extends Controller
           'code' => $_POST['code'],
           'note' => $_POST['note'],
           'type' => $_POST['type'],
-          'status' => $_POST['status'],
+          'status' => 1//$_POST['status'],
         );
         $data['v'] = $connection->update('room', $room, array('id' => $_POST['id']));
         $data['m'] = 'Sửa thành công thông tin phòng';
@@ -232,8 +232,16 @@ class RoomController extends Controller
         $member = $services->loadMember($row['relatedusers']);
         $room_name = (empty($room) ? '' : $room['name']);
         $member_name = (empty($member)? '' : $member['name']);
-        $state = (1 == $row['state'] ? 'Đã đặt cọc' : 'Đã đặt chỗ');
+        $state = 'Đã đặt cọc';
+        $class = '';
+        if (2 == $row['state']) $state = 'Đã đặt chỗ';
+        if (3 == $row['state']){
+          $class = 'danger';
+          $state = "Huỷ đặt phòng";
+        }
+
         $tmp = array(
+          'css' => $class,
           'id' => $row['id'],
           'idx' => ++$idx,
           'room_name' => $room_name,

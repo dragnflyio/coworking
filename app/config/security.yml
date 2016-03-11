@@ -35,7 +35,7 @@ security:
             form_login:
                 login_path: /login
                 check_path: /login_check
-                failure_path: /login
+                # failure_path: /login
                 success_handler: app.login_success_handler
             logout:
                 path:   /logout
