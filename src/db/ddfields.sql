@@ -116,7 +116,9 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 (null, 'memberpackage', 'member_package', 'price', 'price', 'Price', 'money', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
 (null, 'memberpackage', 'member_package', 'efffrom', 'efffrom', 'Bắt đầu', 'date', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
 (null, 'memberpackage', 'member_package', 'effto', 'effto', 'Hết hạn', 'date', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
-(null, 'memberpackage', 'member_package', 'visitorprice', 'visitorprice', 'Giá khách/h', 'money', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL);
+(null, 'memberpackage', 'member_package', 'visitorprice', 'visitorprice', 'Giá khách/h', 'money', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-18 03:31:53', NULL, NULL),
+(null, 'memberpackage', 'member_package', 'regionid', 'regionid', 'Địa điểm', 'TEXT_MULTI', '/region/get-json', NULL, 4102, NULL, NULL, NULL, 0, 1, NULL, NULL, '2016-03-12 06:43:17', NULL, NULL);
+
 
 DELETE FROM ddfields WHERE table_name = 'group_package' AND object_name = 'group_package';
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES

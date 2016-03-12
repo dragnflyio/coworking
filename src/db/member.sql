@@ -60,4 +60,4 @@ ALTER TABLE `member_package`
 ALTER TABLE `member_package`  ADD `visitorprice` INT NULL DEFAULT NULL ;
 ALTER TABLE `member_package`  ADD `efftoextend` INT NULL DEFAULT NULL ;
 ALTER TABLE `member_package`  ADD `printedpapers` INT NULL DEFAULT NULL  AFTER `efftoextend`;
-
+ALTER TABLE `member_package`  ADD `regionid` text NULL DEFAULT NULL ;
