@@ -30,3 +30,4 @@ ALTER TABLE `group_package`
 ALTER TABLE `group_package`  ADD `visitorprice` INT NULL DEFAULT NULL ;
 ALTER TABLE `group_package`  ADD `efftoextend` INT NULL DEFAULT NULL ;
 ALTER TABLE `group_package`  ADD `printedpapers` INT NULL DEFAULT NULL ;
+ALTER TABLE `group_package`  ADD `regionid` text NULL DEFAULT NULL ;
