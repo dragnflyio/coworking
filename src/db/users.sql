@@ -1,4 +1,4 @@
-DROP TABLE users;
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
