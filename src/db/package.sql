@@ -28,3 +28,4 @@ ALTER TABLE `package`
 ALTER TABLE `package`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `package`  ADD `visitorprice` INT NOT NULL DEFAULT '0';
+ALTER TABLE `package`  ADD `regionid` INT DEFAULT NULL;
