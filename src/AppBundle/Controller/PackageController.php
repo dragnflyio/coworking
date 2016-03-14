@@ -174,12 +174,13 @@ class PackageController extends BaseController{
 		$data = array();
 		$em = $this->getDoctrine()->getEntityManager();
 		$connection = $em->getConnection();
-
+    $user = $this->getUser();
 		switch($op){
 			case 'create':
 				$dataObj = $formbuilder->PrepareInsert($_POST, 'packageform');
 				foreach ($dataObj as $table => $postdata){
 					if ($postdata){
+            $postdata['createdby'] = $user->getId();
 						$data['v'] = $connection->insert($table, $postdata);
 					}
 				}
@@ -193,6 +194,7 @@ class PackageController extends BaseController{
 					$dataObj = $formbuilder->PrepareInsert($_POST, 'packageform');
 					foreach ($dataObj as $table => $postdata){
 						if ($postdata){
+              $postdata['updatedby'] = $user->getId();
 							$data['v'] = $connection->update($table, $postdata, array('id' => $id));
 						}
 					}

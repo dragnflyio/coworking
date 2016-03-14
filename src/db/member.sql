@@ -16,6 +16,8 @@ CREATE TABLE `member` (
   `administrators` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ALTER TABLE `member`  ADD `regionid` INT NULL DEFAULT NULL ;
+ALTER TABLE `member` ADD `createdby` INT DEFAULT NULL;
+ALTER TABLE `member` ADD `updatedby` INT DEFAULT NULL;
 ALTER TABLE `member` ADD `company` varchar(255) DEFAULT NULL;
 ALTER TABLE `member` ADD `job` varchar(255) DEFAULT NULL;
 ALTER TABLE `member` ADD `postaladdress` text DEFAULT NULL;

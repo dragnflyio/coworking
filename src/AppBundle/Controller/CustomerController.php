@@ -222,7 +222,7 @@ class CustomerController extends BaseController{
 		$data = array();
     $em = $this->getDoctrine()->getEntityManager();
 		$connection = $em->getConnection();
-
+    $user = $this->getUser();
 		switch($op){
       case 'extendfee':
         $memberid = $request->query->get('id', 0);
@@ -348,6 +348,7 @@ class CustomerController extends BaseController{
 				$dataObj = $formbuilder->PrepareInsert($_POST, 'customerform');
 				foreach ($dataObj as $table => $postdata){
 					if ($postdata){
+            $postdata['createdby'] = $user->getId();
 						$data['v'] = $connection->insert($table, $postdata);
 					}
 				}
@@ -361,6 +362,7 @@ class CustomerController extends BaseController{
 					$dataObj = $formbuilder->PrepareInsert($_POST, 'customerform');
 					foreach ($dataObj as $table => $postdata){
 						if ($postdata){
+              $postdata['updatedby'] = $user->getId();
 							$data['v'] = $connection->update($table, $postdata, array('id' => $id));
 						}
 					}
