@@ -152,6 +152,7 @@ class CheckingController extends Controller
     // Get current location
     $user = $this->getUser();
     $regionid = $user->getLoggedregionId();
+    $regioninfo = $services->getRegionbyId($regionid);
 
     $op = $request->query->get('type', 'member');
     switch ($op) {
@@ -163,14 +164,19 @@ class CheckingController extends Controller
               $postdata['regionid'] = $regionid;
               // $package = $services->getPackageByMemberId($postdata['memberid']);
               $package = $services->getPackageByMemberId_alt($postdata['memberid']);
+              $package_regions = explode(',', $package['regionid']);
               $group = $services->getGroupByMemberId($postdata['memberid']);
               if (!empty($group)) {
                 $postdata['grouppackageid'] = $package['grouppackageid'];
                 $data['v'] = $connection->insert($table, $postdata);
               } else {
                 if (!empty($package)) {
-                  $postdata['memberpackageid'] = $package['memberpackageid'];
-                  $data['v'] = $connection->insert($table, $postdata);
+                  if (in_array($regionid, $package_regions) || empty($package_regions)) {
+                    $postdata['memberpackageid'] = $package['memberpackageid'];
+                    $data['v'] = $connection->insert($table, $postdata);
+                  } else {
+                    $data['e'] = 'Thành viên này không đăng ký tại ' . $regioninfo['name'];
+                  }
                 } else {
                   $data['e'] = 'Thành viên này chưa dùng gói nào.';
                 }
@@ -183,9 +189,15 @@ class CheckingController extends Controller
           $dataObj = $formbuilder->PrepareInsert($_POST, 'memberchecking');
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
+              $package = $services->getPackageByMemberId_alt($postdata['memberid']);
+              $package_regions = explode(',', $package['regionid']);
               $postdata['visitedhours'] = ($postdata['checkout'] - $postdata['checkin']) / 60;
               $postdata['regionid'] = $regionid;
-              $data['v'] = $connection->update($table, $postdata, array('id' => $_POST['id']));
+              if (in_array($regionid, $package_regions) || empty($package_regions)) {
+                $data['v'] = $connection->update($table, $postdata, array('id' => $_POST['id']));
+              } else {
+                $data['e'] = 'Thành viên này không đăng ký tại ' . $regioninfo['name'];
+              }
             }
           }
           $data['m'] = 'Check out thành công';
@@ -199,6 +211,7 @@ class CheckingController extends Controller
             if ($postdata){
               $postdata['regionid'] = $regionid;
               $package = $services->getPackageByMemberId_alt($postdata['memberid']);
+              $package_regions = explode(',', $package['regionid']);
               $group = $services->getGroupByMemberId($postdata['memberid']);
               if (!empty($group)) {
                 $postdata['grouppackageid'] = $package['grouppackageid'];
@@ -206,7 +219,11 @@ class CheckingController extends Controller
                 $postdata['memberpackageid'] = $package['memberpackageid'];
               }
               $postdata['isvisitor'] = 1;
-              $data['v'] = $connection->insert($table, $postdata);
+              if (in_array($regionid, $package_regions) || empty($package_regions)) {
+                $data['v'] = $connection->insert($table, $postdata);
+              } else {
+                $data['e'] = 'Thành viên này không đăng ký tại ' . $regioninfo['name'];
+              }
             }
           }
           $data['m'] = 'Thêm thành công';
@@ -215,9 +232,15 @@ class CheckingController extends Controller
           $dataObj = $formbuilder->PrepareInsert($_POST, 'visitorchecking');
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
+              $package = $services->getPackageByMemberId_alt($postdata['memberid']);
+              $package_regions = explode(',', $package['regionid']);
               $postdata['regionid'] = $regionid;
               $postdata['visitedhours'] = ($postdata['checkout'] - $postdata['checkin']) / 60;
-              $data['v'] = $connection->update($table, $postdata, array('id' => $_POST['id']));
+              if (in_array($regionid, $package_regions) || empty($package_regions)) {
+                $data['v'] = $connection->update($table, $postdata, array('id' => $_POST['id']));
+              } else {
+                $data['e'] = 'Thành viên này không đăng ký tại ' . $regioninfo['name'];
+              }
             }
           }
           $data['m'] = 'Check out thành công';
