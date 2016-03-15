@@ -378,6 +378,12 @@ class CustomerController extends BaseController{
         }
 
 				break;
+      case 'cus_activity':
+        $validation = $this->get('app.validation');
+        $customerid = $request->query->get('id', 0);
+
+        $data = $validation->getMemberActivities($customerid);
+      break;
       case 'addpackagecustomer':
         // insert customer and package
         $customerid = 0;

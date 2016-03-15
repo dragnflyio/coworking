@@ -813,7 +813,7 @@ class Formbuilder {
             $defaultValue = '"' . implode('","', $arr) . '"';
         }
         if ($defaultValue)
-            $value = '[' . $defaultValue . ']';
+            $value = '["' . $defaultValue . '"]';
         $maxstr = 'null';
         if ($max)
             $maxstr = $max;
