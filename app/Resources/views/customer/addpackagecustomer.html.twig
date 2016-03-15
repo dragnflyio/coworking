@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+Thêm gói dịch vụ cho khách khách hàng
+{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+   <div class="container">
+		<div class="row">
+        	<div class="col-md-12">
+            <h2>Thêm gói dịch vụ và khách hàng</h2>
+        	</div>
+		</div>
+		<div class="row">
+			<h3>Thông tin khách hàng</h3>
+			<div class="col-md-12">
+				{{ form|raw}}
+			</div>
+		</div>
+		<div class="row">
+			<h3>Thông tin gói</h3>
+			<div class="col-md-12">
+				{{ form_package|raw}}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="center-block width200">
+					<a class="btn btn-primary" href="#" id="btnsave"> Save </a>
+					
+					<a class="btn btn-default" href="{{ path('list_customer')}}" id="btnback"> Back </a>
+				</div>
+			</div>
+		</div>
+	</div> <!-- /container -->
+</div> <!-- /wrapper -->
+{% endblock %}
+
+{% block javascripts %}
+<script>
+validation['package_packageid'] = {minvalue:1, message: 'Chọn gói dịch vụ'};
+validation['name'] = {minlength:1, message: 'Nhập tên khách'};
+validation['package_efffrom'] = {jsfunction:function(){
+	if (cakpackage_efffrom.get() < 1){
+		return "Chọn ngày bắt đầu"
+	}
+	if (cakpackage_effto.get() < cakpackage_efffrom.get()) return "Ngày kết thúc không nhỏ hơn ngày bắt đầu";
+	return '';
+}};
+
+jQuery(function(){
+	{{script|raw}}
+	{{script_package|raw}}
+	$('.numeric').intOnly();
+	if(window.cakpackage_efffrom) 
+		cakpackage_efffrom.change = function(d){
+			d && cakpackage_effto.set ( d.getTime()/1000 + ( $('#package_maxdays').val() - 1)*86400 ) 
+		}
+	window.tkpackage_packageid && tkpackage_packageid.callback(function(){
+		if (tkpackage_packageid.get() == ''){
+		$('#f_package_memberpackage')[0].reset();
+		return
+		}
+		ajaxGet('/package/formapi?op=getpackage&id=' + tkpackage_packageid.get(), function(data){
+			if (data && data.id){
+				$('#package_maxvisitors').val(formatNum(data.maxvisitors));
+				$('#package_maxprintpapers').val(formatNum(data.maxprintpapers));
+				$('#package_maxdays').val(formatNum(data.maxdays));
+				$('#package_maxmeetinghours').val(formatNum(data.maxmeetinghours));
+				$('#package_maxhours').val(formatNum(data.maxhours));
+				$('#package_discountbar').val(formatNum(data.discountbar));
+				$('#package_price').val(formatNum(data.price));
+				
+				$('input[name="package_allowcredit"][value='+data.allowcredit+']').click();
+				$('input[name="package_locker"][value='+data.locker+']').click();
+			}
+		})
+	})
+	$('#btnsave').click(function(e){
+		e.preventDefault();
+		beforePost() && ajaxPost('/customer/formapi?op=addpackagecustomer', $('#f_customerform').serialize()+'&'+$('#f_package_memberpackage').serialize(), function(d){});
+	})
+})
+
+
+</script>
+{% endblock %}
+
