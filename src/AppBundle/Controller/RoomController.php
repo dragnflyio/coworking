@@ -119,8 +119,18 @@ class RoomController extends Controller
           'status' => 1,
         );
         $data['v'] = $connection->update('room', $room, array('id' => $_POST['roomid']));
+        // Update customer activity
+        $log = array(
+          'memberid' => (int)$_POST['relatedusers'],
+          'code' => 'datphong',
+          'oldvalue' => NULL,
+          'newvalue' => $_POST['roomid'],
+          'createdtime' => time(),
+          'amount' => (int)$_POST['deposit']
+        );
+        $connection->insert('customer_activity', $log);
         $data['m'] = 'Đã đặt phòng';
-
+      break;
       case 'change_schedule':
         $room_schedule = array(
           'roomid' => $_POST['roomid'],
