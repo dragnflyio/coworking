@@ -39,7 +39,7 @@ class CustomerController extends BaseController{
     $validation = $this->get('app.validation');
     $em = $this->getDoctrine()->getEntityManager();
     $connection = $em->getConnection();
-    
+
     $form_update = $formbuilder->GenerateLayout('customerform');
     $script_customer = $formbuilder->mscript;
 
@@ -466,6 +466,8 @@ class CustomerController extends BaseController{
 				} else {
 					foreach ($all_rows as $row){
             $region = $services->getRegionbyId($row['regionid']);
+            $createdby = $services->loadUserById($user->getId());
+            $createname = (empty($createdby) ? '' : $createdby['username']);
             $region_name = (!empty($region) ? $region['name'] : '');
             $current_package = $validation->getMemberPackage($row['id']);
             $usage = '';
@@ -484,7 +486,7 @@ class CustomerController extends BaseController{
               'region' => $region_name,
 							'email' => $row['email'],
 							'description' => $row['phone'],
-							'createdname' => 'Admin',
+							'createdname' => $createname,
 							'package' => $usage,
 						);
 						$ret[] = $tmp;

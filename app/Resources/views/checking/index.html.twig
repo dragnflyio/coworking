@@ -35,6 +35,8 @@
             <th>Giờ check in</th>
             <th>Giờ check out</th>
             <th>Địa điểm</th>
+            <th>Người checkin</th>
+            <th>Người checkout</th>
             <th>Thao tác</th>
           </thead>
           <tbody id = "list-checking">
@@ -51,6 +53,8 @@
                 <td></td>
               {% endif %}
               <td>{{timelog.regionname}}</td>
+              <td>{{timelog.checkin_user}}</td>
+              <td>{{timelog.checkout_user}}</td>
               <td>
               {% if 0 == timelog.checkout %}
                 {% if '' !=  timelog.visitorname %}
@@ -79,6 +83,8 @@
     <td><%checkin%></td>
     <td><%checkout%></td>
     <td><%regionname%></td>
+    <td><%checkin_user%></td>
+    <td><%checkout_user%></td>
     <td>
       <%#if checkout.length %>
       <%else%>
@@ -99,17 +105,17 @@
       function doSearch(){
         ajaxPost('/checking/search', $('#f_checkingsearch').serialize(), function(data){
           if (!data.empty){
-            
+
             $('#list-checking').html(mr( $('#template_table').html(), {list:data}))
           } else {
-            $('#list-checking').html('<tr><th colspan="7" scope="row" class="text-center">'+ data.empty + '</th></tr>');
+            $('#list-checking').html('<tr><th colspan="9" scope="row" class="text-center">'+ data.empty + '</th></tr>');
           }
         });
       }
 
       $('#btnsearch').click(function(e){
         e.preventDefault();
-        $('#list-checking').html('<tr><th colspan="7" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
+        $('#list-checking').html('<tr><th colspan="9" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
         doSearch();
       })
     })

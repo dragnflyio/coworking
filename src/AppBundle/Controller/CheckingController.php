@@ -45,6 +45,11 @@ class CheckingController extends Controller
       $region = $services->getRegionbyId($timelog['regionid']);
       $regionname = !empty($region) ? $region['name'] : '';
       $timelog['regionname'] = $regionname;
+      // Get User check in
+      $checkinuser = $services->loadUserById($timelog['checkinby']);
+      $checkoutuser = $services->loadUserById($timelog['checkoutby']);
+      $timelog['checkin_user'] = $checkinuser['username'];
+      $timelog['checkout_user'] = $checkoutuser['username'];
       $idx = ++$idx;
       $timelogs[$idx] = (object) $timelog;
     }
@@ -172,6 +177,7 @@ class CheckingController extends Controller
               } else {
                 if (!empty($package)) {
                   if (in_array($regionid, $package_regions) || empty($package_regions)) {
+                    $postdata['checkinby'] = $user->getId();
                     $postdata['memberpackageid'] = $package['memberpackageid'];
                     $data['v'] = $connection->insert($table, $postdata);
                   } else {
@@ -193,6 +199,7 @@ class CheckingController extends Controller
               $package_regions = explode(',', $package['regionid']);
               $postdata['visitedhours'] = ($postdata['checkout'] - $postdata['checkin']) / 60;
               $postdata['regionid'] = $regionid;
+              $postdata['checkoutby'] = $user->getId();
               if (in_array($regionid, $package_regions) || empty($package_regions)) {
                 $data['v'] = $connection->update($table, $postdata, array('id' => $_POST['id']));
               } else {
@@ -220,6 +227,7 @@ class CheckingController extends Controller
               }
               $postdata['isvisitor'] = 1;
               if (in_array($regionid, $package_regions) || empty($package_regions)) {
+                $postdata['checkinby'] = $user->getId();
                 $data['v'] = $connection->insert($table, $postdata);
               } else {
                 $data['e'] = 'Thành viên này không đăng ký tại ' . $regioninfo['name'];
@@ -235,6 +243,7 @@ class CheckingController extends Controller
               $package = $services->getPackageByMemberId_alt($postdata['memberid']);
               $package_regions = explode(',', $package['regionid']);
               $postdata['regionid'] = $regionid;
+              $postdata['checkoutby'] = $user->getId();
               $postdata['visitedhours'] = ($postdata['checkout'] - $postdata['checkin']) / 60;
               if (in_array($regionid, $package_regions) || empty($package_regions)) {
                 $data['v'] = $connection->update($table, $postdata, array('id' => $_POST['id']));
@@ -601,6 +610,8 @@ class CheckingController extends Controller
         } else {
           $checkout = null;
         }
+        $checkinuser = $services->loadUserById($row['checkinby']);
+        $checkoutuser = $services->loadUserById($row['checkoutby']);
         $tmp = array(
           'id' => $row['id'],
           'idx' => ++$idx,
@@ -612,6 +623,8 @@ class CheckingController extends Controller
           'packagename' => $package['name'],
           'type' => $type,
           'regionname' => $regionname,
+          'checkin_user' => $checkinuser['username'],
+          'checkout_user' => $checkoutuser['username'],
         );
         $ret[] = $tmp;
       }
