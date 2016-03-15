@@ -52,6 +52,46 @@ class Validation{
         }
         return $retval;
     }
+
+  /**
+   * Get member activity log
+   */
+  function getGroupActivities($groupid){
+    $sql = "SELECT * FROM group_activity WHERE groupid = ? ORDER BY createdtime DESC";
+    $logs = $this->em->fetchAll($sql, array($groupid));
+    // code giahantam, changepackage, taomoi, datphong
+    $codes = array(
+      'giahantam' => 'Gia hạn tạm thời',
+      'changepackage' => 'Đổi gói',
+      'taomoi' => 'Mua gói mới',
+      'datphong' => 'Đặt phòng',
+      'giahan' => 'Gia hạn',
+    );
+    // Lookup package name
+    $lk_package = $this->getLookupdata('package', 'id', 'name');
+    $lk_room = $this->getLookupdata('room', 'id', 'name');
+    $retval = array();
+    $idx = 0;
+    foreach ($logs as $value) {
+      $log = array();
+      $log['idx'] = ++$idx;
+      $log['name'] = $codes[$value['code']] ? $codes[$value['code']] : $value['code'];
+      $log['amount'] = $value['amount'];
+      $log['note'] = $value['note'];
+      $log['time'] = date('d/m/Y H:i:s', $value['createdtime']);
+      if ('giahantam' == $value['code'] || 'changepackage' == $value['code'] || 'taomoi' == $value['code']){
+        $log['oldvalue'] = isset($lk_package[$value['oldvalue']]) ? $lk_package[$value['oldvalue']] : $value['oldvalue'];
+        $log['newvalue'] = isset($lk_package[$value['newvalue']]) ? $lk_package[$value['newvalue']] : $value['newvalue'];
+      }
+      if ('datphong'){
+        $log['oldvalue'] = isset($lk_room[$value['oldvalue']]) ? $lk_room[$value['oldvalue']] : $value['oldvalue'];
+        $log['newvalue'] = isset($lk_room[$value['newvalue']]) ? $lk_room[$value['newvalue']] : $value['newvalue'];
+      }
+      $retval[] = $log;
+    }
+    return $retval;
+  }
+
 	/**
 	 * Check if member has active package or not,
 	 * or this member belongs to a group which have active package

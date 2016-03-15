@@ -80,7 +80,8 @@ class GroupController extends Controller
     return $this->render('group/form.html.twig', [
         'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
         'form' => $tmp,
-        'script' => $formbuilder->mscript
+        'script' => $formbuilder->mscript,
+        'gid' => $gid,
     ]);
   }
 
@@ -192,6 +193,23 @@ class GroupController extends Controller
       $data['v'] = $connection->insert('groups', $group);
       $data['m'] = 'Bạn đã thêm mới nhóm thành công';
     }
+    $response = new Response(
+      json_encode($data),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
+  /**
+   * @Route("/{id}/activity", name = "group_activity_action")
+   */
+  public function groupActivity($id){
+    $validation = $this->get('app.validation');
+    $data = $validation->getGroupActivities($id);
+    if (empty($data)){
+      $data['empty'] = 'Không tìm thấy bản ghi nào';
+    }
+
     $response = new Response(
       json_encode($data),
       Response::HTTP_OK,
@@ -439,6 +457,15 @@ class GroupController extends Controller
         if ($postdata){
           $postdata['groupid'] = $groupid;
           $data['v'] = $connection->insert($table, $postdata);
+          $log = array(
+            'groupid' => $groupid,
+            'code' => 'taomoi',
+            'oldvalue' => NULL,
+            'newvalue' => $postdata['packageid'],
+            'createdtime' => time(),
+            'amount' => NULL,
+          );
+          $connection->insert('group_activity', $log);
         }
       }
       $data['m'] = 'Thêm thành công';
@@ -527,14 +554,14 @@ class GroupController extends Controller
         $connection->insert('group_package', $group_package);
         // Update customer activity
         $log = array(
-          'memberid' => $groupid,
+          'groupid' => $groupid,
           'code' => 'giahan',
           'oldvalue' => $package['name'],
           'newvalue' => $package['name'],
           'createdtime' => time(),
           'amount' => NULL,
         );
-        $connection->insert('customer_activity', $log);
+        $connection->insert('group_activity', $log);
         $data['m'] = 'Gia hạn gói thành công';
         break;
 
