@@ -162,6 +162,8 @@ class GroupController extends Controller
 
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
+
+    $user = $this->getUser();
     if (!empty($_POST['id'])) {
       $group = array(
         'name' => $name,
@@ -170,7 +172,8 @@ class GroupController extends Controller
         'taxcode' => $taxcode,
         'taxaddress' => $taxaddress,
         'description' => $description,
-        'members' => $members
+        'members' => $members,
+        'updatedby' => $user->getId(),
       );
       $data['v'] = $connection->update('groups', $group, array('id' => $_POST['id']));
       $data['m'] = 'Đã sửa thông tin nhóm.';
@@ -183,7 +186,8 @@ class GroupController extends Controller
         'taxcode' => $taxcode,
         'taxaddress' => $taxaddress,
         'description' => $description,
-        'members' => $members
+        'members' => $members,
+        'createdby' => $user->getId(),
       );
       $data['v'] = $connection->insert('groups', $group);
       $data['m'] = 'Bạn đã thêm mới nhóm thành công';
