@@ -196,10 +196,10 @@ class Formbuilder {
      * @param String $obj_name object_name in table_conf
      * @return Array
      * */
-    public function PrepareInsert($postData, $obj_name, $prefix = '') {
+    public function PrepareInsert($postData, $obj_name, $prefix = '', $renew = false) {
         if ($prefix) $this->_prefixID = $prefix;
         $retVal = array();
-        if (null === $this->_mConfigList) {
+        if (null === $this->_mConfigList || $renew) {
             $this->_mConfigList = $this->getTableConfig($obj_name, null, false, '', 1);
         }
         foreach ($this->_mConfigList as $config) {

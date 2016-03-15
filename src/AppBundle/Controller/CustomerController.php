@@ -30,6 +30,29 @@ class CustomerController extends BaseController{
 	    'script' => $formbuilder->mscript
     ]);
   }
+  /**
+   * Add customer and package
+   * @Route("/addpackagecustomer", name="add_package_customer")
+   */
+  public function addpackagecustomerAction(){
+    $formbuilder = $this->get('app.formbuilder');
+    $validation = $this->get('app.validation');
+    $em = $this->getDoctrine()->getEntityManager();
+    $connection = $em->getConnection();
+    
+    $form_update = $formbuilder->GenerateLayout('customerform');
+    $script_customer = $formbuilder->mscript;
+
+    $form_package = $formbuilder->GenerateLayout('memberpackage','','package_');
+    $script_package = $formbuilder->mscript;
+
+    return $this->render('customer/addpackagecustomer.html.twig', [
+      'form' => $form_update,
+      'form_package' => $form_package,
+      'script' => $script_customer,
+      'script_package' => $script_package
+    ]);
+  }
 	/**
    * @Route("/editpackage/{id}", name="edit_customer_package", requirements={"id" = "\d+"})
    */
@@ -112,6 +135,7 @@ class CustomerController extends BaseController{
 
 		return $response;
 	}
+  //public function
 	/**
    * @Route("/list", name="list_customer")
 	 * @Route("/", name="list_customer")
@@ -320,8 +344,8 @@ class CustomerController extends BaseController{
 				break;
 			case 'addpackage':
         $customerid = $request->query->get('id', 0);
-        // TODO check if this customer added package?
-        // or belong to a group which added package
+        // TODO check if this customer has package?
+        // or belong to a group which has package
         // if not, do add package
         if ($customerid){
           $validation = $this->get('app.validation');
@@ -336,6 +360,16 @@ class CustomerController extends BaseController{
                 // $validation->closedMemberPackage($customerid);
                 $postdata['memberid'] = $customerid;
                 $data['v'] = $connection->insert($table, $postdata);
+                // Update customer activity
+                $log = array(
+                  'memberid' => $customerid,
+                  'code' => 'taomoi',
+                  'oldvalue' => NULL,
+                  'newvalue' => $postdata['packageid'],
+                  'createdtime' => time(),
+                  'amount' => NULL,
+                );
+                $connection->insert('customer_activity', $log);
               }
             }
             $data['m'] = 'Thêm thành công';
@@ -344,6 +378,38 @@ class CustomerController extends BaseController{
         }
 
 				break;
+      case 'addpackagecustomer':
+        // insert customer and package
+        $customerid = 0;
+        $dataCustomer = $formbuilder->PrepareInsert($_POST, 'customerform');
+
+        $dataPackage = $formbuilder->PrepareInsert($_POST, 'memberpackage', 'package_', true);
+
+        foreach ($dataCustomer as $table => $postdata){
+          if ($postdata){
+            // insert customer first
+            $connection->insert($table, $postdata);
+            $customerid = $connection->lastInsertId();
+            // then insert member package
+            if ($dataPackage['member_package']){
+              $dataPackage['member_package']['memberid'] = $customerid;
+            }
+            $connection->insert('member_package', $dataPackage['member_package']);
+            // Update customer activity
+            $log = array(
+              'memberid' => $customerid,
+              'code' => 'taomoi',
+              'oldvalue' => NULL,
+              'newvalue' => $dataPackage['member_package']['packageid'],
+              'createdtime' => time(),
+              'amount' => NULL,
+            );
+            $connection->insert('customer_activity', $log);
+          }
+        }
+        $data['m'] = 'Thêm thành công';
+
+      break;
 			case 'create':
 				$dataObj = $formbuilder->PrepareInsert($_POST, 'customerform');
 				foreach ($dataObj as $table => $postdata){
