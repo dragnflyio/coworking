@@ -46,10 +46,14 @@ class CheckingController extends Controller
       $regionname = !empty($region) ? $region['name'] : '';
       $timelog['regionname'] = $regionname;
       // Get User check in
-      $checkinuser = $services->loadUserById($timelog['checkinby']);
-      $checkoutuser = $services->loadUserById($timelog['checkoutby']);
-      $timelog['checkin_user'] = $checkinuser['username'];
-      $timelog['checkout_user'] = $checkoutuser['username'];
+      if ($timelog['checkinby'] != 0) {
+        $checkinuser = $services->loadUserById($timelog['checkinby']);
+      }
+      if ($timelog['checkoutby'] != 0) {
+        $checkoutuser = $services->loadUserById($timelog['checkoutby']);
+      }
+      $timelog['checkin_user'] = isset($checkinuser) ? $checkinuser['username'] : '';
+      $timelog['checkout_user'] = isset($checkoutuser) ? $checkoutuser['username'] : '';
       $idx = ++$idx;
       $timelogs[$idx] = (object) $timelog;
     }
@@ -169,7 +173,11 @@ class CheckingController extends Controller
               $postdata['regionid'] = $regionid;
               // $package = $services->getPackageByMemberId($postdata['memberid']);
               $package = $services->getPackageByMemberId_alt($postdata['memberid']);
-              $package_regions = explode(',', $package['regionid']);
+              if (isset($package['regionid'])) {
+                $package_regions = explode(',', $package['regionid']);
+              } else {
+                $package_regions = array();
+              }
               $group = $services->getGroupByMemberId($postdata['memberid']);
               if (!empty($group)) {
                 $postdata['grouppackageid'] = $package['grouppackageid'];
