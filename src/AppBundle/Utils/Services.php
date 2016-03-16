@@ -216,4 +216,19 @@ class Services{
     $room = (empty($rows) ? $rows : $rows[0]);
     return $room;
   }
+
+  /**
+   * Load User by id
+   * @param int $id
+   *
+   * @return array $user
+   */
+  function loadUserById($id) {
+    $statement = $this->em->prepare("SELECT * FROM `users` WHERE id=:id");
+    $statement->bindParam(':id', $id);
+    $statement->execute();
+    $rows = $statement->fetchAll();
+    $room = (empty($rows) ? $rows : $rows[0]);
+    return $room;
+  }
 }

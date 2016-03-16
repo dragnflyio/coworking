@@ -20,10 +20,49 @@
         </div>
       </div>
     </div>
+    {% if gid is defined %}
+    <div class="row">
+      <h3>Lịch sử</h3>
+      <div class="col-md-12">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th class="width50">#</th>
+              <th>Activity</th>
+              <th>Old value</th>
+              <th>New value</th>
+              <th>Amount</th>
+              <th>Note</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="listactivity">
+            <tr>
+              <th colspan="7" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
   </div>
 {% endblock %}
 {% block javascripts %}
   <script src="{{ asset('js/group.js') }}" type = "text/javascript"></script>
+  <script id="template_table" type="text/x-handlebars-template">
+  <%#list%>
+    <tr>
+    <td><%idx%></td>
+    <td><%name%></td>
+    <td><%oldvalue%></td>
+    <td><%newvalue%></td>
+    <td><%amount%></td>
+    <td><%note%></td>
+    <td><%time%></td>
+    </tr>
+  <%/list%>
+  </script>
+  <script src="{{asset ('js/handlebars.min.js')}}"></script>
   <script>
   {{script|raw}}
   </script>
@@ -40,6 +79,18 @@
           ajaxPost('/group/ajax-action', $('#f_group').serialize(), function(d){})
         }
       });
+
+      if ($('#id').length) {
+        var id = $('#id').val();
+        ajaxGet('/group/' + id + '/activity', function(data){
+          if (!data.empty){
+            console.log(data);
+            $('#listactivity').html(mr( $('#template_table').html(), {list:data}))
+          } else {
+            $('#listactivity').html('<tr><th colspan="7" class="text-center">'+ data.empty + '</th></tr>');
+          }
+        });
+      }
     })
   </script>
 {% endblock %}
