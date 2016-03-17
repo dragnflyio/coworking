@@ -236,13 +236,14 @@ class PackageController extends BaseController{
 				} else {
 					foreach ($all_rows as $row){
             $createduser = $services->loadUserById($row['createdby']);
+            $createdname = empty($createduser) ? '' : $createduser['username'];
 						$tmp = array(
 							'id' => $row['id'],
 							'idx' => ++$idx,
 							'name' => $row['name'],
 							'price' => $formbuilder->formatNum($row['price']),
 							'description' => $row['description'],
-							'createdname' => $createduser['username'],
+							'createdname' => $createdname,
 						);
 						$ret[] = $tmp;
 					}
