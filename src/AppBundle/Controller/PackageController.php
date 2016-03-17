@@ -236,7 +236,7 @@ class PackageController extends BaseController{
 				} else {
 					foreach ($all_rows as $row){
             $createduser = $services->loadUserById($row['createdby']);
-            $createdname = empty($createduser) ? '' : $createduser['username'];
+            $createdname = empty($createduser) ? 'admin' : $createduser['username'];
 						$tmp = array(
 							'id' => $row['id'],
 							'idx' => ++$idx,
