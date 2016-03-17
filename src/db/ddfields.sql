@@ -164,11 +164,11 @@ INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code
 
 DELETE FROM ddfields WHERE table_name = 'room_schedule' AND object_name = 'room_schedule';
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
-(null, 'room_schedule', 'room_schedule', 'roomid', 'roomid', 'Phòng', 'SELECT', '/room/json', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-02-01 08:24:49', NULL, NULL),
-(null, 'room_schedule', 'room_schedule', 'relatedusers', 'relatedusers', 'Thành viên', 'TEXT_MULTI', '/customer/json', NULL, 4102, NULL, NULL, NULL, 1, 1, NULL, NULL, '2016-02-01 10:23:23', NULL, NULL),
-(null, 'room_schedule', 'room_schedule', 'fromtime', 'fromtime', 'Thời gian bắt đầu', 'datetime', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-02-01 08:24:28', NULL, NULL),
-(null, 'room_schedule', 'room_schedule', 'totime', 'totime', 'Thời gian kết thúc', 'datetime', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-02-01 08:24:30', NULL, NULL),
-(null, 'room_schedule', 'room_schedule', 'state', 'state', 'Trạng thái', 'RADIO', '{"value":["1","2","3"],"label":["Đã đặt cọc", "Đã đặt chỗ", "Huỷ đặt phòng"],"sameline": 1}', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:58:12', NULL, NULL),
-(null, 'room_schedule', 'room_schedule', 'note', 'note', 'Ghi chú', 'textarea', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:54:29', NULL, NULL),
-(null, 'room_schedule', 'room_schedule', 'id', 'id', 'id', 'hidden', '', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:54:29', NULL, NULL),
-(null, 'room_schedule', 'room_schedule', 'deposit', 'deposit', 'Đặt cọc', 'numeric', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-26 03:54:29', NULL, NULL);
+(null, 'room_schedule', 'room_schedule', 'roomid', 'roomid', 'Phòng', 'SELECT', '/room/json', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-02-01 01:24:49', NULL, NULL),
+(null, 'room_schedule', 'room_schedule', 'relatedusers', 'relatedusers', 'Thành viên', 'TEXT_MULTI', '/user/json', NULL, 4102, NULL, NULL, NULL, 1, 1, NULL, NULL, '2016-03-17 16:23:06', NULL, NULL),
+(null, 'room_schedule', 'room_schedule', 'fromtime', 'fromtime', 'Thời gian bắt đầu', 'datetime', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-02-01 01:24:28', NULL, NULL),
+(null, 'room_schedule', 'room_schedule', 'totime', 'totime', 'Thời gian kết thúc', 'datetime', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-02-01 01:24:30', NULL, NULL),
+(null, 'room_schedule', 'room_schedule', 'state', 'state', 'Trạng thái', 'RADIO', '{"value":["1","2","3"],"label":["Đã đặt cọc", "Đã đặt chỗ", "Huỷ đặt phòng"],"sameline": 1}', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-25 20:58:12', NULL, NULL),
+(null, 'room_schedule', 'room_schedule', 'note', 'note', 'Ghi chú', 'textarea', '', NULL, 4102, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-25 20:54:29', NULL, NULL),
+(null, 'room_schedule', 'room_schedule', 'id', 'id', 'id', 'hidden', '', NULL, 4100, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-25 20:54:29', NULL, NULL),
+(null, 'room_schedule', 'room_schedule', 'deposit', 'deposit', 'Đặt cọc', 'numeric', '', NULL, 4101, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-25 20:54:29', NULL, NULL);

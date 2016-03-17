@@ -83,4 +83,23 @@ class SecurityController extends Controller
     // as the route is handled by the Security system
   }
 
+  /**
+   * @Route("/user/json", name = "user_json")
+   */
+  public function userjsonAction(){
+    $em = $this->getDoctrine()->getManager();
+    $repository = $this->getDoctrine()
+    ->getRepository('AppBundle:User');
+    $users = $repository->findAll();
+    $tmp = array();
+    foreach ($users as $user) {
+      $tmp[] = array($user->getId(), $user->getUsername());
+    }
+    $response = new Response(
+      json_encode($tmp),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
 }
