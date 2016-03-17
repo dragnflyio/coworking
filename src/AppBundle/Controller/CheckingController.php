@@ -230,7 +230,11 @@ class CheckingController extends Controller
             if ($postdata){
               $postdata['regionid'] = $regionid;
               $package = $services->getPackageByMemberId_alt($postdata['memberid']);
-              $package_regions = explode(',', $package['regionid']);
+              if (isset($package['regionid'])) {
+                $package_regions = explode(',', $package['regionid']);
+              } else {
+                $package_regions = array();
+              }
               $group = $services->getGroupByMemberId($postdata['memberid']);
               if (!empty($group)) {
                 $postdata['grouppackageid'] = $package['grouppackageid'];
@@ -253,7 +257,11 @@ class CheckingController extends Controller
           foreach ($dataObj as $table => $postdata){
             if ($postdata){
               $package = $services->getPackageByMemberId_alt($postdata['memberid']);
-              $package_regions = explode(',', $package['regionid']);
+              if (isset($package['regionid'])) {
+                $package_regions = explode(',', $package['regionid']);
+              } else {
+                $package_regions = array();
+              }
               $postdata['regionid'] = $regionid;
               $postdata['checkoutby'] = $user->getId();
               $postdata['visitedhours'] = ($postdata['checkout'] - $postdata['checkin']) / 60;
