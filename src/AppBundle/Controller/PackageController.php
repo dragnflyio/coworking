@@ -98,33 +98,33 @@ class PackageController extends BaseController{
 	 * Where search for user search
 	 */
 	private function getWhereUserSearchCondition($searchData) {
-		$formbuilder = $this->get('app.formbuilder');
+  	$formbuilder = $this->get('app.formbuilder');
         $where = '';
-        foreach ($searchData as $data) {
-            // normal fields - colname already there and differ from 'x'
-            if ($data['colname'] != 'x') {
-                $where .= $formbuilder->buildSingleCondition($data);
-            } else {
-				// do yourself
-			}
-        }
-        return $where;
-    }
-    /**
-     * @Route("/add", name="add_package")
-     */
-    public function addAction(Request $request){
-      if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-        throw $this->createAccessDeniedException();
+    foreach ($searchData as $data) {
+      // normal fields - colname already there and differ from 'x'
+      if ($data['colname'] != 'x') {
+        $where .= $formbuilder->buildSingleCondition($data);
+      } else {
+	     // do yourself
       }
-  		$formbuilder = $this->get('app.formbuilder');
-  		$tmp = $formbuilder->GenerateLayout('packageform');
-
-      return $this->render('package/add.html.twig', [
-    		'form' => $tmp,
-    		'script' => $formbuilder->mscript
-      ]);
     }
+    return $where;
+  }
+  /**
+   * @Route("/add", name="add_package")
+   */
+  public function addAction(Request $request){
+    if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+      throw $this->createAccessDeniedException();
+    }
+		$formbuilder = $this->get('app.formbuilder');
+		$tmp = $formbuilder->GenerateLayout('packageform');
+
+    return $this->render('package/add.html.twig', [
+  		'form' => $tmp,
+  		'script' => $formbuilder->mscript
+    ]);
+  }
 	/**
      * @Route("/edit/{id}", requirements={"id" = "\d+"})
      */
@@ -175,6 +175,7 @@ class PackageController extends BaseController{
 		$em = $this->getDoctrine()->getEntityManager();
 		$connection = $em->getConnection();
     $user = $this->getUser();
+    $services = $this->get('app.services');
 		switch($op){
 			case 'create':
 				$dataObj = $formbuilder->PrepareInsert($_POST, 'packageform');
@@ -234,13 +235,14 @@ class PackageController extends BaseController{
 					$data['empty'] = 'Không tìm thấy bản ghi nào';
 				} else {
 					foreach ($all_rows as $row){
+            $createduser = $services->loadUserById($row['createdby']);
 						$tmp = array(
 							'id' => $row['id'],
 							'idx' => ++$idx,
 							'name' => $row['name'],
 							'price' => $formbuilder->formatNum($row['price']),
 							'description' => $row['description'],
-							'createdname' => 'Admin'
+							'createdname' => $createduser['username'],
 						);
 						$ret[] = $tmp;
 					}
