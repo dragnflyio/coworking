@@ -171,8 +171,12 @@ class CustomerController extends BaseController{
       if ($data['colname'] != 'x') {
         $where .= $formbuilder->buildSingleCondition($data);
       } else {
-        if ('' != $data['v']) {
+        if ('packageids' == $data['id']) {
 		      $packageCondition = 'AND member_package.packageid IN (' . $data['v'] . ')';
+          $where .= $packageCondition;
+        } elseif ('packagedate' == $data['id']) {
+          $packageCondition = 'AND ' . $data['from'] . ' <= customer_activity.createdtime <= ' . $data['to'];
+          $packageCondition .= ' AND customer_activity.code IN ("taomoi", "giahan")';
           $where .= $packageCondition;
         }
       }
@@ -195,13 +199,21 @@ class CustomerController extends BaseController{
 		$row['colname'] = 'email';
 		$row['pos'] = array('row' => 1, 'col' => 2);
 		$retval[] = $row;
+    // Package date
+    $row = array();
+    $row['id'] = 'packagedate';
+    $row['label'] = 'Ngày gia hạn/đăng ký';
+    $row['type'] = 'date';
+    $row['colname'] = 'x';
+    $row['pos'] = array('row' => 2, 'col' => 1);
+    $retval[] = $row;
 
     // Package
     $row = array();
     $row['id'] = 'packageids';
     $row['label'] = 'Gói đang dùng';
     $row['type'] = 'text_multi';
-    $row['pos'] = array('row' => 2, 'col' => 1);
+    $row['pos'] = array('row' => 2, 'col' => 2);
     $row['pop'] = 'M';
     $row['ds'] = '@/package/json';
     $row['colname'] = 'x';
@@ -465,7 +477,7 @@ class CustomerController extends BaseController{
 				$grp = $this->getCustomerSearchForm();
 				$searchData = $formbuilder->GetSearchData($_POST, $grp);
 				$filters = $this->getWhereUserSearchCondition($searchData);
-				$statement = $connection->prepare("SELECT * FROM member LEFT JOIN member_package ON member.id = member_package.memberid WHERE 1 $filters");
+				$statement = $connection->prepare("SELECT * FROM member LEFT JOIN member_package ON member.id = member_package.memberid LEFT JOIN customer_activity ON member.id = customer_activity.memberid WHERE 1 $filters");
 				$statement->execute();
 				$all_rows = $statement->fetchAll();
 				$ret = array();
