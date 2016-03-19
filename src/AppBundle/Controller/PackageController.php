@@ -15,9 +15,9 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class PackageController extends BaseController{
 
 	/**
-    * @Route("/list", name="list_package")
-    * @Route("/", name="list_package")
-    */
+   * @Route("/list", name="list_package")
+   * @Route("/", name="list_package")
+   */
   public function listAction(Request $request){
     if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
       throw $this->createAccessDeniedException();
@@ -33,6 +33,7 @@ class PackageController extends BaseController{
   		'script' => $formbuilder->mscript
     ]);
   }
+
 	private function getPackageSearchForm(){
 
 		$retval = array();
@@ -46,13 +47,13 @@ class PackageController extends BaseController{
 		$retval[] = $row;
 
 		//ngay tao
-        $row = array();
-        $row['id'] = 'ngaytao';
-        $row['label'] = 'Ngày tạo';
-        $row['type'] = 'date';
-        $row['colname'] = 'createdtime';
-        $row['pos'] = array('row' => 1, 'col' => 2);
-        $retval[] = $row;
+    $row = array();
+    $row['id'] = 'ngaytao';
+    $row['label'] = 'Ngày tạo';
+    $row['type'] = 'date';
+    $row['colname'] = 'createdtime';
+    $row['pos'] = array('row' => 1, 'col' => 2);
+    $retval[] = $row;
 
 		// Locker
 		$row = array();
@@ -61,11 +62,11 @@ class PackageController extends BaseController{
 		$row['colname'] = 'locker';
 		$row['type'] = 'check';
 		$arr = array(
-            'sameline' => 1,
-            'label' => array('Có', 'Không'),
-            'value' => array(1, 2)
-        );
-        $row['ds'] = json_encode($arr);
+      'sameline' => 1,
+      'label' => array('Có', 'Không'),
+      'value' => array(1, 2)
+    );
+    $row['ds'] = json_encode($arr);
 		$row['pos'] = array('row' => 2, 'col' => 1);
 		$retval[] = $row;
 		// credit?
@@ -75,11 +76,11 @@ class PackageController extends BaseController{
 		$row['colname'] = 'allowcredit';
 		$row['type'] = 'check';
 		$arr = array(
-            'sameline' => 1,
-            'label' => array('Có', 'Không'),
-            'value' => array(1, 2)
-        );
-        $row['ds'] = json_encode($arr);
+      'sameline' => 1,
+      'label' => array('Có', 'Không'),
+      'value' => array(1, 2)
+    );
+    $row['ds'] = json_encode($arr);
 		$row['pos'] = array('row' => 2, 'col' => 1);
 		$retval[] = $row;
 		// price
@@ -91,9 +92,9 @@ class PackageController extends BaseController{
 		$row['pos'] = array('row' => 2, 'col' => 2);
 		$row['colname'] = 'price';
 		$retval[] = $row;
-
 		return $retval;
 	}
+
 	/**
 	 * Where search for user search
 	 */
@@ -110,6 +111,7 @@ class PackageController extends BaseController{
     }
     return $where;
   }
+
   /**
    * @Route("/add", name="add_package")
    */
@@ -125,10 +127,11 @@ class PackageController extends BaseController{
   		'script' => $formbuilder->mscript
     ]);
   }
+
 	/**
-     * @Route("/edit/{id}", requirements={"id" = "\d+"})
-     */
-    public function editAction($id, Request $request){
+   * @Route("/edit/{id}", requirements={"id" = "\d+"})
+   */
+  public function editAction($id, Request $request){
 		$formbuilder = $this->get('app.formbuilder');
 		$request = Request::createFromGlobals();
 
@@ -147,15 +150,13 @@ class PackageController extends BaseController{
 		} else {
 			throw $this->createNotFoundException('Không tìm thấy trang này');
 		}
+    return $this->render('package/edit.html.twig', [
+    	'form' => $tmp,
+    	'id' => $id,
+    	'script' => $formbuilder->mscript
+    ]);
+  }
 
-
-        return $this->render('package/edit.html.twig', [
-			'form' => $tmp,
-			'id' => $id,
-			'script' => $formbuilder->mscript
-        ]);
-
-    }
 	/**
 	 * @Route("/formapi")
 	 */
@@ -262,4 +263,36 @@ class PackageController extends BaseController{
 		);
 		return $response;
 	}
+
+  /**
+   * @Route("/json", name = "package_json")
+   */
+  public function jsonAction(Request $request){
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $txt_search = $request->query->get('search', '');
+
+    if (empty($txt_search)) {
+      $statement = $connection->prepare("SELECT * FROM package");
+    } else {
+      $statement = $connection->prepare("SELECT * FROM package where name LIKE :name");
+      $txt_search = "%" . $txt_search . "%";
+      $statement->bindParam(':name', $txt_search);
+    }
+    $statement->execute();
+    $rows = $statement->fetchAll();
+
+    // Statement with members table.
+    $packages = array();
+    foreach ($rows as $package) {
+      $packages[] = array($package['id'], $package['name']);
+    }
+
+    $response = new Response(
+      json_encode($packages),
+      Response::HTTP_OK,
+      array('content-type' => 'application/json')
+    );
+    return $response;
+  }
 }

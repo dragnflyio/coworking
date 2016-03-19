@@ -64,6 +64,9 @@ Danh sách khách hàng
 
 {% endblock %}
 {% block javascripts %}
+<script>
+  {{script|raw}}
+</script>
 <script id="template_table" type="text/x-handlebars-template">
   <%#list%>
 	<tr>
@@ -90,11 +93,9 @@ Danh sách khách hàng
 	</tr>
 	<%/list%>
 </script>
-
 <script src="{{asset ('js/handlebars.min.js')}}"></script>
 <script>
 jQuery(function(){
-	{{script|raw}}
 	$('.numeric').intOnly();
 	function doSearch(){
 		ajaxPost('/customer/formapi?op=search', $('#f_customersearch').serialize(), function(data){
