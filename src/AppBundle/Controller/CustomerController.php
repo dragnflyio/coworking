@@ -172,7 +172,7 @@ class CustomerController extends BaseController{
         $where .= $formbuilder->buildSingleCondition($data);
       } else {
         if ('packageids' == $data['id']) {
-		      $packageCondition = 'AND member_package.packageid IN (' . $data['v'] . ')';
+		      $packageCondition = 'AND member_package.packageid IN (' . $data['v'] . ') AND member_package.active = 1';
           $where .= $packageCondition;
         } elseif ('packagedate' == $data['id']) {
           $packageCondition = 'AND ' . $data['from'] . ' <= customer_activity.createdtime <= ' . $data['to'];
@@ -477,7 +477,7 @@ class CustomerController extends BaseController{
 				$grp = $this->getCustomerSearchForm();
 				$searchData = $formbuilder->GetSearchData($_POST, $grp);
 				$filters = $this->getWhereUserSearchCondition($searchData);
-				$statement = $connection->prepare("SELECT * FROM member LEFT JOIN member_package ON member.id = member_package.memberid LEFT JOIN customer_activity ON member.id = customer_activity.memberid WHERE 1 $filters");
+				$statement = $connection->prepare("SELECT * FROM member LEFT JOIN member_package ON member.id = member_package.memberid LEFT JOIN customer_activity ON member.id = customer_activity.memberid WHERE 1 $filters GROUP BY member.id");
 				$statement->execute();
 				$all_rows = $statement->fetchAll();
 				$ret = array();
