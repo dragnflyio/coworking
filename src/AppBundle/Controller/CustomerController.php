@@ -30,6 +30,7 @@ class CustomerController extends BaseController{
 	    'script' => $formbuilder->mscript
     ]);
   }
+
   /**
    * Add customer and package
    * @Route("/addpackagecustomer", name="add_package_customer")
@@ -53,6 +54,7 @@ class CustomerController extends BaseController{
       'script_package' => $script_package
     ]);
   }
+
 	/**
    * @Route("/editpackage/{id}", name="edit_customer_package", requirements={"id" = "\d+"})
    */
@@ -87,6 +89,7 @@ class CustomerController extends BaseController{
     	'script_change' => $script_change
     ]);
 	}
+
 	/**
    * @Route("/addpackage/{id}", name="add_customer_package", requirements={"id" = "\d+"})
    */
@@ -116,6 +119,7 @@ class CustomerController extends BaseController{
     	'script' => $formbuilder->mscript
     ]);
 	}
+
 	/**
    * @Route("/getpackages")
    */
@@ -135,6 +139,7 @@ class CustomerController extends BaseController{
 
 		return $response;
 	}
+
   //public function
 	/**
    * @Route("/list", name="list_customer")
@@ -154,6 +159,7 @@ class CustomerController extends BaseController{
   		'script' => $formbuilder->mscript
     ]);
   }
+
 	/**
 	 * Where search for user search
 	 */
@@ -165,7 +171,14 @@ class CustomerController extends BaseController{
       if ($data['colname'] != 'x') {
         $where .= $formbuilder->buildSingleCondition($data);
       } else {
-		    // do yourself
+        if ('packageids' == $data['id']) {
+		      $packageCondition = 'AND member_package.packageid IN (' . $data['v'] . ') AND member_package.active = 1';
+          $where .= $packageCondition;
+        } elseif ('packagedate' == $data['id']) {
+          $packageCondition = 'AND ' . $data['from'] . ' <= customer_activity.createdtime <= ' . $data['to'];
+          $packageCondition .= ' AND customer_activity.code IN ("taomoi", "giahan")';
+          $where .= $packageCondition;
+        }
       }
     }
     return $where;
@@ -186,22 +199,30 @@ class CustomerController extends BaseController{
 		$row['colname'] = 'email';
 		$row['pos'] = array('row' => 1, 'col' => 2);
 		$retval[] = $row;
+    // Package date
+    $row = array();
+    $row['id'] = 'packagedate';
+    $row['label'] = 'Ngày gia hạn/đăng ký';
+    $row['type'] = 'date';
+    $row['colname'] = 'x';
+    $row['pos'] = array('row' => 2, 'col' => 1);
+    $retval[] = $row;
 
-		/*$row = array();
-		$row['id'] = 'trangthai';
-		$row['label'] = 'Trạng thái';
-		$row['colname'] = 'active';
-		$row['type'] = 'check';
-		$arr = array(
-            'sameline' => 1,
-            'label' => array('Hoạt động', 'Ngừng hoạt động'),
-            'value' => array(1, 2)
-          );
-    $row['ds'] = json_encode($arr);
-		$row['pos'] = array('row' => 1, 'col' => 2);
-		$retval[] = $row;*/
+    // Package
+    $row = array();
+    $row['id'] = 'packageids';
+    $row['label'] = 'Gói đang dùng';
+    $row['type'] = 'text_multi';
+    $row['pos'] = array('row' => 2, 'col' => 2);
+    $row['pop'] = 'M';
+    $row['ds'] = '@/package/json';
+    $row['colname'] = 'x';
+    $row['value_maxlength'] = 0;
+    $retval[] = $row;
+
 		return $retval;
 	}
+
 	/**
    * @Route("/edit/{id}", requirements={"id" = "\d+"})
    */
@@ -226,8 +247,8 @@ class CustomerController extends BaseController{
     	'id' => $id,
     	'script' => $formbuilder->mscript
     ]);
-
   }
+
 	/**
 	 * @Route("/formapi")
 	 */
@@ -456,7 +477,7 @@ class CustomerController extends BaseController{
 				$grp = $this->getCustomerSearchForm();
 				$searchData = $formbuilder->GetSearchData($_POST, $grp);
 				$filters = $this->getWhereUserSearchCondition($searchData);
-				$statement = $connection->prepare("SELECT * FROM member WHERE 1 $filters");
+				$statement = $connection->prepare("SELECT * FROM member LEFT JOIN member_package ON member.id = member_package.memberid LEFT JOIN customer_activity ON member.id = customer_activity.memberid WHERE 1 $filters GROUP BY member.id");
 				$statement->execute();
 				$all_rows = $statement->fetchAll();
 				$ret = array();
@@ -538,5 +559,4 @@ class CustomerController extends BaseController{
     );
     return $response;
   }
-
 }

@@ -249,7 +249,10 @@ class RoomController extends Controller
           $class = 'danger';
           $state = "Huỷ đặt phòng";
         }
-
+        if (isset($row['relateduser'])) {
+          $relateduser = $services->loadUserById($row['relateduser']);
+        }
+        $username = isset($relateduser) ? $relateduser['username'] : 'admin';
         $tmp = array(
           'css' => $class,
           'id' => $row['id'],
@@ -260,6 +263,7 @@ class RoomController extends Controller
           'totime' => date('m-d-Y H:i', $row['totime']),
           'state' => $state,
           'note' => $row['note'],
+          'username' => $username,
         );
         $ret[] = $tmp;
       }

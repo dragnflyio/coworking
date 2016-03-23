@@ -33,10 +33,11 @@
             <th>Thời gian</th>
             <th>Trạng thái</th>
             <th>Ghi chú</th>
+            <th>Người phụ trách</th>
             <th></th>
           </thead>
           <tbody id = "list-room">
-            <th colspan="7" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
+            <th colspan="8" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th>
           </tbody>
         </table>
       </div>
@@ -60,6 +61,7 @@
       <td><%fromtime%> tới <%totime%></td>
       <td><%state%></td>
       <td><%note%></td>
+      <td><%username%></td>
       <td>
         <a href="/room/schedule/<%id%>/edit">Thay đổi</a>
       </td>
@@ -74,10 +76,10 @@
       function doSearch(){
         ajaxPost('/room/search/schedule', $('#f_roomschedulesearch').serialize(), function(data){
           if (!data.empty){
-            
+
             $('#list-room').html(mr( $('#template_table').html(), {list:data}))
           } else {
-            $('#list-room').html('<tr><th colspan="7" scope="row" class="text-center">'+ data.empty + '</th></tr>');
+            $('#list-room').html('<tr><th colspan="8" scope="row" class="text-center">'+ data.empty + '</th></tr>');
           }
         });
       }
@@ -89,7 +91,7 @@
       })
       $('#btnsearch').click(function(e){
         e.preventDefault();
-        $('#list-room').html('<tr><th colspan="7" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
+        $('#list-room').html('<tr><th colspan="8" scope="row" class="text-center"><i class="glyphicon glyphicon-refresh fa-spin"></i></th></tr>');
         doSearch();
       })
     })
