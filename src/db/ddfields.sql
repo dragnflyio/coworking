@@ -84,7 +84,6 @@ DELETE FROM ddfields WHERE table_name = 'member' AND object_name = 'customerform
 INSERT INTO `ddfields` (`id`, `object_name`, `table_name`, `col_name`, `col_code`, `col_label`, `data_type`, `data_source`, `value_default`, `col_position`, `value_readonly`, `trigger_url`, `trigger_target`, `value_maxlength`, `col_active`, `search_opt`, `zero`, `sysdate`, `hidden`, `attributes`) VALUES
 (null, 'customerform', 'member', 'level', 'level', 'Hạng', 'radio', '{"label":["Khách", "Thành viên", "Thành viên VIP"],"value":[1,2,3],"sameline":1}', 1, 4109, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-17 07:21:34', NULL, NULL),
 (null, 'customerform', 'member', 'membersince', 'membersince', 'Ngày bắt đầu', 'date', '', NULL, 4110, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-17 07:49:24', NULL, NULL),
---(null, 'customerform', 'member', 'active', 'active', 'Trạng thái', 'radio', '{"label":["Hoạt động", "Ngừng hoạt động"],"value":[1,2],"sameline":1}', 1, 4109, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-17 07:49:32', NULL, NULL),
 (null, 'customerform', 'member', 'birthday', 'birthday', 'Ngày sinh', 'BIRTHDAY', '', NULL, 4106, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-17 07:49:37', NULL, NULL),
 (null, 'customerform', 'member', 'phone', 'phone', 'Điện thoại', 'text', '', NULL, 4109, NULL, NULL, NULL, 20, 1, NULL, NULL, '2016-01-16 08:41:41', NULL, NULL),
 (null, 'customerform', 'member', 'email', 'email', 'Email', 'TEXT_MULTI', '', NULL, 4105, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2016-01-16 08:41:41', NULL, NULL),
