@@ -44,46 +44,67 @@
 				<li class="dropdown">
           <a href="{{ path('list_package') }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lễ tân <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{{ path('add_package') }}">Thêm gói dịch vụ</a></li>
-            <li><a href="{{ path('list_package') }}">Danh sách gói dịch vụ</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="{{ path('add_package_customer') }}">Thêm khách hàng và gói</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="{{ path('group_list') }}">Danh sách nhóm</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="{{ path('add_customer') }}">Thêm khách hàng</a></li>
-						<li><a href="{{ path('list_customer') }}">Danh sách khách hàng</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="{{path('checking_list')}}">Theo dõi thành viên/khách</a></li>
-            <li><a href="{{ path('member_checking') }}?op=checkin">Check in thành viên</a></li>
-            <li><a href="{{ path('visitor_checking') }}?op=checkin">Check in khách</a></li>
-						<li role="separator" class="divider"></li>
-            <li><a href="{{ path('room_list') }}">Danh sách phòng họp</a></li>
-            <li><a href="{{ path('room_add') }}">Thêm phòng họp</a></li>
-            <li><a href="{{ path('room_schedule') }}">Lịch trình phòng</a></li>
-            <li><a href="{{ path('room_schedule_add') }}">Đặt phòng</a></li>
+            <li>
+              <a class="trigger right-caret">Gói dịch vụ</a>
+              <ul class="dropdown-menu sub-menu">
+                <li><a href="{{ path('add_package') }}">Thêm gói</a></li>
+                <li><a href="{{ path('list_package') }}">Danh sách gói</a></li>
+              </ul>
+            </li>
+            <li>
+              <a class="trigger right-caret">Khách hàng</a>
+              <ul class="dropdown-menu sub-menu">
+                <li><a href="{{ path('add_package_customer') }}">Thêm khách hàng và gói</a></li>
+                <li><a href="{{ path('add_customer') }}">Thêm khách hàng</a></li>
+                <li><a href="{{ path('list_customer') }}">Danh sách khách</a></li>
+                <li><a href="{{ path('group_list') }}">Danh sách nhóm</a></li>
+                <li><a href="{{path('checking_list')}}">Theo dõi thành viên/khách</a></li>
+                <li>
+                  <a class="trigger right-caret">Check in</a>
+                  <ul class="dropdown-menu sub-menu">
+                    <li><a href="{{ path('member_checking') }}?op=checkin">Check in thành viên</a></li>
+                    <li><a href="{{ path('visitor_checking') }}?op=checkin">Check in khách</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a class="trigger right-caret">Phòng họp/event</a>
+              <ul class="dropdown-menu sub-menu">
+                <li><a href="{{ path('room_add') }}">Thêm phòng/event</a></li>
+                <li><a href="{{ path('room_list') }}">Danh sách phòng/event</a></li>
+                <li><a href="{{ path('room_schedule') }}">Lịch trình phòng/event</a></li>
+                <li><a href="{{ path('room_schedule_add') }}">Đặt phòng/event</a></li>
+              </ul>
+            </li>
           </ul>
         </li>
-				<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hệ thống <span class="caret"></span></a>
-          <!-- <ul class="dropdown-menu">
-            <li><a href="{{ path('unit') }}">KB đơn vị hàng hóa</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="{{ path('product_add') }}">Thêm sản phẩm</a></li>
-            <li><a href="{{ path('product') }}">Quản lý giá sản phẩm</a></li>
-            <li><a href="{{ path('product_import') }}">Nhập sản phẩm từ excel</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="{{ path('category') }}">PL hàng hóa</a></li>
-          </ul> -->
-
-        </li>
+				
       </ul>
 
 
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-
+<script>
+  jQuery(function(){
+  $(".dropdown-menu > li > a.trigger").on("click",function(e){
+    var current=$(this).next();
+    var grandparent=$(this).parent().parent();
+    if($(this).hasClass('left-caret')||$(this).hasClass('right-caret'))
+      $(this).toggleClass('right-caret left-caret');
+    grandparent.find('.left-caret').not(this).toggleClass('right-caret left-caret');
+    grandparent.find(".sub-menu:visible").not(current).hide();
+    current.toggle();
+    e.stopPropagation();
+  });
+  $(".dropdown-menu > li > a:not(.trigger)").on("click",function(){
+    var root=$(this).closest('.dropdown');
+    root.find('.left-caret').toggleClass('right-caret left-caret');
+    root.find('.sub-menu:visible').hide();
+  });
+});
+</script>
 		<div id="main-container">
         {% block body %}{% endblock %}
     </div>

@@ -46,21 +46,12 @@ class CheckingController extends Controller
       $regionname = !empty($region) ? $region['name'] : '';
       $timelog['regionname'] = $regionname;
       // Get User check in
-<<<<<<< HEAD
+
       $checkinuser = $services->loadUserById($timelog['checkinby']);
       $checkoutuser = $services->loadUserById($timelog['checkoutby']);
       $timelog['checkin_user'] = $checkinuser ? $checkinuser['username']: '';
       $timelog['checkout_user'] = $checkoutuser ? $checkoutuser['username']: '';
-=======
-      if ($timelog['checkinby'] != 0) {
-        $checkinuser = $services->loadUserById($timelog['checkinby']);
-      }
-      if ($timelog['checkoutby'] != 0) {
-        $checkoutuser = $services->loadUserById($timelog['checkoutby']);
-      }
-      $timelog['checkin_user'] = isset($checkinuser) ? $checkinuser['username'] : '';
-      $timelog['checkout_user'] = isset($checkoutuser) ? $checkoutuser['username'] : '';
->>>>>>> 09bdec25e38dbfc74e3f1ecf1e725bc03f088df4
+
       $idx = ++$idx;
       $timelogs[$idx] = (object) $timelog;
     }
@@ -180,16 +171,10 @@ class CheckingController extends Controller
               $postdata['regionid'] = $regionid;
               // $package = $services->getPackageByMemberId($postdata['memberid']);
               $package = $services->getPackageByMemberId_alt($postdata['memberid']);
-<<<<<<< HEAD
+
               $package_regions = explode(',', trim($package['regionid']));
               $package_regions = array_filter($package_regions);
-=======
-              if (isset($package['regionid'])) {
-                $package_regions = explode(',', $package['regionid']);
-              } else {
-                $package_regions = array();
-              }
->>>>>>> 09bdec25e38dbfc74e3f1ecf1e725bc03f088df4
+
               $group = $services->getGroupByMemberId($postdata['memberid']);
               if (!empty($group)) {
                 $postdata['grouppackageid'] = $package['grouppackageid'];
