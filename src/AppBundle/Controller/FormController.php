@@ -34,7 +34,8 @@ class FormController extends Controller
       } else {
         $data['ext'] = $objfile->guessExtension();
         $data['valid'] = $objfile->isValid();
-        $filename = $objfile->getClientOriginalName();//.'.'.$objfile->guessExtension();
+        // $filename = $objfile->getClientOriginalName();
+        $filename = uniqid().'.'.$file->guessExtension();
         $objfile->move($this->container->getParameter('kernel.root_dir').'/../web/files', $filename );
         // $data['msg'] = $objfile->getErrorMessage();
       }
