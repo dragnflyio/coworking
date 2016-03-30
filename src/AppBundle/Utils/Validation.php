@@ -75,7 +75,7 @@ class Validation{
     foreach ($logs as $value) {
       $log = array();
       $log['idx'] = ++$idx;
-      $log['name'] = $codes[$value['code']] ? $codes[$value['code']] : $value['code'];
+      $log['name'] = isset($codes[$value['code']]) ? $codes[$value['code']] : $value['code'];
       $log['amount'] = $value['amount'];
       $log['note'] = $value['note'];
       $log['time'] = date('d/m/Y H:i:s', $value['createdtime']);
@@ -83,7 +83,7 @@ class Validation{
         $log['oldvalue'] = isset($lk_package[$value['oldvalue']]) ? $lk_package[$value['oldvalue']] : $value['oldvalue'];
         $log['newvalue'] = isset($lk_package[$value['newvalue']]) ? $lk_package[$value['newvalue']] : $value['newvalue'];
       }
-      if ('datphong'){
+      if ('datphong' == $value['code']){
         $log['oldvalue'] = isset($lk_room[$value['oldvalue']]) ? $lk_room[$value['oldvalue']] : $value['oldvalue'];
         $log['newvalue'] = isset($lk_room[$value['newvalue']]) ? $lk_room[$value['newvalue']] : $value['newvalue'];
       }
